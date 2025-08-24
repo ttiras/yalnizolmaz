@@ -1,36 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## yalnizolmaz
 
-## Getting Started
+Modern Next.js 15 app using TypeScript, Tailwind v4, Turbopack, pnpm, ESLint, Prettier, Husky + lint-staged, Vitest + Testing Library, and Playwright.
 
-First, run the development server:
+### Scripts
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- `pnpm dev`: Start dev server (Turbopack)
+- `pnpm build`: Production build
+- `pnpm start`: Start production server
+- `pnpm lint`: Lint code
+- `pnpm type-check`: TypeScript type check
+- `pnpm format`: Format with Prettier
+- `pnpm test`: Run unit tests (Vitest)
+- `pnpm test:ui`: Vitest UI
+- `pnpm test:e2e`: Run Playwright tests
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `src/` with App Router
+- `@/*` import alias (rooted at `src/`)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### CI
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+GitHub Actions runs lint, type-check, build, unit, and e2e tests on pushes/PRs to `main`.
