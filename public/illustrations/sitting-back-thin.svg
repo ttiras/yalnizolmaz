@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" fill="none" stroke="#7a869a" stroke-width="0.8">
+  <defs>
+    <linearGradient id="groundGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:0.4" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Ground -->
+  <rect x="0" y="320" width="600" height="80" fill="url(#groundGradient)"/>
+  <line x1="0" y1="320" x2="600" y2="320" stroke="#94a3b8" stroke-width="0.6" opacity="0.7"/>
+  
+  <!-- Figure sitting with back turned -->
+  <g stroke="#7a869a" stroke-width="0.8" fill="none">
+    <!-- Head (back view) -->
+    <path d="M300 180 Q295 175 290 180 Q295 185 300 180 Q305 175 310 180 Q305 185 300 180" opacity="0.9"/>
+    
+    <!-- Hair detail -->
+    <path d="M295 175 Q300 170 305 175" stroke-width="0.6" opacity="0.6"/>
+    
+    <!-- Neck -->
+    <line x1="300" y1="185" x2="300" y2="195"/>
+    
+    <!-- Shoulders and back -->
+    <path d="M285 195 Q300 190 315 195"/>
+    <line x1="285" y1="195" x2="285" y2="240"/>
+    <line x1="315" y1="195" x2="315" y2="240"/>
+    <path d="M285 240 Q300 235 315 240"/>
+    
+    <!-- Arms (relaxed at sides) -->
+    <path d="M285 210 Q275 225 270 245"/>
+    <path d="M315 210 Q325 225 330 245"/>
+    
+    <!-- Hands -->
+    <circle cx="270" cy="247" r="3" opacity="0.7"/>
+    <circle cx="330" cy="247" r="3" opacity="0.7"/>
+    
+    <!-- Torso -->
+    <line x1="300" y1="240" x2="300" y2="300"/>
+    
+    <!-- Sitting position - legs -->
+    <path d="M300 300 Q290 310 275 320"/>
+    <path d="M300 300 Q310 310 325 320"/>
+    
+    <!-- Feet -->
+    <path d="M275 320 L270 320"/>
+    <path d="M325 320 L330 320"/>
+  </g>
+  
+  <!-- Shadow -->
+  <ellipse cx="300" cy="325" rx="35" ry="8" fill="#94a3b8" opacity="0.3"/>
+  
+  <!-- Environmental details -->
+  <g stroke="#94a3b8" stroke-width="0.4" opacity="0.5">
+    <!-- Small stones -->
+    <ellipse cx="150" cy="318" rx="4" ry="2"/>
+    <ellipse cx="450" cy="316" rx="3" ry="2"/>
+    <ellipse cx="180" cy="322" rx="2" ry="1"/>
+    
+    <!-- Grass blades -->
+    <path d="M100 320 Q102 315 104 320"/>
+    <path d="M105 320 Q107 313 109 320"/>
+    <path d="M480 320 Q482 316 484 320"/>
+    <path d="M485 320 Q487 314 489 320"/>
+    <path d="M500 320 Q502 317 504 320"/>
+  </g>
+  
+  <!-- Contemplative mood lines -->
+  <g stroke="#9fb4d3" stroke-width="0.3" opacity="0.4">
+    <path d="M260 160 Q270 150 280 160" fill="none" stroke-dasharray="1,2"/>
+    <path d="M320 160 Q330 150 340 160" fill="none" stroke-dasharray="1,2"/>
+  </g>
+</svg>

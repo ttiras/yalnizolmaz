@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" fill="none" stroke="#7a869a" stroke-width="0.8">
+  <defs>
+    <linearGradient id="parkGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:0.4" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Ground -->
+  <rect x="0" y="300" width="600" height="100" fill="url(#parkGradient)"/>
+  <line x1="0" y1="300" x2="600" y2="300" stroke="#94a3b8" stroke-width="0.6" opacity="0.7"/>
+  
+  <!-- Park bench -->
+  <g stroke="#7a869a" stroke-width="1" fill="none">
+    <!-- Bench seat -->
+    <rect x="200" y="250" width="200" height="8" rx="2" fill="#e2e8f0" stroke="#94a3b8"/>
+    
+    <!-- Bench back -->
+    <rect x="200" y="220" width="200" height="8" rx="2" fill="#e2e8f0" stroke="#94a3b8"/>
+    
+    <!-- Support slats -->
+    <line x1="220" y1="220" x2="220" y2="250"/>
+    <line x1="250" y1="220" x2="250" y2="250"/>
+    <line x1="300" y1="220" x2="300" y2="250"/>
+    <line x1="350" y1="220" x2="350" y2="250"/>
+    <line x1="380" y1="220" x2="380" y2="250"/>
+    
+    <!-- Bench legs -->
+    <rect x="215" y="258" width="8" height="42" fill="#e2e8f0" stroke="#94a3b8"/>
+    <rect x="377" y="258" width="8" height="42" fill="#e2e8f0" stroke="#94a3b8"/>
+    
+    <!-- Armrests -->
+    <rect x="190" y="235" width="25" height="6" rx="3" fill="#e2e8f0" stroke="#94a3b8"/>
+    <rect x="385" y="235" width="25" height="6" rx="3" fill="#e2e8f0" stroke="#94a3b8"/>
+  </g>
+  
+  <!-- Bench shadow -->
+  <ellipse cx="300" cy="305" rx="110" ry="12" fill="#94a3b8" opacity="0.3"/>
+  
+  <!-- Fallen leaf on bench -->
+  <g stroke="#94a3b8" stroke-width="0.6" fill="#f1f5f9" opacity="0.6">
+    <path d="M320 245 Q315 240 310 245 Q315 250 320 245 Q325 240 330 245 Q325 250 320 245"/>
+    <line x1="320" y1="240" x2="320" y2="250" stroke-width="0.4"/>
+  </g>
+  
+  <!-- Trees in background -->
+  <g stroke="#94a3b8" stroke-width="0.6" opacity="0.5">
+    <!-- Tree 1 -->
+    <line x1="80" y1="300" x2="80" y2="180"/>
+    <circle cx="80" cy="160" r="25" fill="none"/>
+    <path d="M60 170 Q80 150 100 170" fill="none"/>
+    
+    <!-- Tree 2 -->
+    <line x1="500" y1="300" x2="500" y2="200"/>
+    <circle cx="500" cy="180" r="20" fill="none"/>
+    <path d="M485 190 Q500 170 515 190" fill="none"/>
+  </g>
+  
+  <!-- Walking path -->
+  <path d="M0 320 Q300 315 600 320" stroke="#94a3b8" stroke-width="0.8" opacity="0.4" fill="none"/>
+  
+  <!-- Scattered leaves on ground -->
+  <g stroke="#94a3b8" stroke-width="0.4" opacity="0.4">
+    <path d="M150 310 Q145 305 140 310 Q145 315 150 310"/>
+    <path d="M450 315 Q445 310 440 315 Q445 320 450 315"/>
+    <path d="M180 325 Q175 320 170 325 Q175 330 180 325"/>
+    <path d="M520 308 Q515 303 510 308 Q515 313 520 308"/>
+  </g>
+  
+  <!-- Subtle wind lines -->
+  <g stroke="#9fb4d3" stroke-width="0.3" opacity="0.3">
+    <path d="M100 200 Q150 190 200 200" stroke-dasharray="2,4"/>
+    <path d="M400 180 Q450 170 500 180" stroke-dasharray="2,4"/>
+  </g>
+  
+  <!-- Small birds in distance -->
+  <g stroke="#94a3b8" stroke-width="0.4" opacity="0.5">
+    <path d="M450 120 Q455 118 460 120" fill="none"/>
+    <path d="M480 110 Q485 108 490 110" fill="none"/>
+    <path d="M520 125 Q525 123 530 125" fill="none"/>
+  </g>
+</svg>
