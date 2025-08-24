@@ -8,6 +8,7 @@ import { site } from "@/lib/site";
 import { ArticleHeader } from "@/components/blog/ArticleHeader";
 import { SupportCTA } from "@/components/blog/SupportCTA";
 import { ReadingProgress } from "@/components/ReadingProgress";
+import { TableOfContents } from "@/components/TableOfContents";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "./jsonld";
 import { mdxComponents } from "./mdx-components";
 
@@ -49,12 +50,21 @@ export default async function BlogPost({ params }: Params) {
   const prev = idx > 0 ? all[idx - 1] : null;
   const next = idx < all.length - 1 ? all[idx + 1] : null;
   return (
-    <div className="bg-soft min-h-screen">
+    <div className="bg-soft min-h-screen" style={{ backgroundColor: "var(--background)" }}>
       {/* Reading Progress Indicator */}
       <ReadingProgress />
 
+      {/* Table of Contents */}
+      <TableOfContents />
+
       {/* Hero Section */}
-      <header className="relative overflow-hidden border-b border-slate-200/50 bg-gradient-to-b from-slate-50 to-white dark:border-slate-700/50 dark:from-slate-900 dark:to-slate-800">
+      <header
+        className="relative overflow-hidden border-b bg-gradient-to-b"
+        style={{
+          borderColor: "var(--border)",
+          background: "linear-gradient(to bottom, var(--background), var(--card))",
+        }}
+      >
         <div className="bg-grid-pattern absolute inset-0 opacity-[0.02] dark:opacity-[0.05]"></div>
         <div className="relative container">
           <div className="mx-auto max-w-4xl py-16 md:py-24">
@@ -70,15 +80,32 @@ export default async function BlogPost({ params }: Params) {
       </header>
 
       {/* Main Content */}
-      <main className="relative container">
-        <div className="mx-auto max-w-4xl">
-          <article className="relative">
-            <ArticleJsonLd post={post} />
-            <BreadcrumbJsonLd post={post} />
+      <main className="relative">
+        <article className="relative">
+          <ArticleJsonLd post={post} />
+          <BreadcrumbJsonLd post={post} />
 
-            {/* Content Wrapper */}
-            <div className="prose prose-lg prose-neutral dark:prose-invert mx-auto max-w-none px-6 py-12 md:px-8 md:py-16">
-              <div className="mx-auto max-w-3xl">
+          {/* Content Wrapper with Side Decorations */}
+          <div className="relative">
+            {/* Left Side Decoration */}
+            <div className="absolute top-0 left-0 hidden h-full w-64 lg:block">
+              <div className="sticky top-32 space-y-8 p-8 opacity-20">
+                <div className="h-32 w-32 rounded-full bg-gradient-to-br from-amber-200 to-orange-200 blur-2xl"></div>
+                <div className="h-24 w-24 rounded-full bg-gradient-to-br from-blue-200 to-indigo-200 blur-2xl"></div>
+              </div>
+            </div>
+
+            {/* Right Side Decoration */}
+            <div className="absolute top-0 right-0 hidden h-full w-64 lg:block">
+              <div className="sticky top-32 space-y-8 p-8 opacity-20">
+                <div className="h-24 w-24 rounded-full bg-gradient-to-br from-rose-200 to-pink-200 blur-2xl"></div>
+                <div className="h-32 w-32 rounded-full bg-gradient-to-br from-emerald-200 to-teal-200 blur-2xl"></div>
+              </div>
+            </div>
+
+            {/* Main Content Container */}
+            <div className="relative container">
+              <div className="prose prose-lg prose-neutral dark:prose-invert mx-auto max-w-4xl px-6 py-12 md:px-8 md:py-16">
                 <MDXRemote
                   source={post.content}
                   options={{
@@ -91,55 +118,106 @@ export default async function BlogPost({ params }: Params) {
                 />
               </div>
             </div>
+          </div>
 
-            {/* Navigation */}
-            <nav className="border-t border-slate-200/50 bg-white/50 backdrop-blur-sm dark:border-slate-700/50 dark:bg-slate-800/50">
-              <div className="mx-auto max-w-3xl px-6 py-8 md:px-8">
-                <div className="flex items-center justify-between">
-                  {prev ? (
-                    <a
-                      className="group flex items-center gap-3 text-sm text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
-                      href={`/blog/${prev.slug}`}
+          {/* Enhanced Navigation */}
+          <nav className="relative mt-16 overflow-hidden">
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(135deg, var(--muted) 0%, var(--card) 50%, var(--muted) 100%)",
+              }}
+            ></div>
+            <div className="relative mx-auto max-w-5xl px-6 py-12 md:px-8">
+              <h3
+                className="mb-8 text-center text-sm font-medium tracking-wider uppercase"
+                style={{ color: "var(--muted-foreground)" }}
+              >
+                Diğer Yazılar
+              </h3>
+              <div className="grid gap-6 md:grid-cols-2">
+                {prev ? (
+                  <a
+                    className="group relative overflow-hidden rounded-xl border p-6 backdrop-blur-sm transition-all hover:scale-[1.02] hover:shadow-xl"
+                    style={{
+                      borderColor: "var(--border)",
+                      backgroundColor: "var(--card)",
+                    }}
+                    href={`/blog/${prev.slug}`}
+                  >
+                    <div
+                      className="absolute top-1/2 -left-2 -translate-y-1/2 text-6xl font-bold"
+                      style={{ color: "var(--muted)" }}
                     >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 transition-colors group-hover:bg-slate-200 dark:bg-slate-700 dark:group-hover:bg-slate-600">
-                        ←
+                      ←
+                    </div>
+                    <div className="relative">
+                      <div
+                        className="mb-1 text-xs font-medium tracking-wider uppercase"
+                        style={{ color: "var(--accent)" }}
+                      >
+                        Önceki Yazı
                       </div>
-                      <div>
-                        <div className="text-xs text-slate-500 dark:text-slate-400">Önceki</div>
-                        <div className="font-medium">{prev.data.title}</div>
+                      <div
+                        className="font-serif text-lg font-medium transition-colors"
+                        style={{ color: "var(--foreground)" }}
+                      >
+                        {prev.data.title}
                       </div>
-                    </a>
-                  ) : (
-                    <div />
-                  )}
-                  {next ? (
-                    <a
-                      className="group flex items-center gap-3 text-right text-sm text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
-                      href={`/blog/${next.slug}`}
+                    </div>
+                  </a>
+                ) : (
+                  <div />
+                )}
+                {next ? (
+                  <a
+                    className="group relative overflow-hidden rounded-xl border p-6 backdrop-blur-sm transition-all hover:scale-[1.02] hover:shadow-xl md:text-right"
+                    style={{
+                      borderColor: "var(--border)",
+                      backgroundColor: "var(--card)",
+                    }}
+                    href={`/blog/${next.slug}`}
+                  >
+                    <div
+                      className="absolute top-1/2 -right-2 -translate-y-1/2 text-6xl font-bold"
+                      style={{ color: "var(--muted)" }}
                     >
-                      <div>
-                        <div className="text-xs text-slate-500 dark:text-slate-400">Sonraki</div>
-                        <div className="font-medium">{next.data.title}</div>
+                      →
+                    </div>
+                    <div className="relative">
+                      <div
+                        className="mb-1 text-xs font-medium tracking-wider uppercase"
+                        style={{ color: "var(--accent)" }}
+                      >
+                        Sonraki Yazı
                       </div>
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 transition-colors group-hover:bg-slate-200 dark:bg-slate-700 dark:group-hover:bg-slate-600">
-                        →
+                      <div
+                        className="font-serif text-lg font-medium transition-colors"
+                        style={{ color: "var(--foreground)" }}
+                      >
+                        {next.data.title}
                       </div>
-                    </a>
-                  ) : (
-                    <div />
-                  )}
-                </div>
+                    </div>
+                  </a>
+                ) : (
+                  <div />
+                )}
               </div>
-            </nav>
+            </div>
+          </nav>
 
-            {/* Support CTA */}
-            <div className="border-t border-slate-200/50 bg-gradient-to-br from-slate-50 to-blue-50/30 dark:border-slate-700/50 dark:from-slate-800 dark:to-blue-900/10">
-              <div className="mx-auto max-w-3xl px-6 py-12 md:px-8">
+          {/* Enhanced Support CTA */}
+          <div className="relative mt-16 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-950 dark:to-slate-900"></div>
+            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10"></div>
+            <div className="relative mx-auto max-w-4xl px-6 py-16 text-center md:px-8 md:py-20">
+              <div className="mx-auto max-w-2xl">
                 <SupportCTA />
               </div>
             </div>
-          </article>
-        </div>
+          </div>
+        </article>
       </main>
     </div>
   );

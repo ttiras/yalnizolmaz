@@ -27,7 +27,8 @@ export function ArticleHeader({
       <nav className="mb-6">
         <Link
           href="/blog"
-          className="group inline-flex items-center gap-2 text-sm text-slate-500 transition-colors hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+          className="group inline-flex items-center gap-2 text-sm transition-colors hover:opacity-80"
+          style={{ color: "var(--muted-foreground)" }}
         >
           <svg
             className="h-4 w-4 transition-transform group-hover:-translate-x-0.5"
@@ -54,19 +55,28 @@ export function ArticleHeader({
       </div>
 
       {/* Title */}
-      <h1 className="heading-serif mb-6 text-4xl leading-tight font-bold tracking-tight text-slate-900 md:text-5xl lg:text-6xl dark:text-slate-100">
+      <h1
+        className="heading-serif mb-6 text-4xl leading-tight font-bold tracking-tight md:text-5xl lg:text-6xl"
+        style={{ color: "var(--foreground)" }}
+      >
         {title}
       </h1>
 
       {/* Description */}
       {description ? (
-        <p className="mx-auto mb-8 max-w-3xl text-lg leading-relaxed text-slate-600 md:text-xl dark:text-slate-300">
+        <p
+          className="mx-auto mb-8 max-w-3xl text-lg leading-relaxed md:text-xl"
+          style={{ color: "var(--muted-foreground)" }}
+        >
           {description}
         </p>
       ) : null}
 
       {/* Meta Info */}
-      <div className="mb-8 flex items-center justify-center gap-4 text-sm text-slate-500 dark:text-slate-400">
+      <div
+        className="mb-8 flex items-center justify-center gap-4 text-sm"
+        style={{ color: "var(--muted-foreground)" }}
+      >
         <time dateTime={date} className="flex items-center gap-2">
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -80,7 +90,10 @@ export function ArticleHeader({
         </time>
         {readingTimeMinutes ? (
           <>
-            <span className="h-1 w-1 rounded-full bg-slate-400"></span>
+            <span
+              className="h-1 w-1 rounded-full"
+              style={{ backgroundColor: "var(--muted-foreground)" }}
+            ></span>
             <span className="flex items-center gap-2">
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -103,7 +116,8 @@ export function ArticleHeader({
           <img
             src={coverImage}
             alt=""
-            className="h-64 w-full rounded-2xl border border-slate-200 object-cover shadow-lg md:h-80 lg:h-96 dark:border-slate-700"
+            className="h-64 w-full rounded-2xl border object-cover shadow-lg md:h-80 lg:h-96"
+            style={{ borderColor: "var(--border)" }}
           />
           <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-t from-black/20 to-transparent"></div>
         </div>
@@ -111,7 +125,12 @@ export function ArticleHeader({
 
       {/* Decorative Element */}
       <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 transform">
-        <div className="h-px w-16 bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-600"></div>
+        <div
+          className="h-px w-16"
+          style={{
+            background: `linear-gradient(to right, transparent, var(--border), transparent)`,
+          }}
+        ></div>
       </div>
     </header>
   );

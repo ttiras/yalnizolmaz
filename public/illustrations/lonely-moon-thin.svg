@@ -1,13 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none" stroke="#7a869a" stroke-width="0.8">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
   <!-- Sky gradient background -->
   <defs>
     <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:0.3" />
-      <stop offset="100%" style="stop-color:#cbd5e1;stop-opacity:0.1" />
+      <stop offset="0%" style="stop-color:#1e293b;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#475569;stop-opacity:0.3" />
     </linearGradient>
     <linearGradient id="moonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#f1f5f9;stop-opacity:0.8" />
-      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:0.6" />
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:0.7" />
+    </linearGradient>
+    <linearGradient id="womanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#64748b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#334155;stop-opacity:1" />
     </linearGradient>
   </defs>
   
@@ -15,51 +19,121 @@
   <rect width="800" height="500" fill="url(#skyGradient)"/>
   
   <!-- Stars -->
-  <circle cx="150" cy="80" r="1" fill="#94a3b8" opacity="0.6"/>
-  <circle cx="280" cy="120" r="0.8" fill="#94a3b8" opacity="0.4"/>
-  <circle cx="650" cy="90" r="1.2" fill="#94a3b8" opacity="0.7"/>
-  <circle cx="720" cy="140" r="0.6" fill="#94a3b8" opacity="0.5"/>
+  <circle cx="150" cy="80" r="1.5" fill="#fbbf24" opacity="0.8"/>
+  <circle cx="280" cy="120" r="1" fill="#fbbf24" opacity="0.6"/>
+  <circle cx="650" cy="90" r="1.8" fill="#fbbf24" opacity="0.9"/>
+  <circle cx="720" cy="140" r="1" fill="#fbbf24" opacity="0.7"/>
+  <circle cx="100" cy="160" r="0.8" fill="#fbbf24" opacity="0.5"/>
+  <circle cx="750" cy="200" r="1.2" fill="#fbbf24" opacity="0.6"/>
   
   <!-- Moon -->
-  <circle cx="600" cy="120" r="45" stroke="#9fb4d3" fill="url(#moonGradient)" stroke-width="0.6"/>
+  <circle cx="600" cy="120" r="45" stroke="#f59e0b" fill="url(#moonGradient)" stroke-width="1"/>
   <!-- Moon craters -->
-  <circle cx="590" cy="110" r="8" stroke="#94a3b8" fill="none" stroke-width="0.4" opacity="0.6"/>
-  <circle cx="610" cy="125" r="5" stroke="#94a3b8" fill="none" stroke-width="0.4" opacity="0.4"/>
-  <circle cx="595" cy="135" r="3" stroke="#94a3b8" fill="none" stroke-width="0.4" opacity="0.5"/>
+  <circle cx="590" cy="110" r="8" stroke="#d97706" fill="none" stroke-width="0.8" opacity="0.7"/>
+  <circle cx="610" cy="125" r="5" stroke="#d97706" fill="none" stroke-width="0.8" opacity="0.6"/>
+  <circle cx="595" cy="135" r="3" stroke="#d97706" fill="none" stroke-width="0.8" opacity="0.5"/>
   
   <!-- Ground line -->
-  <line x1="0" y1="420" x2="800" y2="420" stroke="#94a3b8" stroke-width="0.6" opacity="0.7"/>
+  <line x1="0" y1="420" x2="800" y2="420" stroke="#475569" stroke-width="2" opacity="0.8"/>
   
-  <!-- Sitting figure -->
-  <g stroke="#7a869a" stroke-width="0.8" fill="none">
-    <!-- Head -->
-    <circle cx="200" cy="350" r="12"/>
+  <!-- Moonlight beam -->
+  <path d="M600 165 Q400 280 200 350" stroke="#fbbf24" stroke-width="1" opacity="0.3" fill="none"/>
+  <circle cx="200" cy="350" r="50" fill="#fbbf24" opacity="0.1"/>
+  
+  <!-- Woman sitting (2D silhouette style) -->
+  <g>
+    <!-- Woman's silhouette -->
+    <path d="M 180 350 
+             Q 185 340 195 342
+             Q 205 340 210 350
+             Q 208 355 205 360
+             L 205 390
+             Q 208 395 210 400
+             L 215 415
+             Q 218 418 225 420
+             L 240 420
+             Q 195 425 190 420
+             L 185 415
+             Q 182 400 180 390
+             L 180 360
+             Q 178 355 180 350 Z" 
+          fill="url(#womanGradient)" 
+          stroke="#1e293b" 
+          stroke-width="1.5"/>
     
-    <!-- Body -->
-    <line x1="200" y1="362" x2="200" y2="405"/>
+    <!-- Hair (long flowing) -->
+    <path d="M 185 342 
+             Q 180 335 175 340
+             Q 170 345 172 355
+             Q 175 365 180 360" 
+          fill="#1e293b" 
+          stroke="#0f172a" 
+          stroke-width="1"/>
     
-    <!-- Arms (hanging down) -->
-    <path d="M200 375 Q185 385 180 400"/>
-    <path d="M200 375 Q215 385 220 400"/>
+    <!-- Arms -->
+    <path d="M 185 365 Q 170 375 165 390 Q 162 395 160 400" 
+          stroke="#475569" 
+          stroke-width="3" 
+          fill="none" 
+          stroke-linecap="round"/>
+    <path d="M 205 365 Q 220 375 225 390 Q 228 395 230 400" 
+          stroke="#475569" 
+          stroke-width="3" 
+          fill="none" 
+          stroke-linecap="round"/>
     
-    <!-- Legs (sitting) -->
-    <path d="M200 405 Q190 415 175 420"/>
-    <path d="M200 405 Q210 415 225 420"/>
+    <!-- Face profile (subtle) -->
+    <circle cx="195" cy="350" r="2" fill="#64748b" opacity="0.6"/>
+  </g>
+  
+  <!-- Cat sitting nearby -->
+  <g transform="translate(300, 400)">
+    <!-- Cat body -->
+    <ellipse cx="0" cy="10" rx="15" ry="8" fill="#374151" stroke="#1f2937" stroke-width="1"/>
     
-    <!-- Shadow -->
-    <ellipse cx="200" cy="422" rx="25" ry="3" fill="#94a3b8" opacity="0.3"/>
+    <!-- Cat head -->
+    <circle cx="-8" cy="5" r="6" fill="#374151" stroke="#1f2937" stroke-width="1"/>
+    
+    <!-- Cat ears -->
+    <path d="M -14 0 L -12 -3 L -10 0" fill="#374151" stroke="#1f2937" stroke-width="1"/>
+    <path d="M -6 0 L -4 -3 L -2 0" fill="#374151" stroke="#1f2937" stroke-width="1"/>
+    
+    <!-- Cat tail (curved) -->
+    <path d="M 12 8 Q 20 5 25 0 Q 28 -3 30 -8" 
+          stroke="#374151" 
+          stroke-width="3" 
+          fill="none" 
+          stroke-linecap="round"/>
+    
+    <!-- Cat eyes (glowing) -->
+    <circle cx="-10" cy="3" r="0.8" fill="#fbbf24" opacity="0.8"/>
+    <circle cx="-6" cy="3" r="0.8" fill="#fbbf24" opacity="0.8"/>
+    
+    <!-- Cat shadow -->
+    <ellipse cx="0" cy="20" rx="18" ry="2" fill="#1e293b" opacity="0.4"/>
   </g>
   
   <!-- Grass details -->
-  <g stroke="#94a3b8" stroke-width="0.4" opacity="0.6">
-    <path d="M120 420 Q122 415 124 420"/>
-    <path d="M125 420 Q127 413 129 420"/>
-    <path d="M300 420 Q302 416 304 420"/>
-    <path d="M305 420 Q307 414 309 420"/>
-    <path d="M480 420 Q482 417 484 420"/>
-    <path d="M485 420 Q487 415 489 420"/>
+  <g stroke="#475569" stroke-width="1.5" opacity="0.7">
+    <path d="M120 420 Q122 410 124 420"/>
+    <path d="M125 420 Q127 408 129 420"/>
+    <path d="M350 420 Q352 412 354 420"/>
+    <path d="M355 420 Q357 409 359 420"/>
+    <path d="M480 420 Q482 413 484 420"/>
+    <path d="M485 420 Q487 410 489 420"/>
+    <path d="M520 420 Q522 414 524 420"/>
+    <path d="M680 420 Q682 411 684 420"/>
   </g>
   
-  <!-- Moonlight path -->
-  <path d="M600 165 Q400 280 200 350" stroke="#9fb4d3" stroke-width="0.3" opacity="0.4" fill="none" stroke-dasharray="2,3"/>
+  <!-- Small flowers -->
+  <g opacity="0.6">
+    <circle cx="140" cy="418" r="1" fill="#fbbf24"/>
+    <circle cx="370" cy="418" r="1" fill="#fbbf24"/>
+    <circle cx="500" cy="418" r="1" fill="#fbbf24"/>
+  </g>
+  
+  <!-- Atmospheric mist -->
+  <path d="M 0 380 Q 200 370 400 375 Q 600 380 800 375 L 800 420 L 0 420 Z" 
+        fill="#475569" 
+        opacity="0.2"/>
 </svg>

@@ -36,7 +36,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr" className="min-h-dvh">
+    <html lang="tr" className="min-h-dvh" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var stored = localStorage.getItem('theme');
+                  var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  var theme = stored || (systemDark ? 'dark' : 'light');
+                  var html = document.documentElement;
+                  html.classList.remove('light', 'dark');
+                  html.classList.add(theme);
+                  html.setAttribute('data-theme', theme);
+                  html.style.colorScheme = theme;
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${lora.variable} ${inter.variable} antialiased`}
       >
