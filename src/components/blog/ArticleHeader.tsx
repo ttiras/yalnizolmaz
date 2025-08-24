@@ -13,7 +13,7 @@ export function ArticleHeader({
   date,
   readingTimeMinutes,
 }: ArticleHeaderProps) {
-  const formatted = new Date(date).toLocaleDateString(undefined, {
+  const formatted = new Date(date).toLocaleDateString("tr-TR", {
     year: "numeric",
     month: "long",
     day: "numeric",

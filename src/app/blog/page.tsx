@@ -14,8 +14,14 @@ export default function BlogIndex() {
             <Link href={`/blog/${p.slug}`} className="text-lg font-medium hover:underline">
               {p.data.title}
             </Link>
-            <p className="text-sm text-neutral-500">{new Date(p.data.date).toDateString()}</p>
-            <p className="text-neutral-700">{p.data.description}</p>
+            <p className="text-sm text-neutral-500">
+              {new Date(p.data.date).toLocaleDateString("tr-TR", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+            <p className="text-neutral-700 dark:text-neutral-300">{p.data.description}</p>
           </li>
         ))}
       </ul>
