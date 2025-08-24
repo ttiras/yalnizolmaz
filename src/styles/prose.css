@@ -1,0 +1,7 @@
+/* Minimal prose tweaks */
+.prose :where(p):not(:where([class~="not-prose"] *)) {
+  line-height: 1.75;
+}
+.prose :where(h2, h3):not(:where([class~="not-prose"] *)) {
+  scroll-margin-top: 80px;
+}

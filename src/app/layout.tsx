@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,8 +24,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+    <html lang="en" className="min-h-dvh">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <div className="mx-auto flex max-w-5xl items-center justify-end p-4">
+          <ThemeToggle />
+        </div>
+        {children}
+      </body>
     </html>
   );
 }
