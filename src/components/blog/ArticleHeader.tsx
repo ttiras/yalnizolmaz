@@ -5,6 +5,7 @@ type ArticleHeaderProps = {
   description?: string;
   date: string;
   readingTimeMinutes?: number;
+  coverImage?: string;
 };
 
 export function ArticleHeader({
@@ -12,6 +13,7 @@ export function ArticleHeader({
   description,
   date,
   readingTimeMinutes,
+  coverImage,
 }: ArticleHeaderProps) {
   const formatted = new Date(date).toLocaleDateString("tr-TR", {
     year: "numeric",
@@ -29,6 +31,10 @@ export function ArticleHeader({
       <h1 className="mb-2 text-3xl font-semibold tracking-tight">{title}</h1>
       {description ? (
         <p className="mb-3 text-neutral-600 dark:text-neutral-400">{description}</p>
+      ) : null}
+      {coverImage ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={coverImage} alt="" className="mb-4 w-full rounded-md object-cover" />
       ) : null}
       <p className="text-sm text-neutral-500">
         {formatted}
