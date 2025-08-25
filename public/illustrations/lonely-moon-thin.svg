@@ -26,8 +26,18 @@
   <circle cx="100" cy="160" r="0.8" fill="#fbbf24" opacity="0.5"/>
   <circle cx="750" cy="200" r="1.2" fill="#fbbf24" opacity="0.6"/>
   
-  <!-- Moon -->
-  <circle cx="600" cy="120" r="45" stroke="#f59e0b" fill="url(#moonGradient)" stroke-width="1"/>
+  <!-- Moon (crescent) -->
+  <g id="moon">
+    <defs>
+      <mask id="crescentMask">
+        <rect width="800" height="500" fill="black"/>
+        <circle cx="600" cy="120" r="50" fill="white"/>
+        <circle cx="616" cy="116" r="50" fill="black"/>
+      </mask>
+    </defs>
+    <circle cx="600" cy="120" r="50" fill="#e5e7eb" mask="url(#crescentMask)"/>
+    <circle cx="600" cy="120" r="52" fill="none" stroke="#94a3b8" stroke-opacity="0.4" stroke-width="1.5"/>
+  </g>
   <!-- Moon craters -->
   <circle cx="590" cy="110" r="8" stroke="#d97706" fill="none" stroke-width="0.8" opacity="0.7"/>
   <circle cx="610" cy="125" r="5" stroke="#d97706" fill="none" stroke-width="0.8" opacity="0.6"/>
@@ -37,62 +47,66 @@
   <line x1="0" y1="420" x2="800" y2="420" stroke="#475569" stroke-width="2" opacity="0.8"/>
   
   <!-- Moonlight beam -->
-  <path d="M600 165 Q400 280 200 350" stroke="#fbbf24" stroke-width="1" opacity="0.3" fill="none"/>
-  <circle cx="200" cy="350" r="50" fill="#fbbf24" opacity="0.1"/>
   
-  <!-- Woman sitting (2D silhouette style) -->
-  <g>
-    <!-- Woman's silhouette -->
-    <path d="M 180 350 
-             Q 185 340 195 342
-             Q 205 340 210 350
-             Q 208 355 205 360
-             L 205 390
-             Q 208 395 210 400
-             L 215 415
-             Q 218 418 225 420
-             L 240 420
-             Q 195 425 190 420
-             L 185 415
-             Q 182 400 180 390
-             L 180 360
-             Q 178 355 180 350 Z" 
-          fill="url(#womanGradient)" 
-          stroke="#1e293b" 
-          stroke-width="1.5"/>
-    
-    <!-- Hair (long flowing) -->
-    <path d="M 185 342 
-             Q 180 335 175 340
-             Q 170 345 172 355
-             Q 175 365 180 360" 
-          fill="#1e293b" 
-          stroke="#0f172a" 
-          stroke-width="1"/>
-    
-    <!-- Arms -->
-    <path d="M 185 365 Q 170 375 165 390 Q 162 395 160 400" 
-          stroke="#475569" 
-          stroke-width="3" 
-          fill="none" 
-          stroke-linecap="round"/>
-    <path d="M 205 365 Q 220 375 225 390 Q 228 395 230 400" 
-          stroke="#475569" 
-          stroke-width="3" 
-          fill="none" 
-          stroke-linecap="round"/>
-    
-    <!-- Face profile (subtle) -->
-    <circle cx="195" cy="350" r="2" fill="#64748b" opacity="0.6"/>
+  
+  <!-- Woman sitting (cartoon style) -->
+  <g id="woman" transform="translate(0,0)">
+    <!-- Woman body with realistic proportions -->
+    <g transform="translate(0, -8)">
+      <!-- Head (filled) -->
+      <circle cx="195" cy="340" r="14" fill="#fdbcb4" stroke="#d97706" stroke-width="1.5"/>
+      
+      <!-- Hair (long, flowing) -->
+      <path d="M182 335 Q175 330 172 340 Q170 350 175 360 Q180 370 185 375 Q190 378 195 375 Q205 372 210 365 Q215 360 210 350 Q208 340 200 335 Q195 330 185 332" 
+            fill="#8b4513" stroke="#654321" stroke-width="1"/>
+      
+      <!-- Face features -->
+      <!-- Eyes -->
+      <circle cx="190" cy="338" r="1.5" fill="#2d3748"/>
+      <circle cx="200" cy="338" r="1.5" fill="#2d3748"/>
+      <!-- Nose -->
+      <path d="M195 342 Q196 344 195 345" stroke="#d97706" stroke-width="1" fill="none"/>
+      <!-- Mouth (slight smile) -->
+      <path d="M192 348 Q195 350 198 348" stroke="#d97706" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      
+      <!-- Neck -->
+      <rect x="192" y="354" width="6" height="8" fill="#fdbcb4" stroke="#d97706" stroke-width="1"/>
+      
+      <!-- Torso (realistic shape) -->
+      <path d="M180 362 Q175 365 175 375 Q175 390 180 400 Q185 405 195 405 Q205 405 210 400 Q215 390 215 375 Q215 365 210 362 Z" 
+            fill="#4a5568" stroke="#2d3748" stroke-width="1.5"/>
+      
+      <!-- Left arm -->
+      <path d="M180 370 Q170 375 165 385 Q162 395 165 405" 
+            stroke="#fdbcb4" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <!-- Left hand -->
+      <circle cx="165" cy="405" r="4" fill="#fdbcb4" stroke="#d97706" stroke-width="1"/>
+      
+      <!-- Right arm -->
+      <path d="M210 370 Q220 375 225 385 Q228 395 225 405" 
+            stroke="#fdbcb4" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <!-- Right hand -->
+      <circle cx="225" cy="405" r="4" fill="#fdbcb4" stroke="#d97706" stroke-width="1"/>
+      
+      <!-- Legs (sitting position) -->
+      <path d="M185 405 Q180 415 175 425 Q172 430 175 435" 
+            stroke="#4a5568" stroke-width="8" fill="none" stroke-linecap="round"/>
+      <path d="M205 405 Q210 415 215 425 Q218 430 215 435" 
+            stroke="#4a5568" stroke-width="8" fill="none" stroke-linecap="round"/>
+      
+      <!-- Feet -->
+      <ellipse cx="175" cy="438" rx="6" ry="3" fill="#2d3748"/>
+      <ellipse cx="215" cy="438" rx="6" ry="3" fill="#2d3748"/>
+    </g>
   </g>
   
-  <!-- Cat sitting nearby -->
-  <g transform="translate(300, 400)">
+  <!-- Cat sitting nearby (bigger) -->
+  <g transform="translate(280, 385) scale(1.4)">
     <!-- Cat body -->
-    <ellipse cx="0" cy="10" rx="15" ry="8" fill="#374151" stroke="#1f2937" stroke-width="1"/>
+    <ellipse cx="0" cy="10" rx="18" ry="10" fill="#374151" stroke="#1f2937" stroke-width="1"/>
     
     <!-- Cat head -->
-    <circle cx="-8" cy="5" r="6" fill="#374151" stroke="#1f2937" stroke-width="1"/>
+    <circle cx="-8" cy="5" r="7.5" fill="#374151" stroke="#1f2937" stroke-width="1"/>
     
     <!-- Cat ears -->
     <path d="M -14 0 L -12 -3 L -10 0" fill="#374151" stroke="#1f2937" stroke-width="1"/>

@@ -39,8 +39,8 @@ export function Illustration({
     alignmentVariants[size as keyof typeof alignmentVariants] || alignmentVariants.md;
 
   return (
-    <figure className={`not-prose my-12 ${className} animate-fade-in-up`}>
-      <div className={`relative ${alignment} ${maxW}`}>
+    <figure className={`not-prose my-12 w-full ${className} animate-fade-in-up`}>
+      <div className={`relative mx-auto w-full`}>
         {/* Decorative background blur */}
         <div
           className="absolute inset-0 -z-10 transform-gpu overflow-hidden blur-3xl"

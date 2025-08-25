@@ -65,7 +65,11 @@ export default async function BlogPost({ params }: Params) {
           background: "linear-gradient(to bottom, var(--background), var(--card))",
         }}
       >
-        <div className="bg-grid-pattern absolute inset-0 opacity-[0.02] dark:opacity-[0.05]"></div>
+        {/* replace grid.svg with soft gradient glow */}
+        <div className="absolute inset-0 opacity-70">
+          <div className="absolute -inset-x-20 -top-40 h-72 bg-gradient-to-r from-fuchsia-400/10 via-cyan-400/10 to-amber-400/10 blur-3xl" />
+          <div className="absolute -inset-x-20 top-10 h-72 bg-gradient-to-r from-cyan-400/10 via-amber-400/10 to-fuchsia-400/10 blur-3xl" />
+        </div>
         <div className="relative container">
           <div className="mx-auto max-w-4xl py-16 md:py-24">
             <ArticleHeader
@@ -74,6 +78,9 @@ export default async function BlogPost({ params }: Params) {
               date={post.data.date}
               readingTimeMinutes={post.readingTimeMinutes}
               coverImage={post.data.coverImage}
+              url={`${site.siteUrl}/blog/${post.slug}`}
+              tags={post.data.tags || []}
+              author={post.data.author}
             />
           </div>
         </div>
@@ -210,7 +217,13 @@ export default async function BlogPost({ params }: Params) {
           {/* Enhanced Support CTA */}
           <div className="relative mt-16 overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-950 dark:to-slate-900"></div>
-            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10"></div>
+            <div
+              className="absolute inset-0 bg-center opacity-10"
+              style={{
+                background: "radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)",
+                backgroundSize: "24px 24px",
+              }}
+            ></div>
             <div className="relative mx-auto max-w-4xl px-6 py-16 text-center md:px-8 md:py-20">
               <div className="mx-auto max-w-2xl">
                 <SupportCTA />

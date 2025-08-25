@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ShareButtons } from "@/components/blog/ShareButtons";
 
 type ArticleHeaderProps = {
   title: string;
@@ -6,6 +7,9 @@ type ArticleHeaderProps = {
   date: string;
   readingTimeMinutes?: number;
   coverImage?: string;
+  url?: string;
+  tags?: string[];
+  author?: string;
 };
 
 export function ArticleHeader({
@@ -14,6 +18,9 @@ export function ArticleHeader({
   date,
   readingTimeMinutes,
   coverImage,
+  url,
+  tags = [],
+  author,
 }: ArticleHeaderProps) {
   const formatted = new Date(date).toLocaleDateString("tr-TR", {
     year: "numeric",
@@ -47,12 +54,24 @@ export function ArticleHeader({
         </Link>
       </nav>
 
-      {/* Category Badge */}
-      <div className="mb-4">
-        <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
-          Duygusal Yaşam
-        </span>
-      </div>
+      {/* Tags Row */}
+      {tags.length > 0 ? (
+        <div className="mb-4 flex flex-wrap justify-center gap-2">
+          {tags.slice(0, 5).map((t) => (
+            <span
+              key={t}
+              className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium"
+              style={{
+                borderColor: "var(--border)",
+                color: "var(--muted-foreground)",
+                backgroundColor: "var(--card)",
+              }}
+            >
+              #{t}
+            </span>
+          ))}
+        </div>
+      ) : null}
 
       {/* Title */}
       <h1
@@ -74,10 +93,10 @@ export function ArticleHeader({
 
       {/* Meta Info */}
       <div
-        className="mb-8 flex items-center justify-center gap-4 text-sm"
+        className="mb-8 flex flex-wrap items-center justify-center gap-4 text-sm"
         style={{ color: "var(--muted-foreground)" }}
       >
-        <time dateTime={date} className="flex items-center gap-2">
+        <time dateTime={date} className="flex items-center gap-2 whitespace-nowrap">
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
@@ -88,6 +107,31 @@ export function ArticleHeader({
           </svg>
           {formatted}
         </time>
+        {author ? (
+          <>
+            <span
+              className="h-1 w-1 rounded-full"
+              style={{ backgroundColor: "var(--muted-foreground)" }}
+            ></span>
+            <span className="flex items-center gap-2 whitespace-nowrap">
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+              {author}
+            </span>
+          </>
+        ) : null}
         {readingTimeMinutes ? (
           <>
             <span
@@ -109,16 +153,34 @@ export function ArticleHeader({
         ) : null}
       </div>
 
-      {/* Cover Image */}
+      {/* Share */}
+      <div className="mb-10 flex justify-center">
+        <ShareButtons url={url || ""} title={title} size="sm" />
+      </div>
+
+      {/* Cover Media (Image or Video) */}
       {coverImage ? (
         <div className="relative mx-auto max-w-4xl">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={coverImage}
-            alt=""
-            className="h-64 w-full rounded-2xl border object-cover shadow-lg md:h-80 lg:h-96"
-            style={{ borderColor: "var(--border)" }}
-          />
+          {coverImage.toLowerCase().endsWith(".mp4") ? (
+            <video
+              src={coverImage}
+              className="aspect-[16/9] w-full rounded-2xl border object-contain shadow-lg"
+              style={{ borderColor: "var(--border)" }}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+            />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={coverImage}
+              alt=""
+              className="aspect-[16/9] w-full rounded-2xl border object-contain shadow-lg"
+              style={{ borderColor: "var(--border)" }}
+            />
+          )}
           <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-t from-black/20 to-transparent"></div>
         </div>
       ) : null}

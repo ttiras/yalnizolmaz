@@ -13,6 +13,7 @@ export type BlogFrontmatter = {
   coverImage?: string;
   draft?: boolean;
   canonical?: string;
+  author?: string;
 };
 
 export type BlogPost = {
