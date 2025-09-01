@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 600" fill="none">
+  <defs>
+    <linearGradient id="windowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e2e8f0;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#cbd5e1;stop-opacity:0.4" />
+    </linearGradient>
+    <linearGradient id="rainGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#475569;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#64748b;stop-opacity:0.6" />
+    </linearGradient>
+    <linearGradient id="personGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e293b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#334155;stop-opacity:1" />
+    </linearGradient>
+    <pattern id="rainPattern" patternUnits="userSpaceOnUse" width="15" height="25">
+      <line x1="7" y1="0" x2="5" y2="25" stroke="#475569" stroke-width="1" opacity="0.7"/>
+      <line x1="12" y1="5" x2="10" y2="25" stroke="#475569" stroke-width="0.8" opacity="0.5"/>
+    </pattern>
+  </defs>
+  
+  <!-- Room interior background -->
+  <rect x="0" y="0" width="500" height="600" fill="#f1f5f9" opacity="0.3"/>
+  
+  <!-- Window frame (wooden) -->
+  <rect x="80" y="100" width="340" height="400" fill="url(#windowGradient)" stroke="#a0785c" stroke-width="3"/>
+  
+  <!-- Window cross bars -->
+  <line x1="250" y1="100" x2="250" y2="500" stroke="#a0785c" stroke-width="2.5"/>
+  <line x1="80" y1="300" x2="420" y2="300" stroke="#a0785c" stroke-width="2.5"/>
+  
+  <!-- Rain outside -->
+  <rect x="80" y="100" width="340" height="400" fill="url(#rainPattern)" opacity="0.8"/>
+  
+  <!-- Heavy rain lines for atmosphere -->
+  <g stroke="#475569" stroke-width="1.2" opacity="0.6">
+    <line x1="90" y1="110" x2="85" y2="160"/>
+    <line x1="150" y1="120" x2="145" y2="170"/>
+    <line x1="200" y1="115" x2="195" y2="165"/>
+    <line x1="300" y1="125" x2="295" y2="175"/>
+    <line x1="380" y1="130" x2="375" y2="180"/>
+    <line x1="120" y1="340" x2="115" y2="390"/>
+    <line x1="280" y1="350" x2="275" y2="400"/>
+    <line x1="360" y1="360" x2="355" y2="410"/>
+    <line x1="110" y1="200" x2="105" y2="250"/>
+    <line x1="330" y1="180" x2="325" y2="230"/>
+  </g>
+  
+  <!-- Woman silhouette at window (2D style) -->
+  <g>
+    <!-- Woman's body -->
+    <path d="M 160 240
+             Q 165 235 175 238
+             Q 185 235 190 245
+             Q 188 250 185 255
+             L 185 275
+             Q 190 280 195 290
+             L 200 320
+             Q 198 325 190 325
+             L 185 350
+             Q 180 360 170 360
+             Q 160 360 155 350
+             L 150 325
+             Q 142 325 140 320
+             L 145 290
+             Q 150 280 155 275
+             L 155 255
+             Q 152 250 160 240 Z" 
+          fill="url(#personGradient)" 
+          stroke="#0f172a" 
+          stroke-width="2"/>
+    
+    <!-- Hair (flowing) -->
+    <path d="M 165 238
+             Q 160 230 155 235
+             Q 150 240 155 250
+             Q 160 255 165 250" 
+          fill="#0f172a" 
+          stroke="#000000" 
+          stroke-width="1"/>
+    
+    <!-- Arm reaching toward glass -->
+    <path d="M 185 260 Q 195 265 205 270 Q 215 275 220 280" 
+          stroke="#334155" 
+          stroke-width="4" 
+          fill="none" 
+          stroke-linecap="round"/>
+    
+    <!-- Hand on glass -->
+    <circle cx="220" cy="280" r="5" fill="#334155" stroke="#1e293b" stroke-width="1.5"/>
+    
+    <!-- Fingers on glass -->
+    <g stroke="#334155" stroke-width="2" stroke-linecap="round">
+      <line x1="220" y1="275" x2="220" y2="270"/>
+      <line x1="223" y1="276" x2="223" y2="271"/>
+      <line x1="226" y1="278" x2="226" y2="273"/>
+      <line x1="217" y1="277" x2="217" y2="272"/>
+    </g>
+    
+    <!-- Hand reflection on glass -->
+    <circle cx="222" cy="282" r="5" fill="#475569" opacity="0.3"/>
+  </g>
+  
+  <!-- Water droplets on glass (larger, more visible) -->
+  <g fill="#475569" opacity="0.6">
+    <ellipse cx="130" cy="180" rx="3" ry="6"/>
+    <ellipse cx="320" cy="220" rx="2.5" ry="5"/>
+    <ellipse cx="380" cy="160" rx="2" ry="4"/>
+    <ellipse cx="180" cy="380" rx="3.5" ry="7"/>
+    <ellipse cx="290" cy="420" rx="3" ry="6"/>
+    <ellipse cx="350" cy="250" rx="2" ry="4"/>
+    <ellipse cx="120" cy="350" rx="2.5" ry="5"/>
+  </g>
+  
+  <!-- Window condensation streams -->
+  <g stroke="#64748b" stroke-width="1.5" opacity="0.5">
+    <path d="M180 200 Q182 230 180 260 Q178 290 180 320" fill="none"/>
+    <path d="M280 150 Q282 180 280 210 Q278 240 280 270" fill="none"/>
+    <path d="M350 180 Q352 210 350 240 Q348 270 350 300" fill="none"/>
+  </g>
+  
+  <!-- Window sill (wooden) -->
+  <rect x="75" y="500" width="350" height="12" fill="#a0785c" stroke="#92400e" stroke-width="1"/>
+  
+  <!-- Room details -->
+  <g opacity="0.6">
+    <!-- Floor reflection -->
+    <ellipse cx="170" cy="580" rx="30" ry="8" fill="#334155" opacity="0.2"/>
+    
+    <!-- Wall texture -->
+    <g stroke="#cbd5e1" stroke-width="0.5" opacity="0.4">
+      <line x1="20" y1="150" x2="60" y2="150"/>
+      <line x1="20" y1="200" x2="60" y2="200"/>
+      <line x1="20" y1="250" x2="60" y2="250"/>
+      <line x1="440" y1="170" x2="480" y2="170"/>
+      <line x1="440" y1="220" x2="480" y2="220"/>
+    </g>
+  </g>
+  
+  <!-- Atmospheric mood -->
+  <g stroke="#a0785c" stroke-width="0.8" opacity="0.3">
+    <circle cx="100" cy="140" r="1.5" fill="#a0785c" opacity="0.2"/>
+    <circle cx="400" cy="160" r="1" fill="#a0785c" opacity="0.2"/>
+    <circle cx="50" cy="300" r="1.2" fill="#a0785c" opacity="0.2"/>
+  </g>
+</svg>

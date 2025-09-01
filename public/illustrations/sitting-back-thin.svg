@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" fill="none">
+  <defs>
+    <linearGradient id="groundGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#475569;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#64748b;stop-opacity:0.3" />
+    </linearGradient>
+    <linearGradient id="personGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#334155;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Sky background -->
+  <rect x="0" y="0" width="600" height="320" fill="#e2e8f0" opacity="0.3"/>
+  
+  <!-- Ground -->
+  <rect x="0" y="320" width="600" height="80" fill="url(#groundGradient)"/>
+  <line x1="0" y1="320" x2="600" y2="320" stroke="#475569" stroke-width="2" opacity="0.8"/>
+  
+  <!-- Figure sitting with back turned (2D silhouette) -->
+  <g>
+    <!-- Main body silhouette -->
+    <path d="M 280 175
+             Q 285 170 295 172
+             Q 305 170 320 175
+             Q 318 180 315 185
+             L 315 195
+             Q 325 200 330 220
+             L 335 245
+             Q 332 250 325 250
+             L 325 280
+             Q 330 290 325 300
+             Q 315 315 300 320
+             Q 285 315 275 300
+             Q 270 290 275 280
+             L 275 250
+             Q 268 250 265 245
+             L 270 220
+             Q 280 200 285 195
+             L 285 185
+             Q 282 180 280 175 Z" 
+          fill="url(#personGradient)" 
+          stroke="#1e293b" 
+          stroke-width="2"/>
+    
+    <!-- Hair (flowing) -->
+    <path d="M 285 172
+             Q 280 165 275 170
+             Q 270 175 275 185
+             Q 280 190 285 185" 
+          fill="#1e293b" 
+          stroke="#0f172a" 
+          stroke-width="1.5"/>
+    
+    <!-- Clothing details -->
+    <path d="M 285 195 Q 300 190 315 195" 
+          stroke="#64748b" 
+          stroke-width="1.5" 
+          fill="none"/>
+    <path d="M 275 250 Q 300 245 325 250" 
+          stroke="#64748b" 
+          stroke-width="1.5" 
+          fill="none"/>
+  </g>
+  
+  <!-- Shadow (more pronounced) -->
+  <ellipse cx="300" cy="325" rx="40" ry="8" fill="#1e293b" opacity="0.5"/>
+  
+  <!-- Environmental details -->
+  <g opacity="0.7">
+    <!-- Stones -->
+    <ellipse cx="150" cy="318" rx="6" ry="3" fill="#475569" stroke="#334155" stroke-width="1"/>
+    <ellipse cx="450" cy="316" rx="4" ry="2" fill="#475569" stroke="#334155" stroke-width="1"/>
+    <ellipse cx="180" cy="322" rx="3" ry="1.5" fill="#475569" stroke="#334155" stroke-width="1"/>
+    <ellipse cx="380" cy="319" rx="5" ry="2.5" fill="#475569" stroke="#334155" stroke-width="1"/>
+    
+    <!-- Grass blades (more visible) -->
+    <g stroke="#475569" stroke-width="2" opacity="0.8">
+      <path d="M100 320 Q102 310 104 320"/>
+      <path d="M105 320 Q107 308 109 320"/>
+      <path d="M120 320 Q122 312 124 320"/>
+      <path d="M480 320 Q482 311 484 320"/>
+      <path d="M485 320 Q487 309 489 320"/>
+      <path d="M500 320 Q502 313 504 320"/>
+      <path d="M520 320 Q522 310 524 320"/>
+    </g>
+  </g>
+  
+  <!-- Small wildflowers -->
+  <g opacity="0.8">
+    <circle cx="130" cy="318" r="1.5" fill="#a0785c"/>
+    <circle cx="470" cy="318" r="1.5" fill="#a0785c"/>
+    <circle cx="200" cy="318" r="1" fill="#a0785c"/>
+    <circle cx="380" cy="318" r="1.2" fill="#a0785c"/>
+  </g>
+  
+  <!-- Wind lines (subtle movement) -->
+  <g stroke="#64748b" stroke-width="1" opacity="0.4">
+    <path d="M50 200 Q100 195 150 200" fill="none" stroke-dasharray="3,5"/>
+    <path d="M400 180 Q450 175 500 180" fill="none" stroke-dasharray="3,5"/>
+    <path d="M80 250 Q130 245 180 250" fill="none" stroke-dasharray="2,4"/>
+  </g>
+  
+  <!-- Contemplative atmosphere -->
+  <g stroke="#a0785c" stroke-width="0.8" opacity="0.3">
+    <circle cx="250" cy="150" r="2" fill="#a0785c" opacity="0.2"/>
+    <circle cx="350" cy="160" r="1.5" fill="#a0785c" opacity="0.2"/>
+    <circle cx="320" cy="140" r="1" fill="#a0785c" opacity="0.2"/>
+  </g>
+</svg>

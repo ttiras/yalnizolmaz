@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" fill="none">
+  <defs>
+    <linearGradient id="parkGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#64748b;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#475569;stop-opacity:0.6" />
+    </linearGradient>
+    <linearGradient id="benchGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#92400e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a0785c;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="treeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#166534;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#15803d;stop-opacity:0.6" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Sky background -->
+  <rect x="0" y="0" width="600" height="300" fill="#e2e8f0" opacity="0.4"/>
+  
+  <!-- Ground -->
+  <rect x="0" y="300" width="600" height="100" fill="url(#parkGradient)"/>
+  <line x1="0" y1="300" x2="600" y2="300" stroke="#475569" stroke-width="2" opacity="0.8"/>
+  
+  <!-- Park bench (wooden, more detailed) -->
+  <g>
+    <!-- Bench seat -->
+    <rect x="200" y="250" width="200" height="10" rx="3" fill="url(#benchGradient)" stroke="#78350f" stroke-width="2"/>
+    
+    <!-- Bench back -->
+    <rect x="200" y="215" width="200" height="10" rx="3" fill="url(#benchGradient)" stroke="#78350f" stroke-width="2"/>
+    
+    <!-- Support slats (thicker) -->
+    <g stroke="#78350f" stroke-width="3">
+      <line x1="220" y1="215" x2="220" y2="250"/>
+      <line x1="250" y1="215" x2="250" y2="250"/>
+      <line x1="300" y1="215" x2="300" y2="250"/>
+      <line x1="350" y1="215" x2="350" y2="250"/>
+      <line x1="380" y1="215" x2="380" y2="250"/>
+    </g>
+    
+    <!-- Bench legs (sturdier) -->
+    <rect x="210" y="260" width="12" height="45" fill="url(#benchGradient)" stroke="#78350f" stroke-width="2"/>
+    <rect x="378" y="260" width="12" height="45" fill="url(#benchGradient)" stroke="#78350f" stroke-width="2"/>
+    
+    <!-- Armrests -->
+    <rect x="185" y="230" width="30" height="8" rx="4" fill="url(#benchGradient)" stroke="#78350f" stroke-width="2"/>
+    <rect x="385" y="230" width="30" height="8" rx="4" fill="url(#benchGradient)" stroke="#78350f" stroke-width="2"/>
+    
+    <!-- Wood grain details -->
+    <g stroke="#92400e" stroke-width="0.8" opacity="0.6">
+      <line x1="205" y1="254" x2="395" y2="254"/>
+      <line x1="205" y1="219" x2="395" y2="219"/>
+    </g>
+  </g>
+  
+  <!-- Bench shadow (pronounced) -->
+  <ellipse cx="300" cy="308" rx="120" ry="15" fill="#334155" opacity="0.5"/>
+  
+  <!-- Autumn leaves on and around bench -->
+  <g opacity="0.8">
+    <!-- Leaf on bench -->
+    <path d="M320 245 Q315 240 310 245 Q315 250 320 245 Q325 240 330 245 Q325 250 320 245" 
+          fill="#dc2626" 
+          stroke="#991b1b" 
+          stroke-width="1"/>
+    <line x1="320" y1="240" x2="320" y2="250" stroke="#991b1b" stroke-width="0.8"/>
+    
+    <!-- Another leaf -->
+    <path d="M280 247 Q275 242 270 247 Q275 252 280 247 Q285 242 290 247 Q285 252 280 247" 
+          fill="#f59e0b" 
+          stroke="#d97706" 
+          stroke-width="1"/>
+    <line x1="280" y1="242" x2="280" y2="252" stroke="#d97706" stroke-width="0.8"/>
+  </g>
+  
+  <!-- Trees in background (more detailed) -->
+  <g>
+    <!-- Tree 1 -->
+    <rect x="75" y="180" width="10" height="120" fill="#78350f" stroke="#92400e" stroke-width="2"/>
+    <circle cx="80" cy="160" r="30" fill="url(#treeGradient)" stroke="#15803d" stroke-width="2"/>
+    <path d="M55 170 Q80 145 105 170" fill="url(#treeGradient)" stroke="#15803d" stroke-width="1"/>
+    
+    <!-- Tree 2 -->
+    <rect x="495" y="200" width="10" height="100" fill="#78350f" stroke="#92400e" stroke-width="2"/>
+    <circle cx="500" cy="180" r="25" fill="url(#treeGradient)" stroke="#15803d" stroke-width="2"/>
+    <path d="M480 190 Q500 165 520 190" fill="url(#treeGradient)" stroke="#15803d" stroke-width="1"/>
+    
+    <!-- Tree shadows -->
+    <ellipse cx="80" cy="305" rx="15" ry="5" fill="#334155" opacity="0.4"/>
+    <ellipse cx="500" cy="305" rx="12" ry="4" fill="#334155" opacity="0.4"/>
+  </g>
+  
+  <!-- Walking path (stone path) -->
+  <path d="M0 320 Q300 315 600 320" stroke="#64748b" stroke-width="3" opacity="0.7" fill="none"/>
+  <path d="M0 322 Q300 317 600 322" stroke="#475569" stroke-width="1.5" opacity="0.5" fill="none"/>
+  
+  <!-- Scattered autumn leaves on ground -->
+  <g opacity="0.8">
+    <path d="M150 310 Q145 305 140 310 Q145 315 150 310" fill="#dc2626" stroke="#991b1b" stroke-width="1"/>
+    <path d="M450 315 Q445 310 440 315 Q445 320 450 315" fill="#f59e0b" stroke="#d97706" stroke-width="1"/>
+    <path d="M180 325 Q175 320 170 325 Q175 330 180 325" fill="#ea580c" stroke="#c2410c" stroke-width="1"/>
+    <path d="M520 308 Q515 303 510 308 Q515 313 520 308" fill="#dc2626" stroke="#991b1b" stroke-width="1"/>
+    <path d="M250 315 Q245 310 240 315 Q245 320 250 315" fill="#f59e0b" stroke="#d97706" stroke-width="1"/>
+    <path d="M380 318 Q375 313 370 318 Q375 323 380 318" fill="#ea580c" stroke="#c2410c" stroke-width="1"/>
+  </g>
+  
+  <!-- Small stones and details -->
+  <g opacity="0.6">
+    <ellipse cx="120" cy="305" rx="3" ry="1.5" fill="#475569"/>
+    <ellipse cx="480" cy="308" rx="2.5" ry="1" fill="#475569"/>
+    <ellipse cx="220" cy="312" rx="2" ry="1" fill="#475569"/>
+  </g>
+  
+  <!-- Wind effect with leaves -->
+  <g stroke="#64748b" stroke-width="1" opacity="0.4">
+    <path d="M100 200 Q150 190 200 200" stroke-dasharray="3,6"/>
+    <path d="M400 180 Q450 170 500 180" stroke-dasharray="3,6"/>
+  </g>
+  
+  <!-- Small birds in distance -->
+  <g stroke="#475569" stroke-width="1.5" opacity="0.7">
+    <path d="M450 120 Q455 118 460 120" fill="none"/>
+    <path d="M480 110 Q485 108 490 110" fill="none"/>
+    <path d="M520 125 Q525 123 530 125" fill="none"/>
+  </g>
+  
+  <!-- Atmospheric depth -->
+  <g stroke="#a0785c" stroke-width="0.8" opacity="0.3">
+    <circle cx="350" cy="100" r="1.5" fill="#a0785c" opacity="0.2"/>
+    <circle cx="200" cy="120" r="1" fill="#a0785c" opacity="0.2"/>
+    <circle cx="450" cy="90" r="1.2" fill="#a0785c" opacity="0.2"/>
+  </g>
+</svg>
