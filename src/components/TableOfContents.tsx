@@ -50,22 +50,29 @@ export function TableOfContents() {
   }, []);
 
   useEffect(() => {
-    // Track active section on scroll
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: "-20% 0% -60% 0%" },
-    );
+    // Track active section based on scroll position
+    const headings = Array.from(document.querySelectorAll("article h2"));
+    if (headings.length === 0) return;
 
-    const headings = document.querySelectorAll("article h2");
-    headings.forEach((heading) => observer.observe(heading));
+    const OFFSET = 120; // px from top to consider a section active
 
-    return () => observer.disconnect();
+    const onScroll = () => {
+      let activeIndex = 0;
+      for (let i = 0; i < headings.length; i++) {
+        const rect = headings[i].getBoundingClientRect();
+        if (rect.top - OFFSET <= 0) {
+          activeIndex = i;
+        } else {
+          break;
+        }
+      }
+      const id = headings[activeIndex]?.id;
+      if (id) setActiveId(id);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true } as AddEventListenerOptions);
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll as EventListener);
   }, [toc]);
 
   const scrollToSection = (id: string) => {

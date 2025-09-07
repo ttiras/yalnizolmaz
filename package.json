@@ -17,10 +17,10 @@
     "test:e2e:install": "playwright install --with-deps"
   },
   "dependencies": {
+    "@nhost/nhost-js": "^3.3.1",
     "gray-matter": "^4.0.3",
     "next": "15.5.0",
     "next-mdx-remote": "^5.0.0",
-    "@nhost/nhost-js": "^3.3.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "reading-time": "^1.5.0",
@@ -53,7 +53,8 @@
     "prettier-plugin-tailwindcss": "^0.6.14",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "yaml": "^2.8.1"
   },
   "packageManager": "pnpm@10.15.0+sha512.486ebc259d3e999a4e8691ce03b5cac4a71cbeca39372a9b762cb500cfdf0873e2cb16abe3d951b1ee2cf012503f027b98b6584e4df22524e0c7450d9ec7aa7b",
   "lint-staged": {
