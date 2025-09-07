@@ -1,6 +1,46 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "ws-eu.amazon-adsystem.com",
+        port: "",
+        pathname: "/widgets/q",
+      },
+      {
+        protocol: "https",
+        hostname: "images-na.ssl-images-amazon.com",
+        port: "",
+        pathname: "/images/**",
+      },
+      {
+        protocol: "https",
+        hostname: "m.media-amazon.com",
+        port: "",
+        pathname: "/images/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images-eu.ssl-images-amazon.com",
+        port: "",
+        pathname: "/images/**",
+      },
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+        port: "",
+        pathname: "/wikipedia/**",
+      },
+      {
+        protocol: "https",
+        hostname: "imdb.com",
+        port: "",
+        pathname: "/imdb/**",
+      },
+    ],
+  },
   turbopack: {
     root: __dirname,
   },

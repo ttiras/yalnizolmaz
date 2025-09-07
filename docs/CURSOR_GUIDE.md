@@ -158,3 +158,32 @@ Add to `package.json` (Cursor can do it):
 - For new features, write a one-paragraph task with acceptance criteria and ask Cursor for a plan + diffs
 
 That’s it — this guide keeps Cursor aligned with how we want the codebase to evolve. Copy it into `docs/CURSOR_GUIDE.md` now and kick off the first task (post map).
+
+---
+
+## 9) Environments & deploys
+
+- **Branches → Vercel**
+  - `develop` → **staging** at `https://yalnizolmaz.vercel.app/`
+  - `main` → **production** (custom domain to be configured)
+- **Vercel env mapping**
+  - `VERCEL_ENV=development` → local dev
+  - `VERCEL_ENV=preview` → staging/preview (used for `develop`)
+  - `VERCEL_ENV=production` → production
+- **Nhost configuration (web app)**
+  - The Nhost client reads the following env vars (client-safe):
+    - `NEXT_PUBLIC_NHOST_BACKEND_URL` → use for local/self-hosted
+    - `NEXT_PUBLIC_NHOST_SUBDOMAIN` and `NEXT_PUBLIC_NHOST_REGION` → use for Nhost Cloud (staging/prod)
+  - Local development:
+    - Copy values from `/nhost/.env` into `/web/.env.local`:
+      - `NEXT_PUBLIC_NHOST_BACKEND_URL=<from nhost .env>`
+  - Staging (Vercel Preview for `develop`):
+    - In Vercel Project → Settings → Environment Variables (Scope: Preview):
+      - `NEXT_PUBLIC_NHOST_SUBDOMAIN=<from /nhost/.env.staging>`
+      - `NEXT_PUBLIC_NHOST_REGION=<from /nhost/.env.staging>`
+  - Production (Vercel Production for `main`):
+    - In Vercel Project → Settings → Environment Variables (Scope: Production):
+      - `NEXT_PUBLIC_NHOST_SUBDOMAIN=<prod values>`
+      - `NEXT_PUBLIC_NHOST_REGION=<prod values>`
+  - Secrets/admin keys must remain server-only and are not required for the public client.
+  - The client automatically prefers `NEXT_PUBLIC_NHOST_BACKEND_URL` when present; otherwise it falls back to `NEXT_PUBLIC_NHOST_SUBDOMAIN` + `NEXT_PUBLIC_NHOST_REGION`.

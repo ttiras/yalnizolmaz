@@ -118,7 +118,13 @@ export default async function BlogPost({ params }: Params) {
                   options={{
                     mdxOptions: {
                       remarkPlugins: [remarkGfm],
-                      rehypePlugins: [[rehypeSlug], [rehypeAutolink, { behavior: "wrap" }]],
+                      rehypePlugins: [
+                        [rehypeSlug],
+                        [
+                          rehypeAutolink,
+                          { behavior: "wrap", test: ["h2", "h3", "h4", "h5", "h6"] },
+                        ],
+                      ],
                     },
                   }}
                   components={mdxComponents}
