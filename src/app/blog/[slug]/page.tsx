@@ -11,6 +11,9 @@ import { ReadingProgress } from "@/components/ReadingProgress";
 import { TableOfContents } from "@/components/TableOfContents";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "./jsonld";
 import { mdxComponents } from "./mdx-components";
+import SizdenGelenlerForPost from "@/components/interactions/sizden-gelenler/SizdenGelenlerForPost";
+import CommentsSection from "@/components/interactions/comments/CommentsSection";
+import { getInitialComments } from "@/lib/comments/mockServer";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -49,6 +52,9 @@ export default async function BlogPost({ params }: Params) {
   const idx = all.findIndex((p) => p.slug === post.slug);
   const prev = idx > 0 ? all[idx - 1] : null;
   const next = idx < all.length - 1 ? all[idx + 1] : null;
+
+  // Get initial comments for the blog post
+  const { totalCount, comments } = await getInitialComments(slug, 5);
   return (
     <div className="bg-soft min-h-screen" style={{ backgroundColor: "var(--background)" }}>
       {/* Reading Progress Indicator */}
@@ -130,6 +136,25 @@ export default async function BlogPost({ params }: Params) {
                   components={mdxComponents}
                 />
               </div>
+            </div>
+          </div>
+
+          {/* Sizden Gelenler Section - for ALL posts */}
+          <div className="relative container">
+            <div className="mx-auto max-w-4xl px-6 py-12 md:px-8">
+              <SizdenGelenlerForPost slug={slug} />
+            </div>
+          </div>
+
+          {/* Comments Section */}
+          <div className="relative container">
+            <div className="mx-auto max-w-4xl px-6 py-12 md:px-8">
+              <CommentsSection
+                slug={slug}
+                totalCount={totalCount}
+                initialComments={comments}
+                loggedIn={false}
+              />
             </div>
           </div>
 

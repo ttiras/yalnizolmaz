@@ -1,0 +1,20 @@
+# Cursor Rules for Yalniz Olmaz Web Project
+
+## React Server Components (RSC) Guidelines
+
+- **RSC-first approach**: Use React Server Components by default for all components
+- **"use client" directive**: Only add "use client" when interactivity is explicitly required (event handlers, state, browser APIs, etc.)
+- **Server-side benefits**: Leverage server-side rendering, reduced bundle size, and better performance
+- **Client components**: Reserve for components that need:
+  - Event handlers (onClick, onChange, etc.)
+  - React hooks (useState, useEffect, etc.)
+  - Browser-specific APIs (localStorage, window, etc.)
+  - Third-party libraries that require client-side execution
+
+## Code Quality
+
+- Prefer server components for static content, data fetching, and layout components
+- Keep client components small and focused on interactivity
+- Use proper TypeScript types and interfaces
+- Follow Next.js 13+ App Router conventions
+ 
