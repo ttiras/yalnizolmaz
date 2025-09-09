@@ -8,9 +8,12 @@ export function Navbar() {
         <Link href="/" className="font-semibold tracking-tight">
           Yalnız Olmaz
         </Link>
-        <nav className="flex items-center gap-2 text-sm">
+        <nav className="flex items-center gap-4 text-sm">
           <Link href="/blog" className="hover:underline">
             Blog
+          </Link>
+          <Link href="/sizden-gelenler" className="hover:underline">
+            Sizden Gelenler
           </Link>
           <ThemeToggle />
         </nav>

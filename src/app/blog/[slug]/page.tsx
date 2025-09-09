@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
@@ -143,6 +144,25 @@ export default async function BlogPost({ params }: Params) {
           <div className="relative container">
             <div className="mx-auto max-w-4xl px-6 py-12 md:px-8">
               <SizdenGelenlerForPost slug={slug} />
+
+              {/* Link to full contributions page */}
+              <div className="mt-6 text-center">
+                <Link
+                  href={`/sizden-gelenler/${slug}`}
+                  className="inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:opacity-80"
+                  style={{ borderColor: "var(--border)", color: "var(--accent)" }}
+                >
+                  Tüm katkıları görüntüle
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </Link>
+              </div>
             </div>
           </div>
 
