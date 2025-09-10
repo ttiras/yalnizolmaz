@@ -62,14 +62,14 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0b;
+    --background: #020617; /* slate-950 - has subtle blue tint */
     --foreground: #e7e7ea;
-    --muted: #121316;
+    --muted: #020617; /* same as background for consistency */
     --muted-foreground: #9aa3b2;
-    --card: #0e0f12;
-    --border: #1f2126;
+    --card: #020617; /* same as background for consistency */
+    --border: #1e293b; /* slate-800 for borders */
     --accent: #c8986a; /* lighter caramel for dark mode */
-    --accent-contrast: #0a0a0b;
+    --accent-contrast: #020617;
   }
 }
 
@@ -633,14 +633,14 @@ button:focus-visible,
 
 /* Dark mode class overrides (for manual toggle) */
 .dark {
-  --background: #0a0a0b;
+  --background: #020617; /* slate-950 - has subtle blue tint */
   --foreground: #e7e7ea;
-  --muted: #121316;
+  --muted: #020617; /* same as background for consistency */
   --muted-foreground: #9aa3b2;
-  --card: #0e0f12;
-  --border: #1f2126;
+  --card: #020617; /* same as background for consistency */
+  --border: #1e293b; /* slate-800 for borders */
   --accent: #c8986a;
-  --accent-contrast: #0a0a0b;
+  --accent-contrast: #020617;
 }
 
 /* Force dark mode styles for critical elements */
@@ -659,14 +659,131 @@ button:focus-visible,
 
 /* Data attribute fallback for theme switching */
 [data-theme="dark"] {
-  --background: #0a0a0b;
+  --background: #020617; /* slate-950 - has subtle blue tint */
   --foreground: #e7e7ea;
-  --muted: #121316;
+  --muted: #020617; /* same as background for consistency */
   --muted-foreground: #9aa3b2;
-  --card: #0e0f12;
-  --border: #1f2126;
+  --card: #020617; /* same as background for consistency */
+  --border: #1e293b; /* slate-800 for borders */
   --accent: #c8986a;
-  --accent-contrast: #0a0a0b;
+  --accent-contrast: #020617;
+}
+
+/* Force dark mode styles for navbar and footer */
+.dark nav,
+.dark [role="navigation"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: var(--foreground) !important;
+}
+
+/* Force header to be transparent in dark mode */
+.dark header {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Make navbar border more subtle in dark mode */
+.dark header {
+  border-color: var(--border) !important;
+}
+
+/* Make theme button border more subtle in dark mode */
+.dark button[aria-label*="moda"] {
+  border-color: var(--border) !important;
+}
+
+/* Fix table of contents active selector visibility in dark mode */
+.dark [class*="toc"] button[style*="var(--muted)"] {
+  background-color: var(--border) !important;
+}
+
+/* Fix table of contents active text color in dark mode */
+.dark [class*="toc"] button[style*="var(--accent)"] {
+  color: var(--accent) !important;
+}
+
+/* Fix comment button styling in dark mode */
+.dark button[class*="bg-white"] {
+  background: var(--accent) !important;
+  color: var(--accent-contrast) !important;
+}
+
+/* Fix any white background buttons in dark mode */
+.dark button[style*="background-color: rgb(255, 255, 255)"] {
+  background: var(--accent) !important;
+  color: var(--accent-contrast) !important;
+}
+
+.dark footer,
+.dark [role="contentinfo"],
+.dark .text-neutral-500 {
+  color: var(--muted-foreground) !important;
+  background: var(--background) !important;
+}
+
+/* Ensure all text elements use proper dark mode colors */
+.dark p,
+.dark span,
+.dark div {
+  color: var(--foreground);
+}
+
+.dark .text-neutral-500,
+.dark .text-gray-500,
+.dark .text-slate-500 {
+  color: var(--muted-foreground) !important;
+}
+
+/* Fix section backgrounds and borders for dark mode */
+.dark section,
+.dark [class*="mt-16"],
+.dark [class*="border-t"] {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+/* Fix border colors for dark mode */
+.dark .border-gray-200,
+.dark .border-gray-300,
+.dark .border-gray-400 {
+  border-color: var(--border) !important;
+}
+
+/* Ensure all sections use proper dark mode styling */
+.dark .mt-16,
+.dark .pt-8 {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+/* Fix heading colors in dark mode */
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-gray-700 {
+  color: var(--foreground) !important;
+}
+
+/* Fix card backgrounds and borders in dark mode */
+.dark .bg-white {
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+}
+
+.dark .border-gray-100,
+.dark .border-gray-200 {
+  border-color: var(--border) !important;
+}
+
+/* Fix specific card styling */
+.dark article {
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+}
+
+.dark .rounded-2xl {
+  background: var(--card) !important;
+  border-color: var(--border) !important;
 }
 
 .dark .author-tag.poet {
@@ -682,4 +799,73 @@ button:focus-visible,
 .dark .author-tag.philosopher {
   background: #713f12;
   color: #fbbf24;
+}
+
+/* Fix table of contents active selector visibility in dark mode */
+.dark [class*="toc"] button[style*="var(--muted)"],
+.dark [class*="toc"] div[style*="var(--muted)"] {
+  background-color: var(--border) !important;
+}
+
+/* Fix comment text visibility in dark mode - target all text elements in comment section */
+.dark [class*="comment"] div,
+.dark [class*="comment"] span,
+.dark [class*="yorum"] div,
+.dark [class*="yorum"] span {
+  color: var(--foreground) !important;
+}
+
+/* Fix comment section background colors in dark mode */
+.dark .bg-blue-50,
+.dark .bg-gray-50 {
+  background-color: var(--muted) !important;
+}
+
+/* More specific targeting for comment section elements */
+.dark .rounded-lg.border.border-blue-200.bg-blue-50 {
+  background-color: var(--muted) !important;
+  border-color: var(--border) !important;
+}
+
+.dark .rounded-2xl.bg-gray-50 {
+  background-color: var(--muted) !important;
+}
+
+/* Fix cover image/video overlay in dark mode - make it semi-transparent */
+.dark .bg-gradient-to-t.from-black\/20.to-transparent {
+  opacity: 0.4 !important;
+}
+
+/* Fix illustration overlay in dark mode - make it semi-transparent */
+.dark .bg-gradient-to-t.from-black\/5.via-transparent.to-transparent {
+  opacity: 0.4 !important;
+}
+
+/* Add grayish background to images and videos in dark mode */
+.dark img,
+.dark video {
+  background: var(--muted) !important;
+}
+
+/* Dark mode: dim cover media (home + blog index cards) */
+.dark img.object-cover,
+.dark video.object-cover {
+  filter: brightness(0.85);
+}
+
+/* Add subtle dark overlay to all images in dark mode */
+.dark img {
+  position: relative;
+}
+
+.dark img::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  border-radius: inherit;
 }

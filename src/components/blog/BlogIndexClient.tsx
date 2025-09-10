@@ -21,6 +21,7 @@ export function BlogIndexClient({ posts }: { posts: BlogListItem[] }) {
     posts.forEach((p) => {
       (p.tags || []).forEach((t) => map.set(t, (map.get(t) || 0) + 1));
     });
+    // Show more tags without limiting
     return Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
   }, [posts]);
 
@@ -50,7 +51,7 @@ export function BlogIndexClient({ posts }: { posts: BlogListItem[] }) {
     <div className="mx-auto w-full">
       {/* Search & Filters */}
       <div
-        className="sticky top-16 z-10 mb-8 rounded-xl border backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-black/30"
+        className="mb-8 rounded-xl border backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-black/30"
         style={{ borderColor: "var(--border)" }}
       >
         <div className="flex flex-col gap-4 p-4 md:flex-row md:items-center md:justify-between">

@@ -66,10 +66,10 @@ export default async function BlogPost({ params }: Params) {
 
       {/* Hero Section */}
       <header
-        className="relative overflow-hidden border-b bg-gradient-to-b"
+        className="relative overflow-hidden border-b"
         style={{
           borderColor: "var(--border)",
-          background: "linear-gradient(to bottom, var(--background), var(--card))",
+          background: "transparent",
         }}
       >
         {/* replace grid.svg with soft gradient glow */}
