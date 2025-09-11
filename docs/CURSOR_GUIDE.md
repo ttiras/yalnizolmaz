@@ -8,9 +8,8 @@ This file tells Cursor exactly **how to help** on this codebase. Keep it at `doc
 
 - **Framework:** Next.js 15 (App Router, RSC-first), React 19, TypeScript
 - **Styling:** Tailwind CSS v4 (no inline styles by default)
-- **Content:** MDX articles under `src/content/posts/*` using `export const metadata = { … }` + default component export
 - **Routing:** Blog post route at `src/app/blog/[slug]/page.tsx`
-- **Data (next):** Nhost/Hasura (GraphQL + subscriptions) — to be wired with Apollo
+- **Data (next):** Nhost/Hasura (GraphQL + subscriptions)
 - **Auth (next):** Nhost Auth; secrets live server-side only (Route Handlers)
 - **Testing (next):** Vitest + Testing Library + MSW; Playwright for e2e
 
@@ -29,82 +28,6 @@ This file tells Cursor exactly **how to help** on this codebase. Keep it at `doc
 7. **Accessibility.** Proper semantics (`<main>`, `<article>`, `<time>`), focus states, labels, color contrast.
 8. **Performance.** Lean client bundles, minimal hydration, image optimization, stable CLS.
 9. **Pagespeedinsisghts and vW3C validations.** Google PageSpeed Insights ve W3C validations must be perfect.
-
----
-
-## 2) Folder layout (expected)
-
-```
-src/
-  app/
-    blog/[slug]/page.tsx
-    layout.tsx
-  components/
-    blog/…
-    common/…
-    interactions/…
-  content/
-    posts/
-      <slug>.mdx
-      …
-    postMap.ts      ← generated (see §3)
-  lib/
-    mdx.ts          ← helpers to list/resolve posts via postMap
-    apollo.ts       ← GraphQL client wiring (later)
-  styles/
-    globals.css
-
-docs/
-  CURSOR_GUIDE.md   ← this file
-```
-
----
-
-## 3) Posts mapping (critical)
-
-**Why:** Next can’t statically analyze `import("…/${slug}.mdx")`. We generate a static map so builds can include all posts.
-
-**What Cursor should create:** a tiny Node script `scripts/generate-post-map.ts` that scans `src/content/posts/*.mdx` and writes `src/content/postMap.ts` with static imports and an object like:
-
-```ts
-export const postMap = {
-  'yalnizlik-sozleri': /* module ref */,
-  // …other slugs
-} as const
-```
-
-Then `lib/mdx.ts` exposes:
-
-- `getAllPosts()` → iterate `postMap`, read `metadata`, return sorted list
-- `getPostBySlug(slug)` → return `{ metadata, Content }` or `null`
-
-And `app/blog/[slug]/page.tsx` does:
-
-- `generateStaticParams()` from `Object.keys(postMap)`
-- `generateMetadata()` from the selected module’s `metadata`
-- Render `<Content />` inside a server component
-
-> **Definition of Done:** No dynamic template-literal imports. Build succeeds with all posts; `/blog/[slug]` pages SSG correctly.
-
----
-
-## 4) Quick Kickoff Prompt (paste this into a new Cursor chat)
-
-> **Context:** You are assisting on a Next.js 15 + React 19 + Tailwind v4 app named YalnızOlmaz. Content is MDX under `src/content/posts` with `export const metadata` and a default export. RSC-first. Avoid dynamic template-literal imports for MDX. Generate a static post map.
->
-> **Task:**
->
-> 1. Create `scripts/generate-post-map.ts` that scans `src/content/posts/*.mdx` and writes `src/content/postMap.ts` with static imports and a slug→module map. Use POSIX-safe paths. Overwrite idempotently.
-> 2. Implement `src/lib/mdx.ts` utilities to list posts (`getAllPosts`) and get one (`getPostBySlug`), reading from `postMap`.
-> 3. Update `src/app/blog/[slug]/page.tsx` to use the map/utilities, implement `generateStaticParams` and `generateMetadata` (RSC-safe), and render the MDX default export.
-> 4. Add a minimal `README` section explaining how to regenerate the map (`pnpm gen:posts`).
->
-> **Acceptance criteria:**
->
-> - No `import("@/content/posts/${slug}.mdx")` anywhere.
-> - `pnpm gen:posts` produces `src/content/postMap.ts` deterministically.
-> - Visiting `/blog/<existing-slug>` renders metadata + content.
-> - Build works with SSG; dev server hot reloads after adding a new `.mdx` and re-running the generator.
 
 ---
 
@@ -187,3 +110,78 @@ That’s it — this guide keeps Cursor aligned with how we want the codebase to
       - `NEXT_PUBLIC_NHOST_REGION=<prod values>`
   - Secrets/admin keys must remain server-only and are not required for the public client.
   - The client automatically prefers `NEXT_PUBLIC_NHOST_BACKEND_URL` when present; otherwise it falls back to `NEXT_PUBLIC_NHOST_SUBDOMAIN` + `NEXT_PUBLIC_NHOST_REGION`.
+
+  ## 2) Folder layout (expected)
+
+```
+src/
+  app/
+    blog/[slug]/page.tsx
+    layout.tsx
+  components/
+    blog/…
+    common/…
+    interactions/…
+  content/
+    posts/
+      <slug>.mdx
+      …
+    postMap.ts      ← generated (see §3)
+  lib/
+    mdx.ts          ← helpers to list/resolve posts via postMap
+    apollo.ts       ← GraphQL client wiring (later)
+  styles/
+    globals.css
+
+docs/
+  CURSOR_GUIDE.md   ← this file
+```
+
+---
+
+## 3) Posts mapping (critical)
+
+**Why:** Next can’t statically analyze `import("…/${slug}.mdx")`. We generate a static map so builds can include all posts.
+
+**What Cursor should create:** a tiny Node script `scripts/generate-post-map.ts` that scans `src/content/posts/*.mdx` and writes `src/content/postMap.ts` with static imports and an object like:
+
+```ts
+export const postMap = {
+  'yalnizlik-sozleri': /* module ref */,
+  // …other slugs
+} as const
+```
+
+Then `lib/mdx.ts` exposes:
+
+- `getAllPosts()` → iterate `postMap`, read `metadata`, return sorted list
+- `getPostBySlug(slug)` → return `{ metadata, Content }` or `null`
+
+And `app/blog/[slug]/page.tsx` does:
+
+- `generateStaticParams()` from `Object.keys(postMap)`
+- `generateMetadata()` from the selected module’s `metadata`
+- Render `<Content />` inside a server component
+
+> **Definition of Done:** No dynamic template-literal imports. Build succeeds with all posts; `/blog/[slug]` pages SSG correctly.
+
+---
+
+## 4) Quick Kickoff Prompt (paste this into a new Cursor chat)
+
+> **Context:** You are assisting on a Next.js 15 + React 19 + Tailwind v4 app named YalnızOlmaz. Content is MDX under `src/blog/slug` with `metadata` and MDX Remote. RSC-first.
+>
+> **Task:**
+>
+> 1. Create a login/signup page, using nhosts methods wired at yalnizolmaz/nhost.
+> 2. Create an env file for local and add nhost endpoints to wire local nhost dev which is running. You can find the endpoints at yalnizolmaz/nhost/.env
+> 3. Link users to login on navbar anf at places where login is needed like writing a comment or posting.
+> 4. Use Shadcn UI where applicable.
+>    **Acceptance criteria:**
+>
+> - No `import("@/content/posts/${slug}.mdx")` anywhere.
+> - `pnpm gen:posts` produces `src/content/postMap.ts` deterministically.
+> - Visiting `/blog/<existing-slug>` renders metadata + content.
+> - Build works with SSG; dev server hot reloads after adding a new `.mdx` and re-running the generator.
+
+---

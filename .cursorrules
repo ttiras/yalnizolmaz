@@ -1,4 +1,33 @@
 # Cursor Rules for Yalniz Olmaz Web Project
+## Scope
+- Applies to the `web/` workspace.
+
+## Project snapshot (stack & goals)
+
+- **Framework:** Next.js 15 (App Router, RSC-first), React 19, TypeScript
+- **Styling:** Tailwind CSS v4 (no inline styles by default)
+- **UI:** Shadcn UI
+- **Routing:** Blog post route at `src/app/blog/[slug]/page.tsx`
+- **Data (next):** Nhost/Hasura (GraphQL + subscriptions)
+- **Auth (next):** Nhost Auth; secrets live server-side only (Route Handlers)
+- **Testing (next):** Vitest + Testing Library + MSW; Playwright for e2e
+
+**North Star:** fast, SEO-friendly content site with a path to community features (likes, accounts) and monetization (affiliate, digital products, membership) without heavy client JS.
+
+---
+
+## Repo conventions & guardrails (Cursor must follow)
+
+1. **RSC-first.** Server Components by default. Only use "use client" where interactive UI is required.
+2. **Tailwind v4 only.** No CSS-in-JS, no inline styles for layout/typography unless justified.
+3. **Aliases.** Use `@/` imports (configured via `tsconfig.json`).
+4. **MDX rules.** Each `.mdx` file exports `metadata` and a default component. No YAML frontmatter.
+5. **Dynamic imports caution.** **Do not** use template-literal `import("@/content/posts/${slug}.mdx")` at runtime. Build-time mapping is required (see §3).
+6. **Secrets.** Never expose service/admin keys to the client. Use Route Handlers (`app/api/*`) or server actions.
+7. **Accessibility.** Proper semantics (`<main>`, `<article>`, `<time>`), focus states, labels, color contrast.
+8. **Performance.** Lean client bundles, minimal hydration, image optimization, stable CLS.
+9. **Pagespeedinsisghts and vW3C validations.** Google PageSpeed Insights ve W3C validations must be perfect.
+10. **Commit policy.** Never commit or push changes unless the user explicitly requests it.
 
 ## React Server Components (RSC) Guidelines
 
@@ -18,3 +47,11 @@
 - Use proper TypeScript types and interfaces
 - Follow Next.js 13+ App Router conventions
  
+
+## Security & quality checklist
+
+- No secrets in client code; use Route Handlers for anything requiring tokens
+- Hasura/Nhost roles enforced per operation (later work)
+- a11y: labels, focus order, semantic HTML
+- performance: minimal client components, stable container sizes, image dims set
+- lint passes; type errors resolved

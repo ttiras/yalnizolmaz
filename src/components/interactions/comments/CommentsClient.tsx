@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import CommentList from "./CommentList";
 import CommentComposer from "./CommentComposer";
+import { AuthGate } from "@/components/AuthGate";
 import LoadMoreButton from "./LoadMoreButton";
 import { initializeClientComments } from "@/lib/comments/mockClient";
 import type { CommentsSectionProps, BlogComment } from "@/lib/types/comments";
@@ -69,7 +70,13 @@ export default function CommentsClient({
 
       {/* Comment Composer */}
       <div className="rounded-2xl bg-gray-50 p-6">
-        <CommentComposer slug={slug} onSubmitted={handleNewComment} />
+        {loggedIn ? (
+          <CommentComposer slug={slug} onSubmitted={handleNewComment} />
+        ) : (
+          <AuthGate mode="inline">
+            <CommentComposer slug={slug} onSubmitted={handleNewComment} />
+          </AuthGate>
+        )}
       </div>
     </>
   );

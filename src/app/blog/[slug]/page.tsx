@@ -14,6 +14,7 @@ import { ArticleJsonLd, BreadcrumbJsonLd } from "./jsonld";
 import { mdxComponents } from "./mdx-components";
 import SizdenGelenlerForPost from "@/components/interactions/sizden-gelenler/SizdenGelenlerForPost";
 import CommentsSection from "@/components/interactions/comments/CommentsSection";
+import { getSession } from "@/lib/auth-session";
 import { getInitialComments } from "@/lib/comments/mockServer";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -56,6 +57,7 @@ export default async function BlogPost({ params }: Params) {
 
   // Get initial comments for the blog post
   const { totalCount, comments } = await getInitialComments(slug, 5);
+  const session = await getSession();
   return (
     <div className="bg-soft min-h-screen" style={{ backgroundColor: "var(--background)" }}>
       {/* Reading Progress Indicator */}
@@ -173,7 +175,7 @@ export default async function BlogPost({ params }: Params) {
                 slug={slug}
                 totalCount={totalCount}
                 initialComments={comments}
-                loggedIn={false}
+                loggedIn={Boolean(session)}
               />
             </div>
           </div>

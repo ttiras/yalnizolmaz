@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { getSession } from "@/lib/auth-session";
+import { SignOutButton } from "@/components/SignOutButton";
 
-export function Navbar() {
+export async function Navbar() {
+  const session = await getSession();
+  const userEmail = session?.user?.email;
   return (
     <header
       className="sticky top-0 z-40 w-full border-b border-neutral-200 backdrop-blur-md dark:border-neutral-800"
@@ -19,6 +23,26 @@ export function Navbar() {
             Sizden Gelenler
           </Link>
           <ThemeToggle />
+          {session ? (
+            <div className="flex items-center gap-3">
+              <Link
+                href="/profile"
+                className="hidden text-xs text-neutral-600 hover:underline sm:inline"
+              >
+                {userEmail || "Profil"}
+              </Link>
+              <SignOutButton />
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link href="/login" className="hover:underline">
+                Giriş
+              </Link>
+              <Link href="/signup" className="hover:underline">
+                Kayıt
+              </Link>
+            </div>
+          )}
         </nav>
       </div>
     </header>

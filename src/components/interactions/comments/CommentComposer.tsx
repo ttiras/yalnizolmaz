@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import { MessageSquare, Send, LogIn } from "lucide-react";
 import { postComment } from "@/lib/comments/mockClient";
 import type { CommentComposerProps } from "@/lib/types/comments";
@@ -9,7 +10,12 @@ export default function CommentComposer({ slug, parentId, onSubmitted }: Comment
   const [body, setBody] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [loggedIn] = useState(false); // Mock logged in state
+  const [loggedIn] = useState(false);
+
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const nextPath = `${pathname || "/"}${searchParams && searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
+  const loginHref = `/login?next=${encodeURIComponent(nextPath || "/")}`;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,9 +47,14 @@ export default function CommentComposer({ slug, parentId, onSubmitted }: Comment
   if (!loggedIn) {
     return (
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <div className="flex items-center gap-2 text-blue-700">
-          <LogIn size={20} />
-          <span className="font-medium">Yorum yapmak için giriş yapın</span>
+        <div className="flex items-center justify-between gap-2 text-blue-700">
+          <div className="flex items-center gap-2">
+            <LogIn size={20} />
+            <span className="font-medium">Yorum yapmak için giriş yapın</span>
+          </div>
+          <a href={loginHref} className="text-sm underline">
+            Girişe git
+          </a>
         </div>
       </div>
     );
