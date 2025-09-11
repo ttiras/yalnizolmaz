@@ -179,41 +179,8 @@ export async function signUp(formData: FormData): Promise<SignInResult> {
 
 export async function signOut(): Promise<void> {
   const jar = await cookies();
-  try {
-    const c = jar.get(SESSION_COOKIE)?.value;
-    if (c) {
-      const parsed = JSON.parse(c) as { accessToken?: string; refreshToken?: string };
-      const accessToken = parsed?.accessToken;
-      const refreshToken = parsed?.refreshToken;
-
-      // Attempt to revoke the refresh token at Nhost to avoid "already logged in" on re-login
-      if (accessToken && refreshToken) {
-        // Resolve auth base URL from server env (subdomain + region)
-        const authUrl = getServerAuthApiBase();
-
-        try {
-          const res = await fetch(`${authUrl}/auth/signout`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
-            body: JSON.stringify({ refreshToken, all: true }),
-          });
-          // We don't strictly require OK, but this helps diagnose issues during development
-          if (!res.ok) {
-            const text = await res.text().catch(() => "");
-            console.error("Nhost signout failed", res.status, text);
-          }
-        } catch (err) {
-          console.error("Nhost signout request error", err);
-        }
-      }
-    }
-  } finally {
-    // Always remove our server-side session cookie
-    jar.delete(SESSION_COOKIE);
-  }
+  // Vercel-safe: only clear our httpOnly cookie; client SDK handles best-effort revocation
+  jar.delete(SESSION_COOKIE);
 }
 
 export async function getNextParam(): Promise<string | null> {

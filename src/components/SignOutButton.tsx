@@ -22,9 +22,7 @@ export function SignOutButton({ children }: SignOutButtonProps) {
         if (nhost) {
           try {
             await nhost.auth.signOut({ all: true });
-          } catch {
-            // ignore; we still clear the server cookie below
-          }
+          } catch {}
         }
       }
       try {
