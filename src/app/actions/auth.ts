@@ -126,17 +126,39 @@ export async function signIn(formData: FormData): Promise<SignInResult> {
     process.env.E2E_WITH_AUTH === "1"
       ? rawPassword.replace(/\r?\n/g, "").replace(/\s+$/g, "")
       : rawPassword;
-  if (!email || !password) return { ok: false, message: "E-posta ve şifre gerekli" };
 
-  const nhost = createNhostClient();
-  const { session, error } = await nhost.auth.signIn({ email, password });
-  const normalized = normalizeSession(session as unknown);
-  if (error || !normalized) return { ok: false, message: error?.message || "Giriş başarısız" };
+  console.log("[Auth Action] signIn called for email:", email);
 
-  await setSessionCookie(normalized);
-  const h = await headers();
-  const next = safeNextFromInput(formData.get("next"), h) || "/";
-  return { ok: true, next };
+  if (!email || !password) {
+    console.error("[Auth Action] Missing email or password");
+    return { ok: false, message: "E-posta ve şifre gerekli" };
+  }
+
+  try {
+    const nhost = createNhostClient();
+    console.log("[Auth Action] Nhost client created successfully");
+
+    const { session, error } = await nhost.auth.signIn({ email, password });
+    console.log("[Auth Action] Nhost signIn response:", {
+      hasSession: !!session,
+      error: error?.message,
+    });
+
+    const normalized = normalizeSession(session as unknown);
+    if (error || !normalized) {
+      console.error("[Auth Action] Sign in failed:", error?.message || "No session returned");
+      return { ok: false, message: error?.message || "Giriş başarısız" };
+    }
+
+    await setSessionCookie(normalized);
+    const h = await headers();
+    const next = safeNextFromInput(formData.get("next"), h) || "/";
+    console.log("[Auth Action] Sign in successful, next path:", next);
+    return { ok: true, next };
+  } catch (err) {
+    console.error("[Auth Action] Unexpected error in signIn:", err);
+    return { ok: false, message: "Beklenmeyen bir hata oluştu" };
+  }
 }
 
 export async function signUp(formData: FormData): Promise<SignInResult> {

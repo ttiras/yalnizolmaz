@@ -16,13 +16,28 @@ export default async function LoginPage({ searchParams }: { searchParams?: { nex
 
   async function signInAndRedirect(formData: FormData) {
     "use server";
-    console.log("[signIn] attempting", { email: String(formData.get("email") || "") });
-    const res = await signIn(formData);
-    console.log("[signIn] result", res);
-    if (!res.ok) {
-      throw new Error(res.message || "Giriş başarısız");
+    const email = String(formData.get("email") || "");
+    console.log("[Login Page] signIn attempting for:", email);
+
+    try {
+      const res = await signIn(formData);
+      console.log("[Login Page] signIn result:", {
+        ok: res.ok,
+        message: res.ok ? undefined : res.message,
+        next: res.ok ? res.next : undefined,
+      });
+
+      if (!res.ok) {
+        console.error("[Login Page] signIn failed:", res.message);
+        throw new Error(res.message || "Giriş başarısız");
+      }
+
+      console.log("[Login Page] Redirecting to:", res.next);
+      redirect(res.next);
+    } catch (error) {
+      console.error("[Login Page] Error in signInAndRedirect:", error);
+      throw error;
     }
-    redirect(res.next || "/");
   }
 
   return (
