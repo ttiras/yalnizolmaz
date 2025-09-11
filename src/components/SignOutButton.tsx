@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { createNhostClient } from "@/lib/nhost";
+import { hasClientNhostConfig, createBrowserNhostClient } from "@/lib/nhost.client";
 import { signOut as signOutServer } from "@/app/actions/auth";
 
 type SignOutButtonProps = {
@@ -17,11 +17,15 @@ export function SignOutButton({ children }: SignOutButtonProps) {
   async function handleClick() {
     try {
       // Best-effort: clear any client-side session (localStorage, broadcast, etc.)
-      const nhost = createNhostClient();
-      try {
-        await nhost.auth.signOut({ all: true });
-      } catch {
-        // ignore; we still clear the server cookie below
+      if (hasClientNhostConfig()) {
+        const nhost = createBrowserNhostClient();
+        if (nhost) {
+          try {
+            await nhost.auth.signOut({ all: true });
+          } catch {
+            // ignore; we still clear the server cookie below
+          }
+        }
       }
       try {
         // Proactively clear any nhost-* keys from storage in case SDK keys changed

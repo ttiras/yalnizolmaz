@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies, headers } from "next/headers";
-import { createNhostClient } from "@/lib/nhost";
+import { createServerNhostClient, getServerAuthApiBase } from "@/lib/nhost.server";
 
 type SignInResult = { ok: true; next: string } | { ok: false; message: string };
 
@@ -135,7 +135,7 @@ export async function signIn(formData: FormData): Promise<SignInResult> {
   }
 
   try {
-    const nhost = createNhostClient();
+    const nhost = createServerNhostClient();
     console.log("[Auth Action] Nhost client created successfully");
 
     const { session, error } = await nhost.auth.signIn({ email, password });
@@ -166,7 +166,7 @@ export async function signUp(formData: FormData): Promise<SignInResult> {
   const password = String(formData.get("password") || "");
   if (!email || !password) return { ok: false, message: "E-posta ve şifre gerekli" };
 
-  const nhost = createNhostClient();
+  const nhost = createServerNhostClient();
   const { session, error } = await nhost.auth.signUp({ email, password });
   const normalized = normalizeSession(session as unknown);
   if (error || !normalized) return { ok: false, message: error?.message || "Kayıt başarısız" };
@@ -188,29 +188,11 @@ export async function signOut(): Promise<void> {
 
       // Attempt to revoke the refresh token at Nhost to avoid "already logged in" on re-login
       if (accessToken && refreshToken) {
-        // Resolve auth base URL similar to createNhostClient
-        const explicitAuth = process.env.NHOST_AUTH_URL || process.env.NEXT_PUBLIC_NHOST_AUTH_URL;
-        const serverBackendUrl = process.env.NHOST_BACKEND_URL;
-        const publicBackendUrl = process.env.NEXT_PUBLIC_NHOST_BACKEND_URL;
-        const serverSubdomain = process.env.NHOST_SUBDOMAIN;
-        const publicSubdomain = process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN;
-        const serverRegion = process.env.NHOST_REGION;
-        const publicRegion = process.env.NEXT_PUBLIC_NHOST_REGION;
-
-        let authUrl: string | null = null;
-        if (explicitAuth) {
-          authUrl = explicitAuth.replace(/\/$/, "");
-        } else if (serverBackendUrl || publicBackendUrl) {
-          const base = (serverBackendUrl || publicBackendUrl)!.replace(/\/$/, "");
-          authUrl = `${base}/v1/auth`;
-        } else if (serverSubdomain || publicSubdomain) {
-          const sub = (serverSubdomain || publicSubdomain)!;
-          const region = (serverRegion || publicRegion)!;
-          authUrl = `https://${sub}.auth.${region}.nhost.run/v1/auth`;
-        }
+        // Resolve auth base URL from server env (subdomain + region)
+        const authUrl = getServerAuthApiBase();
 
         try {
-          const res = await fetch(`${authUrl}/signout`, {
+          const res = await fetch(`${authUrl}/auth/signout`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

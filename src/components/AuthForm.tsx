@@ -24,7 +24,7 @@ export default function AuthForm({ mode, action }: AuthFormProps) {
     const nextErr: { email?: string; password?: string } = {};
     if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
       nextErr.email = "Geçerli bir e-posta girin";
-    if (!password || password.length < 9) nextErr.password = "En az 9 karakter olmalı";
+    if (!password || password.length < 8) nextErr.password = "En az 9 karakter olmalı";
     setErrors(nextErr);
     return Object.keys(nextErr).length === 0;
   }

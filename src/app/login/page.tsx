@@ -18,26 +18,22 @@ export default async function LoginPage({ searchParams }: { searchParams?: { nex
     "use server";
     const email = String(formData.get("email") || "");
     console.log("[Login Page] signIn attempting for:", email);
+    const res = await signIn(formData);
+    console.log("[Login Page] signIn result ok?", res.ok);
 
-    try {
-      const res = await signIn(formData);
-      console.log("[Login Page] signIn result:", {
-        ok: res.ok,
-        message: res.ok ? undefined : res.message,
-        next: res.ok ? res.next : undefined,
-      });
-
-      if (!res.ok) {
-        console.error("[Login Page] signIn failed:", res.message);
-        throw new Error(res.message || "Giriş başarısız");
-      }
-
-      console.log("[Login Page] Redirecting to:", res.next);
-      redirect(res.next);
-    } catch (error) {
-      console.error("[Login Page] Error in signInAndRedirect:", error);
-      throw error;
+    if (!res.ok) {
+      console.error("[Login Page] signIn failed:", res.message);
+      // Preserve original next (if any) and carry an error flag, avoid throwing a runtime error page
+      const originalNext = String(formData.get("next") || "");
+      const qs = new URLSearchParams();
+      if (originalNext) qs.set("next", originalNext);
+      qs.set("error", "1");
+      redirect(`/login${qs.toString() ? `?${qs.toString()}` : ""}`);
     }
+
+    console.log("[Login Page] Redirecting to:", res.next);
+    // Note: redirect throws NEXT_REDIRECT by design; don't wrap in try/catch
+    redirect(res.next);
   }
 
   return (
