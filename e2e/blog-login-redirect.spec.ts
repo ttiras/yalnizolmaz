@@ -6,13 +6,6 @@ test.skip(
 );
 
 test("login from blog redirects back to same page via next param", async ({ page }) => {
-  // Capture console messages
-  page.on("console", (msg) => {
-    if (msg.type() === "error") {
-      console.log("Console error:", msg.text());
-    }
-  });
-
   // Start unauthenticated on a blog page
   await page.goto("/blog/yalnizlik-sozleri");
 
@@ -30,12 +23,6 @@ test("login from blog redirects back to same page via next param", async ({ page
   // Based on the API test, the correct password is 1234test1234
   const rawPass = process.env.NHOST_TEST_PASSWORD_A || process.env.PASSWORD || "1234test1234";
   const password = rawPass.replace(/\r?\n/g, "").replace(/\s+$/g, "");
-  console.log("E2E creds:", {
-    email: testEmail,
-    rawLen: rawPass.length,
-    normLen: password.length,
-    lastChar: rawPass.charCodeAt(rawPass.length - 1),
-  });
 
   // Use the label-based approach to find inputs and clear them first
   const emailInput = page.getByLabel("E-posta");
@@ -58,8 +45,6 @@ test("login from blog redirects back to same page via next param", async ({ page
   // Wait for either navigation or a reasonable timeout
   await Promise.race([navigationPromise, page.waitForTimeout(5000)]);
 
-  console.log("URL after login attempt:", page.url());
-
   // Check for any error message with broader search
   const possibleErrors = [
     page.locator("text=/hata|error|başarısız|failed/i"),
@@ -70,7 +55,6 @@ test("login from blog redirects back to same page via next param", async ({ page
 
   for (const errorLoc of possibleErrors) {
     if (await errorLoc.isVisible({ timeout: 500 }).catch(() => false)) {
-      console.log("Error found:", await errorLoc.textContent());
     }
   }
 
@@ -82,7 +66,6 @@ test("login from blog redirects back to same page via next param", async ({ page
 
   // Log all links in the navbar to see what's actually there
   const navLinks = await page.locator("nav a").allTextContents();
-  console.log("Navbar links:", navLinks);
 
   // Wait for authentication to complete by checking navbar shows user email
   const emailAssert = process.env.NHOST_TEST_EMAIL_A || "test@test.com";
@@ -91,7 +74,6 @@ test("login from blog redirects back to same page via next param", async ({ page
   // Now check if we're on the blog page (either by redirect or manual navigation)
   const targetRe = /\/blog\/yalnizlik-sozleri\/?(?:#.*)?$/;
   const currentUrl = page.url();
-  console.log("Current URL after login:", currentUrl);
 
   if (!targetRe.test(currentUrl)) {
     // If still on login page, navigate to the intended destination

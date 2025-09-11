@@ -10,7 +10,7 @@ import { signIn, signUp } from "@/app/actions/auth";
 
 type AuthFormProps = {
   mode: "login" | "signup";
-  action?: (formData: FormData) => Promise<{ error?: string }>;
+  action?: (formData: FormData) => Promise<void>;
 };
 
 export default function AuthForm({ mode, action }: AuthFormProps) {

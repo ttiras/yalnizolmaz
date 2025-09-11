@@ -19,7 +19,9 @@ export default async function LoginPage({ searchParams }: { searchParams?: { nex
     console.log("[signIn] attempting", { email: String(formData.get("email") || "") });
     const res = await signIn(formData);
     console.log("[signIn] result", res);
-    if (!res.ok) return { error: res.message } as const;
+    if (!res.ok) {
+      throw new Error(res.message || "Giriş başarısız");
+    }
     redirect(res.next || "/");
   }
 
