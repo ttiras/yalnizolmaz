@@ -32,3 +32,24 @@ export async function getSession(): Promise<SessionData | null> {
   } catch {}
   return null;
 }
+
+export async function updateSessionUser(updatedUser: Partial<SessionUser>): Promise<void> {
+  const session = await getSession();
+  if (!session?.user) return;
+
+  const updatedSession = {
+    ...session,
+    user: {
+      ...session.user,
+      ...updatedUser,
+    },
+  };
+
+  const jar = await cookies();
+  jar.set(SESSION_COOKIE, JSON.stringify(updatedSession), {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+  });
+}

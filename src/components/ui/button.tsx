@@ -5,12 +5,15 @@ import * as React from "react";
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "default" | "destructive" | "ghost" | "outline";
   size?: "sm" | "md" | "lg";
+  asChild?: boolean;
 };
 
 export function Button({
   className = "",
   variant = "default",
   size = "md",
+  asChild = false,
+  children,
   ...props
 }: ButtonProps) {
   const base =
@@ -27,5 +30,17 @@ export function Button({
     ghost: "hover:bg-neutral-100 dark:hover:bg-neutral-800",
   };
   const cls = `${base} ${sizes[size]} ${variants[variant]} ${className}`;
-  return <button className={cls} {...props} />;
+
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children, {
+      ...props,
+      className: `${cls} ${(children.props as { className?: string })?.className || ""}`,
+    });
+  }
+
+  return (
+    <button className={cls} {...props}>
+      {children}
+    </button>
+  );
 }

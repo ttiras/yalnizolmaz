@@ -9,6 +9,24 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/wikipedia/**",
       },
+      {
+        protocol: "https",
+        hostname: "www.gravatar.com",
+        port: "",
+        pathname: "/avatar/**",
+      },
+      {
+        protocol: "https",
+        hostname: "gravatar.com",
+        port: "",
+        pathname: "/avatar/**",
+      },
+      {
+        protocol: "https",
+        hostname: "secure.gravatar.com",
+        port: "",
+        pathname: "/avatar/**",
+      },
     ],
   },
   turbopack: {

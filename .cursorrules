@@ -27,7 +27,8 @@
 7. **Accessibility.** Proper semantics (`<main>`, `<article>`, `<time>`), focus states, labels, color contrast.
 8. **Performance.** Lean client bundles, minimal hydration, image optimization, stable CLS.
 9. **Pagespeedinsisghts and vW3C validations.** Google PageSpeed Insights ve W3C validations must be perfect.
-10. **Commit policy.** Never commit or push changes unless the user explicitly requests it.
+10. **API Route Naming.** All API routes must use Turkish words and follow the pattern `/api/turkish-word/action`. Examples: `/api/profil/duzenle`, `/api/kullanici/guncelle`, `/api/yorum/ekle`. Never use English words in API routes.
+11. **Commit policy.** Never commit or push changes unless the user explicitly requests it.
 
 ## React Server Components (RSC) Guidelines
 
