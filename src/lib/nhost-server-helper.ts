@@ -1,6 +1,7 @@
 import "server-only";
 import { createServerNhostClient } from "@/lib/nhost.server";
 import { getSession } from "@/lib/auth-session";
+import type { NhostClient } from "@nhost/nhost-js";
 
 /**
  * Creates an authenticated Nhost client for server-side operations
@@ -19,9 +20,24 @@ export async function createAuthenticatedNhostClient() {
   nhost.auth.client.start({
     initialSession: {
       accessToken: session.accessToken,
-      refreshToken: session.refreshToken,
-      accessTokenExpiresIn: session.accessTokenExpiresIn,
-      user: session.user,
+      refreshToken: session.refreshToken || null,
+      accessTokenExpiresIn: session.accessTokenExpiresIn || 900,
+      user: {
+        id: session.user.id,
+        email: session.user.email || "",
+        displayName: session.user.displayName || "",
+        avatarUrl: session.user.avatarUrl || "",
+        createdAt: new Date().toISOString(),
+        locale: "en",
+        isAnonymous: false,
+        defaultRole: "user",
+        roles: ["user"],
+        emailVerified: true,
+        phoneNumber: null,
+        phoneNumberVerified: false,
+        activeMfaType: null,
+        metadata: {},
+      },
     },
   });
 
@@ -46,7 +62,7 @@ export async function createAuthenticatedNhostClient() {
  * Helper function to run GraphQL queries as an authenticated user
  */
 export async function runAsUser<T = unknown>(
-  callback: (nhost: unknown) => Promise<{ data?: T; error?: unknown }>,
+  callback: (nhost: NhostClient) => Promise<{ data?: T; error?: unknown }>,
 ): Promise<{ data?: T; error?: unknown }> {
   try {
     const nhost = await createAuthenticatedNhostClient();

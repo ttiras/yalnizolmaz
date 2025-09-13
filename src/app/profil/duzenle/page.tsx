@@ -3,6 +3,15 @@ import { getSession } from "@/lib/auth-session";
 import { runAsUser } from "@/lib/nhost-server-helper";
 import ProfileEditForm from "@/components/ProfileEditForm";
 
+type UserProfile = {
+  user_id: string;
+  bio?: string | null;
+  location?: string | null;
+  website?: string | null;
+  created_at?: string;
+  updated_at?: string;
+};
+
 export default async function ProfileEdit() {
   const session = await getSession();
 
@@ -11,7 +20,7 @@ export default async function ProfileEdit() {
   }
 
   try {
-    const { data: profileData, error: profileError } = await runAsUser(async (nhost: unknown) => {
+    const { data: profileData, error: profileError } = await runAsUser(async (nhost) => {
       return await nhost.graphql.request(
         `
         query GetUserProfile($userId: uuid!) {
@@ -35,7 +44,10 @@ export default async function ProfileEdit() {
       console.error("Error fetching user profile:", profileError);
     }
 
-    const profile = (profileData as { user_profiles?: unknown[] })?.user_profiles?.[0] || null;
+    const profile = profileData
+      ? ((profileData as { user_profiles?: unknown[] })
+          ?.user_profiles?.[0] as UserProfile | null) || null
+      : null;
 
     return <ProfileEditForm user={session.user} profile={profile} />;
   } catch (error) {

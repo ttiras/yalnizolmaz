@@ -1,4 +1,5 @@
 import "@testing-library/jest-dom";
+import { vi } from "vitest";
 
 // Mock IntersectionObserver for JSDOM
 class MockIntersectionObserver {
@@ -20,3 +21,6 @@ class MockIntersectionObserver {
 ).IntersectionObserver = MockIntersectionObserver as unknown as typeof IntersectionObserver;
 
 (window as unknown as { scrollTo: () => void }).scrollTo = () => {};
+
+// Mock server-only module
+vi.mock("server-only", () => ({}));

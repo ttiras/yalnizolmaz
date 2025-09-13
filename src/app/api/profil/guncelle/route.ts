@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if profile exists
-    const { data: existingProfile } = await runAsUser(async (nhost: unknown) => {
+    const { data: existingProfile } = await runAsUser(async (nhost) => {
       return await nhost.graphql.request(
         `
         query GetUserProfile($userId: uuid!) {
@@ -59,12 +59,12 @@ export async function POST(request: NextRequest) {
       );
     });
 
-    const profileExists =
-      (existingProfile as { user_profiles?: unknown[] })?.user_profiles?.length > 0;
+    const profileData = existingProfile as { user_profiles?: unknown[] } | undefined;
+    const profileExists = profileData?.user_profiles && profileData.user_profiles.length > 0;
 
     if (profileExists) {
       // Update existing profile
-      const { data, error } = await runAsUser(async (nhost: unknown) => {
+      const { data, error } = await runAsUser(async (nhost) => {
         return await nhost.graphql.request(
           `
           mutation UpdateUserProfile($userId: uuid!, $updates: user_profiles_set_input!) {
@@ -105,12 +105,14 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({
         message: "Profil başarıyla güncellendi",
-        profile: (data as { update_user_profiles?: { returning?: unknown[] } })
-          ?.update_user_profiles?.returning?.[0],
+        profile: data
+          ? (data as { update_user_profiles?: { returning?: unknown[] } })?.update_user_profiles
+              ?.returning?.[0]
+          : null,
       });
     } else {
       // Create new profile
-      const { data, error } = await runAsUser(async (nhost: unknown) => {
+      const { data, error } = await runAsUser(async (nhost) => {
         return await nhost.graphql.request(
           `
           mutation InsertUserProfile($profile: user_profiles_insert_input!) {
@@ -144,7 +146,9 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({
         message: "Profil başarıyla oluşturuldu",
-        profile: (data as { insert_user_profiles_one?: unknown })?.insert_user_profiles_one,
+        profile: data
+          ? (data as { insert_user_profiles_one?: unknown })?.insert_user_profiles_one
+          : null,
       });
     }
   } catch (error) {

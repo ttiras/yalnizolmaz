@@ -53,5 +53,5 @@ export function getAllPosts(): BlogPost[] {
     .map((slug) => getPostBySlug(slug)!)
     .filter(Boolean)
     .filter((p) => !p.data.draft)
-    .sort((a, b) => (a.data.date < b.data.date ? 1 : -1));
+    .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 }

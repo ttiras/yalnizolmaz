@@ -20,8 +20,16 @@ describe("mdx lib", () => {
   it("returns posts sorted by date desc and filters drafts", () => {
     const posts = getAllPosts();
     expect(posts.length).toBeGreaterThan(0);
-    const times = posts.map((p) => new Date(p.data.date).getTime());
-    const sorted = [...times].sort((a, b) => b - a);
-    expect(times).toEqual(sorted);
+
+    // Check that posts are sorted by date in descending order (newest first)
+    for (let i = 0; i < posts.length - 1; i++) {
+      const currentDate = new Date(posts[i]!.data.date);
+      const nextDate = new Date(posts[i + 1]!.data.date);
+      expect(currentDate.getTime()).toBeGreaterThanOrEqual(nextDate.getTime());
+    }
+
+    // Check that no draft posts are included
+    const hasDraftPosts = posts.some((p) => p.data.draft === true);
+    expect(hasDraftPosts).toBe(false);
   });
 });

@@ -27,4 +27,10 @@ export default defineConfig({
       },
     },
   },
+  define: {
+    "import.meta.vitest": "undefined",
+  },
+  optimizeDeps: {
+    exclude: ["server-only"],
+  },
 });

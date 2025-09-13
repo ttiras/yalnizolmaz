@@ -11,6 +11,7 @@
 - **Data (next):** Nhost/Hasura (GraphQL + subscriptions)
 - **Auth (next):** Nhost Auth; secrets live server-side only (Route Handlers)
 - **Testing (next):** Vitest + Testing Library + MSW; Playwright for e2e
+- **Package Manager:** pnpm (always use `pnpm` instead of `npm`)
 
 **North Star:** fast, SEO-friendly content site with a path to community features (likes, accounts) and monetization (affiliate, digital products, membership) without heavy client JS.
 

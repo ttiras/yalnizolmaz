@@ -35,7 +35,7 @@ export function Button({
     return React.cloneElement(children, {
       ...props,
       className: `${cls} ${(children.props as { className?: string })?.className || ""}`,
-    });
+    } as React.HTMLAttributes<HTMLElement>);
   }
 
   return (
