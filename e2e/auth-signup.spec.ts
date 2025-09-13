@@ -40,7 +40,7 @@ test.describe("Sign Up Flow", () => {
     await submitButton.click();
 
     // Should show validation error
-    await expect(page.locator("text=/Geçerli bir e-posta girin/")).toBeVisible();
+    await expect(page.locator("text=/Geçerli bir e-posta adresi girin/")).toBeVisible();
   });
 
   test("should validate password length", async ({ page }) => {
@@ -56,7 +56,7 @@ test.describe("Sign Up Flow", () => {
     await submitButton.click();
 
     // Should show validation error
-    await expect(page.locator("text=/En az 9 karakter olmalı/")).toBeVisible();
+    await expect(page.locator("text=/Şifre en az 9 karakter olmalı/")).toBeVisible();
   });
 
   test("should have functional form elements", async ({ page }) => {
@@ -95,11 +95,9 @@ test.describe("Sign Up Flow", () => {
     await passwordInput.fill(testPassword);
     await submitButton.click();
 
-    // Wait for navigation to home page
-    await expect(page).toHaveURL("/", { timeout: 10000 });
-
-    // Check that user is logged in by looking for user email in navbar
-    await expect(page.getByRole("link", { name: testEmail })).toBeVisible({ timeout: 5000 });
+    // With email verification required, we redirect with verify flag and do not auto sign-in
+    await expect(page).toHaveURL("/?verify=1", { timeout: 10000 });
+    await expect(page.locator("text=/E-postanı doğrula/i")).toBeVisible({ timeout: 5000 });
   });
 
   test("should handle signup with existing email", async ({ page }) => {
@@ -117,12 +115,13 @@ test.describe("Sign Up Flow", () => {
     await passwordInput.fill(testPassword);
     await submitButton.click();
 
-    // Wait for error message
-    await expect(
-      page.locator("text=/kullanıcı zaten var|already exists|kayıt başarısız/i"),
-    ).toBeVisible({
-      timeout: 10000,
-    });
+    // Wait for inline error alert under the submit button (scoped to form)
+    const form = page.locator("form");
+    const inlineAlert = form.locator('[role="alert"]');
+    await expect(inlineAlert.first()).toBeVisible({ timeout: 10000 });
+    await expect(inlineAlert.first()).toContainText(
+      /Email already in use|kullanıcı zaten var|kayıt başarısız/i,
+    );
   });
 
   test("should redirect to next parameter after successful signup", async ({ page }) => {
@@ -141,8 +140,8 @@ test.describe("Sign Up Flow", () => {
     await passwordInput.fill(testPassword);
     await submitButton.click();
 
-    // Should redirect to /blog after successful signup
-    await expect(page).toHaveURL("/blog", { timeout: 10000 });
+    // Should redirect to /blog with verify flag after signup (no auto sign-in)
+    await expect(page).toHaveURL("/blog?verify=1", { timeout: 10000 });
   });
 
   test("should prevent access to signup when already logged in", async ({ page }) => {
@@ -160,14 +159,12 @@ test.describe("Sign Up Flow", () => {
     await passwordInput.fill(testPassword);
     await submitButton.click();
 
-    // Wait for successful signup
-    await expect(page).toHaveURL("/", { timeout: 10000 });
+    // Wait for verification redirect (no auto sign-in)
+    await expect(page).toHaveURL("/?verify=1", { timeout: 10000 });
 
-    // Now try to access signup page again
+    // Now try to access signup page again: still allowed since user isn't logged in yet
     await page.goto("/signup");
-
-    // Should be redirected to home page
-    await expect(page).toHaveURL("/");
+    await expect(page).toHaveURL("/signup");
   });
 
   test("should have proper form accessibility", async ({ page }) => {

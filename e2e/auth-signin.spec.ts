@@ -40,7 +40,7 @@ test.describe("Sign In Flow", () => {
     await submitButton.click();
 
     // Should show validation error
-    await expect(page.locator("text=/Geçerli bir e-posta girin/")).toBeVisible();
+    await expect(page.locator("text=/Geçerli bir e-posta adresi girin/")).toBeVisible();
   });
 
   test("should validate password length", async ({ page }) => {
@@ -56,7 +56,7 @@ test.describe("Sign In Flow", () => {
     await submitButton.click();
 
     // Should show validation error
-    await expect(page.locator("text=/En az 9 karakter olmalı/")).toBeVisible();
+    await expect(page.locator("text=/Şifre en az 9 karakter olmalı/")).toBeVisible();
   });
 
   test("should have functional form elements", async ({ page }) => {
@@ -219,8 +219,8 @@ test.describe("Sign In Flow", () => {
     await submitButton.click();
 
     // Should show validation errors
-    await expect(page.locator("text=/Geçerli bir e-posta girin/")).toBeVisible();
-    await expect(page.locator("text=/En az 9 karakter olmalı/")).toBeVisible();
+    await expect(page.locator("text=/Geçerli bir e-posta adresi girin/")).toBeVisible();
+    await expect(page.locator("text=/Şifre en az 9 karakter olmalı/")).toBeVisible();
   });
 
   test("should preserve next parameter in error scenarios", async ({ page }) => {

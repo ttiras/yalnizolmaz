@@ -67,9 +67,16 @@ test("login from blog redirects back to same page via next param", async ({ page
   // Log all links in the navbar to see what's actually there
   const navLinks = await page.locator("nav a").allTextContents();
 
-  // Wait for authentication to complete by checking navbar shows user email
-  const emailAssert = process.env.NHOST_TEST_EMAIL_A || "test@test.com";
-  await expect(page.getByRole("link", { name: emailAssert })).toBeVisible({ timeout: 15000 });
+  // Wait for authentication to complete by checking nhost session cookie
+  await expect
+    .poll(
+      async () => {
+        const cookies = await page.context().cookies();
+        return cookies.some((c) => c.name === "nhostSession");
+      },
+      { timeout: 15000 },
+    )
+    .toBe(true);
 
   // Now check if we're on the blog page (either by redirect or manual navigation)
   const targetRe = /\/blog\/yalnizlik-sozleri\/?(?:#.*)?$/;

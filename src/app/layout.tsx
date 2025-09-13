@@ -5,6 +5,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AppToaster } from "@/components/ui/toaster";
+import { VerifyBanner } from "@/components/VerifyBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -63,6 +64,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <Navbar />
+        <VerifyBanner />
         {children}
         <Footer />
         <AppToaster />

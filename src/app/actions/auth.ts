@@ -164,17 +164,49 @@ export async function signIn(formData: FormData): Promise<SignInResult> {
 export async function signUp(formData: FormData): Promise<SignInResult> {
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "");
-  if (!email || !password) return { ok: false, message: "E-posta ve şifre gerekli" };
+  if (!email || !password) {
+    console.error("[Auth Action] signUp missing fields", {
+      hasEmail: Boolean(email),
+      hasPassword: Boolean(password),
+    });
+    return { ok: false, message: "E-posta ve şifre gerekli" };
+  }
 
-  const nhost = createServerNhostClient();
-  const { session, error } = await nhost.auth.signUp({ email, password });
-  const normalized = normalizeSession(session as unknown);
-  if (error || !normalized) return { ok: false, message: error?.message || "Kayıt başarısız" };
+  try {
+    console.log("[Auth Action] signUp called for email:", email);
+    // Call Nhost Auth REST endpoint directly to ensure local dev hits the right domain
+    const authBase = getServerAuthApiBase(); // e.g., https://local.auth.local.nhost.run/v1
+    const res = await fetch(`${authBase}/signup/email-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+      cache: "no-store",
+    });
 
-  await setSessionCookie(normalized);
-  const h = await headers();
-  const next = safeNextFromInput(formData.get("next"), h) || "/";
-  return { ok: true, next };
+    // Compute safe next path up-front (used in both branches)
+    const h = await headers();
+    const baseNext = safeNextFromInput(formData.get("next"), h) || "/";
+
+    if (!res.ok) {
+      let message = "Kayıt başarısız";
+      try {
+        const data = (await res.json()) as { error?: string; message?: string };
+        message = data.message || message;
+      } catch {}
+      console.error("[Auth Action] Sign up failed (REST):", message, res.status);
+      return { ok: false, message };
+    }
+
+    // Success but no session in response when email verification is required.
+    const url = new URL(`http://local${baseNext.startsWith("/") ? baseNext : "/"}`);
+    if (!url.searchParams.has("verify")) url.searchParams.append("verify", "1");
+    const nextWithVerify = `${url.pathname}${url.search}${url.hash}`;
+    console.log("[Auth Action] Sign up (REST) pending verification, next path:", nextWithVerify);
+    return { ok: true, next: nextWithVerify };
+  } catch (err) {
+    console.error("[Auth Action] Unexpected error in signUp:", err);
+    return { ok: false, message: "Beklenmeyen bir hata oluştu" };
+  }
 }
 
 export async function signOut(): Promise<void> {

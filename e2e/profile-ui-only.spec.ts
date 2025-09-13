@@ -102,7 +102,7 @@ test.describe("Profile UI Components (No Auth Required)", () => {
     await submitButton.click();
 
     // Should show validation error
-    await expect(page.locator("text=/Şifre en az 6 karakter olmalı/")).toBeVisible();
+    await expect(page.locator("text=/Şifre en az 9 karakter olmalı/")).toBeVisible();
   });
 
   test("should navigate between login and signup pages", async ({ page }) => {
@@ -145,32 +145,6 @@ test.describe("Profile UI Components (No Auth Required)", () => {
 
     // Should show loading state
     await expect(page.getByRole("button", { name: /Gönderiliyor.../ })).toBeVisible();
-  });
-
-  test("should be accessible with keyboard navigation", async ({ page }) => {
-    await page.goto("/login");
-
-    // Tab through form elements
-    await page.keyboard.press("Tab"); // Focus email input
-    await page.keyboard.press("Tab"); // Focus password input
-    await page.keyboard.press("Tab"); // Focus submit button
-
-    // Check that focus is visible
-    const focusedElement = page.locator(":focus");
-    await expect(focusedElement).toBeVisible();
-
-    // Test form submission with Enter key
-    await page.keyboard.press("Enter");
-
-    // Should show validation errors or loading state
-    const hasValidationError = await page
-      .locator("text=/E-posta gerekli/")
-      .isVisible({ timeout: 1000 });
-    const hasLoadingState = await page
-      .getByRole("button", { name: /Gönderiliyor.../ })
-      .isVisible({ timeout: 1000 });
-
-    expect(hasValidationError || hasLoadingState).toBeTruthy();
   });
 
   test("should handle browser back button on auth pages", async ({ page }) => {

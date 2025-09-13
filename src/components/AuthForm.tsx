@@ -1,7 +1,9 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useFormStatus } from "react-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,13 +20,22 @@ export default function AuthForm({ mode, action }: AuthFormProps) {
   const [password, setPassword] = React.useState("");
   const [errors, setErrors] = React.useState<{ email?: string; password?: string }>({});
   const [submitting, setSubmitting] = React.useState(false);
+  const [submitError, setSubmitError] = React.useState<string>("");
   const search = useSearchParams();
+  const hasError = (search?.get("error") ?? "") !== "";
 
   function validate() {
     const nextErr: { email?: string; password?: string } = {};
-    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
-      nextErr.email = "Geçerli bir e-posta girin";
-    if (!password || password.length < 9) nextErr.password = "En az 9 karakter olmalı";
+    if (!email) {
+      nextErr.email = "E-posta gerekli";
+    } else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      nextErr.email = "Geçerli bir e-posta adresi girin";
+    }
+    if (!password) {
+      nextErr.password = "Şifre gerekli";
+    } else if (password.length < 9) {
+      nextErr.password = "Şifre en az 9 karakter olmalı";
+    }
     setErrors(nextErr);
     return Object.keys(nextErr).length === 0;
   }
@@ -33,17 +44,41 @@ export default function AuthForm({ mode, action }: AuthFormProps) {
     e.preventDefault();
     if (!validate()) return;
     setSubmitting(true);
+    setSubmitError("");
     try {
       const fd = new FormData();
       fd.set("email", email);
       fd.set("password", password);
       // Only forward an explicit ?next=... value. Never default to the login page itself.
       const qsNext = search?.get("next") ?? null;
-      const next = qsNext && typeof qsNext === "string" ? qsNext : null;
+      let next: string | null = qsNext && typeof qsNext === "string" ? qsNext : null;
+      if (!next && mode === "signup") {
+        try {
+          const origin = window.location.origin;
+          const ref = document.referrer;
+          if (ref && ref.startsWith(origin)) {
+            const u = new URL(ref);
+            const path = `${u.pathname}${u.search || ""}${u.hash || ""}`;
+            if (
+              path &&
+              path !== "/login" &&
+              !path.startsWith("/login?") &&
+              path !== "/signup" &&
+              !path.startsWith("/signup?")
+            ) {
+              next = path;
+            }
+          }
+        } catch {}
+      }
       if (next) fd.set("next", next);
       const res = mode === "login" ? await signIn(fd) : await signUp(fd);
       if (!res.ok) {
-        toast.error(res.message || "İşlem başarısız");
+        if (mode === "signup") {
+          setSubmitError(res.message || "Kayıt başarısız");
+        } else {
+          toast.error(res.message || "İşlem başarısız");
+        }
         return;
       }
       // Navigate using the server-computed safe next path
@@ -106,12 +141,47 @@ export default function AuthForm({ mode, action }: AuthFormProps) {
             />
             <p className="mt-1 text-xs text-neutral-500">En az 9 karakter</p>
           </div>
-          <Button type="submit" disabled={submitting} className="w-full">
-            {submitting ? "Gönderiliyor..." : "E-posta ile devam et"}
-          </Button>
+          <SubmitButton clientSubmitting={submitting} />
+          {mode === "signup" && submitError ? (
+            <div
+              role="alert"
+              className="-mt-2 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700"
+            >
+              {submitError}
+            </div>
+          ) : null}
+          {mode === "login" && hasError ? (
+            <div
+              role="alert"
+              className="-mt-2 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700"
+            >
+              Hatalı e-posta veya şifre
+            </div>
+          ) : null}
           <div className="text-center text-sm text-neutral-500">Sosyal ile giriş (yakında)</div>
+          <div className="text-center">
+            {mode === "login" ? (
+              <Link href="/signup" className="text-blue-600 hover:underline">
+                Kayıt ol
+              </Link>
+            ) : (
+              <Link href="/login" className="text-blue-600 hover:underline">
+                Giriş yap
+              </Link>
+            )}
+          </div>
         </form>
       </CardContent>
     </Card>
+  );
+}
+
+function SubmitButton({ clientSubmitting }: { clientSubmitting: boolean }) {
+  const { pending } = useFormStatus();
+  const isBusy = pending || clientSubmitting;
+  return (
+    <Button type="submit" disabled={isBusy} className="w-full">
+      {isBusy ? "Gönderiliyor..." : "E-posta ile devam et"}
+    </Button>
   );
 }
