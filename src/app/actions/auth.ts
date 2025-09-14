@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies, headers } from "next/headers";
-import { createServerNhostClient, getServerAuthApiBase } from "@/lib/nhost.server";
+import { getServerAuthApiBase } from "@/lib/nhost.server";
 
 type SignInResult = { ok: true; next: string } | { ok: false; message: string };
 
@@ -135,25 +135,41 @@ export async function signIn(formData: FormData): Promise<SignInResult> {
   }
 
   try {
-    const nhost = createServerNhostClient();
-    console.log("[Auth Action] Nhost client created successfully");
-
-    const { session, error } = await nhost.auth.signIn({ email, password });
-    console.log("[Auth Action] Nhost signIn response:", {
-      hasSession: !!session,
-      error: error?.message,
+    // Use REST endpoint in dev to ensure correct local domain
+    const authBase = getServerAuthApiBase();
+    const res = await fetch(`${authBase}/signin/email-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+      cache: "no-store",
     });
 
-    const normalized = normalizeSession(session as unknown);
-    if (error || !normalized) {
-      console.error("[Auth Action] Sign in failed:", error?.message || "No session returned");
-      return { ok: false, message: error?.message || "Giriş başarısız" };
+    if (!res.ok) {
+      let message = "Giriş başarısız";
+      try {
+        const data = (await res.json()) as { error?: string; message?: string };
+        message = data.message || message;
+      } catch {}
+      console.error("[Auth Action] Sign in failed (REST):", message, res.status);
+      return { ok: false, message };
+    }
+
+    const payload: unknown = await res.json();
+    let rawSession: unknown = payload;
+    if (payload && typeof payload === "object" && "session" in payload) {
+      const withSession = payload as { session?: unknown };
+      rawSession = withSession.session;
+    }
+    const normalized = normalizeSession(rawSession);
+    if (!normalized) {
+      console.error("[Auth Action] Sign in failed: No session returned (REST)");
+      return { ok: false, message: "Giriş başarısız" };
     }
 
     await setSessionCookie(normalized);
     const h = await headers();
     const next = safeNextFromInput(formData.get("next"), h) || "/";
-    console.log("[Auth Action] Sign in successful, next path:", next);
+    console.log("[Auth Action] Sign in successful (REST), next path:", next);
     return { ok: true, next };
   } catch (err) {
     console.error("[Auth Action] Unexpected error in signIn:", err);

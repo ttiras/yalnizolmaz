@@ -71,7 +71,7 @@ export default function CommentsClient({
       {/* Comment Composer */}
       <div className="rounded-2xl bg-gray-50 p-6">
         {loggedIn ? (
-          <CommentComposer slug={slug} onSubmitted={handleNewComment} />
+          <CommentComposer slug={slug} onSubmitted={handleNewComment} loggedIn={true} />
         ) : (
           <AuthGate mode="inline">
             <CommentComposer slug={slug} onSubmitted={handleNewComment} />

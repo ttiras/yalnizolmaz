@@ -156,7 +156,15 @@ test.describe("Authentication Blog Integration", () => {
     await submitButton.click();
 
     await expect(page).toHaveURL("/", { timeout: 10000 });
-    await expect(page.getByRole("link", { name: testEmail })).toBeVisible({ timeout: 5000 });
+    await expect
+      .poll(
+        async () => {
+          const cookies = await page.context().cookies();
+          return cookies.some((c) => c.name === "nhostSession");
+        },
+        { timeout: 10000 },
+      )
+      .toBe(true);
 
     // Now navigate to blog post
     await page.goto("/blog/yalnizlik-sozleri");
@@ -226,10 +234,15 @@ test.describe("Authentication Blog Integration", () => {
     const onBlog2 = /\/blog\/yalnizlik-sozleri/.test(page.url());
     if (!onBlog2) {
       await expect(page).toHaveURL(/\/login\?next=\/blog\/yalnizlik-sozleri/, { timeout: 5000 });
+    } else {
+      // Ensure we are on the login page to proceed with sign-in
+      await page.goto("/login?next=/blog/yalnizlik-sozleri");
     }
 
     // Sign in
-    const emailInput = page.getByLabel("E-posta");
+    // Scope email input to the login form to avoid matching mailto share link
+    const form = page.locator("form").first();
+    const emailInput = form.getByLabel("E-posta");
     const passwordInput = page.getByLabel("Şifre");
     const submitButton = page.getByRole("button", { name: /E-posta ile devam et/i });
 

@@ -97,7 +97,9 @@ test.describe("Sign Up Flow", () => {
 
     // With email verification required, we redirect with verify flag and do not auto sign-in
     await expect(page).toHaveURL("/?verify=1", { timeout: 10000 });
-    await expect(page.locator("text=/E-postanı doğrula/i")).toBeVisible({ timeout: 5000 });
+    // Modal with role=dialog and title
+    const dialog = page.getByRole("dialog", { name: "E-postanı doğrula" });
+    await expect(dialog).toBeVisible({ timeout: 5000 });
   });
 
   test("should handle signup with existing email", async ({ page }) => {
@@ -142,6 +144,8 @@ test.describe("Sign Up Flow", () => {
 
     // Should redirect to /blog with verify flag after signup (no auto sign-in)
     await expect(page).toHaveURL("/blog?verify=1", { timeout: 10000 });
+    const dialog2 = page.getByRole("dialog", { name: "E-postanı doğrula" });
+    await expect(dialog2).toBeVisible({ timeout: 5000 });
   });
 
   test("should prevent access to signup when already logged in", async ({ page }) => {
@@ -161,6 +165,9 @@ test.describe("Sign Up Flow", () => {
 
     // Wait for verification redirect (no auto sign-in)
     await expect(page).toHaveURL("/?verify=1", { timeout: 10000 });
+    await expect(page.getByRole("dialog", { name: "E-postanı doğrula" })).toBeVisible({
+      timeout: 5000,
+    });
 
     // Now try to access signup page again: still allowed since user isn't logged in yet
     await page.goto("/signup");

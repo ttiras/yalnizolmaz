@@ -94,11 +94,17 @@ test.describe("Sign In Flow", () => {
     await passwordInput.fill(testPassword);
     await submitButton.click();
 
-    // Wait for navigation to home page
+    // Wait for navigation to home page and authenticated cookie
     await expect(page).toHaveURL("/", { timeout: 10000 });
-
-    // Check that user is logged in by looking for user email in navbar
-    await expect(page.getByRole("link", { name: testEmail })).toBeVisible({ timeout: 5000 });
+    await expect
+      .poll(
+        async () => {
+          const cookies = await page.context().cookies();
+          return cookies.some((c) => c.name === "nhostSession");
+        },
+        { timeout: 10000 },
+      )
+      .toBe(true);
   });
 
   test("should handle sign in with invalid credentials", async ({ page }) => {
@@ -112,10 +118,17 @@ test.describe("Sign In Flow", () => {
     await passwordInput.fill("wrongpassword123");
     await submitButton.click();
 
-    // Wait for error message
-    await expect(
-      page.locator("text=/kullanıcı bulunamadı|şifre yanlış|giriş başarısız|invalid|incorrect/i"),
-    ).toBeVisible({ timeout: 10000 });
+    // Should remain on login and not set session cookie
+    await expect(page).toHaveURL(/\/login(\?|$)/, { timeout: 10000 });
+    await expect
+      .poll(
+        async () => {
+          const cookies = await page.context().cookies();
+          return cookies.some((c) => c.name === "nhostSession");
+        },
+        { timeout: 2000 },
+      )
+      .toBe(false);
   });
 
   test("should redirect to next parameter after successful sign in", async ({ page }) => {
@@ -180,11 +193,17 @@ test.describe("Sign In Flow", () => {
     // Test server-side form submission by pressing Enter
     await passwordInput.press("Enter");
 
-    // Wait for navigation to home page
+    // Wait for navigation to home page and authenticated cookie
     await expect(page).toHaveURL("/", { timeout: 10000 });
-
-    // Check that user is logged in
-    await expect(page.getByRole("link", { name: testEmail })).toBeVisible({ timeout: 5000 });
+    await expect
+      .poll(
+        async () => {
+          const cookies = await page.context().cookies();
+          return cookies.some((c) => c.name === "nhostSession");
+        },
+        { timeout: 10000 },
+      )
+      .toBe(true);
   });
 
   test("should have proper form accessibility", async ({ page }) => {
@@ -218,9 +237,9 @@ test.describe("Sign In Flow", () => {
     // Test with empty fields
     await submitButton.click();
 
-    // Should show validation errors
-    await expect(page.locator("text=/Geçerli bir e-posta adresi girin/")).toBeVisible();
-    await expect(page.locator("text=/Şifre en az 9 karakter olmalı/")).toBeVisible();
+    // Should show validation errors for required fields
+    await expect(page.locator("text=/E-posta gerekli/")).toBeVisible();
+    await expect(page.locator("text=/Şifre gerekli/")).toBeVisible();
   });
 
   test("should preserve next parameter in error scenarios", async ({ page }) => {

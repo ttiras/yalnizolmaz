@@ -3,14 +3,15 @@
 import { useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { MessageSquare, Send, LogIn } from "lucide-react";
-import { postComment } from "@/lib/comments/mockClient";
-import type { CommentComposerProps } from "@/lib/types/comments";
+// import { postComment } from "@/lib/comments/mockClient";
+import type { CommentComposerProps, BlogComment } from "@/lib/types/comments";
 
-export default function CommentComposer({ slug, parentId, onSubmitted }: CommentComposerProps) {
+type Props = CommentComposerProps & { loggedIn?: boolean };
+
+export default function CommentComposer({ slug, parentId, onSubmitted, loggedIn = false }: Props) {
   const [body, setBody] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [loggedIn] = useState(false);
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -25,8 +26,16 @@ export default function CommentComposer({ slug, parentId, onSubmitted }: Comment
     setIsSubmitting(true);
 
     try {
-      // Submit the comment
-      const newComment = await postComment(slug, body.trim(), parentId);
+      // Submit the comment to backend
+      const resp = await fetch("/api/yorum/ekle", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug, body: body.trim(), parentId: parentId ?? null }),
+      });
+      if (!resp.ok) {
+        throw new Error("Yorum gönderilemedi");
+      }
+      const newComment: BlogComment = await resp.json();
 
       // Call the callback
       onSubmitted?.(newComment);
