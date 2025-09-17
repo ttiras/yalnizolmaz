@@ -23,29 +23,6 @@ type MinimalSession = {
   user?: MinimalUser;
 };
 
-function normalizeSession(input: unknown): MinimalSession | null {
-  if (!input || typeof input !== "object") return null;
-  const s = input as Record<string, unknown>;
-  const userRaw = (s.user ?? (s["user"] as unknown)) as Record<string, unknown> | undefined;
-  const accessToken = (s["accessToken"] || s["access_token"]) as string | undefined;
-  const accessTokenExpiresIn =
-    (s["accessTokenExpiresIn"] as number | undefined) ??
-    (s["access_token_expires_in"] as number | undefined);
-  const refreshToken =
-    (s["refreshToken"] as string | undefined) ?? (s["refresh_token"] as string | undefined);
-
-  if (!accessToken) return null;
-  const user: MinimalUser | undefined = userRaw
-    ? {
-        id: String(userRaw["id"] ?? ""),
-        email: (userRaw["email"] as string | null | undefined) ?? null,
-        displayName: (userRaw["displayName"] as string | null | undefined) ?? null,
-        avatarUrl: (userRaw["avatarUrl"] as string | null | undefined) ?? null,
-      }
-    : undefined;
-  return { accessToken, accessTokenExpiresIn, refreshToken, user };
-}
-
 function safeNextFromInput(nextRaw: unknown, h: Headers): string | null {
   const raw = typeof nextRaw === "string" ? nextRaw.trim() : "";
   const tryDecode = (s: string) => {
@@ -158,13 +135,10 @@ export async function signIn(formData: FormData): Promise<SignInResult> {
       console.error("[Auth Action] Sign in failed (SDK):", message);
       return { ok: false, message };
     }
-    const session = nhost.getUserSession();
-    if (!session) {
-      return { ok: false, message: "Giriş başarısız" };
-    }
+    // Treat lack of immediate session as success; middleware will finalize cookie/state.
     const h = await headers();
     const next = safeNextFromInput(formData.get("next"), h) || "/";
-    console.log("[Auth Action] Sign in successful (REST), next path:", next);
+    console.log("[Auth Action] Sign in successful (SDK), next path:", next);
     return { ok: true, next };
   } catch (err) {
     console.error("[Auth Action] Unexpected error in signIn:", err);

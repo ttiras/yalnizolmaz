@@ -59,8 +59,15 @@ export default async function BlogPost({ params }: Params) {
   const session = nhost.getUserSession();
 
   // Fetch initial comments + count from Hasura (anonymous read; public select allowed)
-  const graphqlUrl =
-    process.env.NEXT_PUBLIC_NHOST_GRAPHQL_URL || "https://local.hasura.local.nhost.run/v1/graphql";
+  // Prefer configured public URL; otherwise derive from subdomain/region, with local fallback
+  const graphqlUrl = (() => {
+    const configured = process.env.NEXT_PUBLIC_NHOST_GRAPHQL_URL;
+    if (configured && configured.length > 0) return configured;
+    const sub = process.env.NHOST_SUBDOMAIN || "local";
+    const region = process.env.NHOST_REGION || "local";
+    if (sub === "local") return "https://local.hasura.local.nhost.run/v1/graphql";
+    return `https://${sub}.hasura.${region}.nhost.run/v1/graphql`;
+  })();
   const commentsRes = await fetch(graphqlUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -81,7 +88,7 @@ export default async function BlogPost({ params }: Params) {
             blog_slug
             created_at
             parent_id
-            user { id displayName email avatarUrl }
+            user { id displayName avatarUrl }
           }
         }
       `,
@@ -101,7 +108,6 @@ export default async function BlogPost({ params }: Params) {
         user?: {
           id: string;
           displayName?: string | null;
-          email?: string | null;
           avatarUrl?: string | null;
         } | null;
       }>;
@@ -119,7 +125,7 @@ export default async function BlogPost({ params }: Params) {
     parentId: c.parent_id,
     author: {
       id: c.user?.id ?? "",
-      displayName: c.user?.displayName || c.user?.email || "",
+      displayName: c.user?.displayName || "",
       avatarUrl: c.user?.avatarUrl ?? null,
     },
     likeCount: 0,

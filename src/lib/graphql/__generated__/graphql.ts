@@ -11584,13 +11584,7 @@ export type GetCommentsBySlugQuery = {
     blog_slug: string;
     created_at: string;
     parent_id?: string | null;
-    user: {
-      __typename?: "users";
-      id: string;
-      displayName: string;
-      email?: string | null;
-      avatarUrl: string;
-    };
+    user: { __typename?: "users"; id: string; displayName: string; avatarUrl: string };
   }>;
 };
 
@@ -11719,7 +11713,6 @@ export const GetCommentsBySlugDocument = `
     user {
       id
       displayName
-      email
       avatarUrl
     }
   }

@@ -34,7 +34,7 @@ export default function CommentsClient({
       parentId: c.parent_id ? String(c.parent_id) : null,
       author: {
         id: String(c.user?.id ?? ""),
-        displayName: String(c.user?.displayName ?? c.user?.email ?? ""),
+        displayName: String(c.user?.displayName ?? ""),
         avatarUrl: c.user?.avatarUrl ?? null,
       },
       likeCount: 0,

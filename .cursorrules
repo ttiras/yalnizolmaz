@@ -57,3 +57,14 @@
 - a11y: labels, focus order, semantic HTML
 - performance: minimal client components, stable container sizes, image dims set
 - lint passes; type errors resolved
+
+## Auth Flow (Nhost SDK, concise reference)
+
+- Server-side: Use `createNhostClient()` from `src/app/lib/nhost/server` in RSCs and route handlers. It reads/writes the default `nhostSession` cookie via a Next.js-compatible storage. Server components never auto-refresh; refresh happens only in middleware.
+- Middleware: Use `handleNhostMiddleware(request, response)` in `middleware.ts` to refresh the session if the access token expires within 60s. This keeps the session valid for both server and client without guest flicker.
+- Client-side: Wrap app with `AuthProvider` and `QueryProvider` in `src/app/layout.tsx`. `AuthProvider` uses Nhost `CookieStorage` and syncs session across tabs; client GraphQL uses `nhost.graphql.request` via `useAuthenticatedFetcher`.
+- GraphQL:
+  - Server fetch: prefer anonymous reads where possible via Hasura endpoint (use `NEXT_PUBLIC_NHOST_GRAPHQL_URL` or derive from `NHOST_SUBDOMAIN`/`NHOST_REGION`; on local, prefer `https://local.hasura.local.nhost.run/v1/graphql`).
+  - Client queries/mutations: use CodeGen hooks with `useAuthenticatedFetcher`. The SDK attaches the access token from session automatically.
+- Routes & API: Keep Turkish API paths (e.g., `/api/yorum/ekle`). For mutating routes, verify CSRF via `/api/guvenlik/belirteci` token and apply rate limiting from `src/lib/rate-limit`.
+- Env config: In browser use `NEXT_PUBLIC_NHOST_SUBDOMAIN` and `NEXT_PUBLIC_NHOST_REGION`. On server/middleware the same also honors `NHOST_SUBDOMAIN` and `NHOST_REGION` as fallback.

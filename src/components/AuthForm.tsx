@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { signIn, signUp } from "@/app/actions/auth";
-import { createCsrfToken } from "@/lib/security/csrf";
 
 type AuthFormProps = {
   mode: "login" | "signup";
@@ -140,7 +139,7 @@ export default function AuthForm({ mode, action }: AuthFormProps) {
             ? {
                 action: action,
                 onSubmit: (e) => {
-                  if (!validate()) e.preventDefault();
+                  if (!validate() || !csrfToken) e.preventDefault();
                 },
               }
             : { onSubmit })}
@@ -180,7 +179,7 @@ export default function AuthForm({ mode, action }: AuthFormProps) {
             />
             <p className="mt-1 text-xs text-neutral-500">En az 9 karakter</p>
           </div>
-          <SubmitButton clientSubmitting={submitting} />
+          <SubmitButton clientSubmitting={submitting} canSubmit={Boolean(csrfToken)} />
           {mode === "signup" && submitError ? (
             <div
               role="alert"
@@ -215,11 +214,17 @@ export default function AuthForm({ mode, action }: AuthFormProps) {
   );
 }
 
-function SubmitButton({ clientSubmitting }: { clientSubmitting: boolean }) {
+function SubmitButton({
+  clientSubmitting,
+  canSubmit = true,
+}: {
+  clientSubmitting: boolean;
+  canSubmit?: boolean;
+}) {
   const { pending } = useFormStatus();
   const isBusy = pending || clientSubmitting;
   return (
-    <Button type="submit" disabled={isBusy} className="w-full">
+    <Button type="submit" disabled={!canSubmit || isBusy} className="w-full">
       {isBusy ? "Gönderiliyor..." : "E-posta ile devam et"}
     </Button>
   );

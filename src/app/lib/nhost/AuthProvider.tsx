@@ -40,8 +40,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const nhost = useMemo(
     () =>
       createClient({
-        region: process.env["NHOST_REGION"] || "local",
-        subdomain: process.env["NHOST_SUBDOMAIN"] || "local",
+        // In the browser, only NEXT_PUBLIC_* envs are available.
+        region: process.env.NEXT_PUBLIC_NHOST_REGION || process.env["NHOST_REGION"] || "local",
+        subdomain:
+          process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN || process.env["NHOST_SUBDOMAIN"] || "local",
         storage: new CookieStorage({
           secure: process.env.NODE_ENV === "production",
           sameSite: "lax",

@@ -18,7 +18,6 @@ query GetCommentsBySlug($slug: String!, $limit: Int! = 5, $offset: Int! = 0) {
     user {
       id
       displayName
-      email
       avatarUrl
     }
   }
