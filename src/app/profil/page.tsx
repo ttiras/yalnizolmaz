@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth-session";
-import { runAsUser } from "@/lib/nhost-server-helper";
+import { createNhostClient } from "@/app/lib/nhost/server";
 import ProfilePage from "@/components/ProfilePage";
 
 type UserProfile = {
@@ -13,7 +12,8 @@ type UserProfile = {
 };
 
 export default async function Profile() {
-  const session = await getSession();
+  const nhost = await createNhostClient();
+  const session = nhost.getUserSession();
 
   if (!session?.user) {
     redirect("/login?next=/profil");
@@ -21,9 +21,8 @@ export default async function Profile() {
 
   try {
     // Get user profile data from public.user_profiles table
-    const { data: profileData, error: profileError } = await runAsUser(async (nhost) => {
-      return await nhost.graphql.request(
-        `
+    const resp = await nhost.graphql.request({
+      query: `
         query GetUserProfile($userId: uuid!) {
           user_profiles(where: { user_id: { _eq: $userId } }) {
             user_id
@@ -35,11 +34,12 @@ export default async function Profile() {
           }
         }
       `,
-        {
-          userId: session.user!.id,
-        },
-      );
+      variables: {
+        userId: session.user!.id,
+      },
     });
+    const profileData = (resp as unknown as { data?: unknown; error?: unknown }).data;
+    const profileError = (resp as unknown as { data?: unknown; error?: unknown }).error;
 
     if (profileError) {
       console.error("Error fetching user profile:", profileError);

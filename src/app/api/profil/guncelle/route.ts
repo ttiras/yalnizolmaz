@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth-session";
-import { runAsUser } from "@/lib/nhost-server-helper";
+import { createNhostClient } from "@/app/lib/nhost/server";
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getSession();
+    const nhost = await createNhostClient();
+    const session = nhost.getUserSession();
 
     if (!session?.user) {
       return NextResponse.json({ message: "Oturum açmanız gerekiyor" }, { status: 401 });
@@ -44,29 +44,27 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if profile exists
-    const { data: existingProfile } = await runAsUser(async (nhost) => {
-      return await nhost.graphql.request(
-        `
+    const existingResp = await nhost.graphql.request(
+      `
         query GetUserProfile($userId: uuid!) {
           user_profiles(where: { user_id: { _eq: $userId } }) {
             user_id
           }
         }
       `,
-        {
-          userId: session.user!.id,
-        },
-      );
-    });
+      {
+        userId: session.user!.id,
+      },
+    );
+    const existingProfile = (existingResp as unknown as { data?: unknown }).data;
 
     const profileData = existingProfile as { user_profiles?: unknown[] } | undefined;
     const profileExists = profileData?.user_profiles && profileData.user_profiles.length > 0;
 
     if (profileExists) {
       // Update existing profile
-      const { data, error } = await runAsUser(async (nhost) => {
-        return await nhost.graphql.request(
-          `
+      const updateResp = await nhost.graphql.request(
+        `
           mutation UpdateUserProfile($userId: uuid!, $updates: user_profiles_set_input!) {
             update_user_profiles(
               where: { user_id: { _eq: $userId } }
@@ -84,16 +82,17 @@ export async function POST(request: NextRequest) {
             }
           }
         `,
-          {
-            userId: session.user!.id,
-            updates: {
-              bio: bio?.trim() || null,
-              location: location?.trim() || null,
-              website: website?.trim() || null,
-            },
+        {
+          userId: session.user!.id,
+          updates: {
+            bio: bio?.trim() || null,
+            location: location?.trim() || null,
+            website: website?.trim() || null,
           },
-        );
-      });
+        },
+      );
+      const data = (updateResp as unknown as { data?: unknown; error?: unknown }).data;
+      const error = (updateResp as unknown as { data?: unknown; error?: unknown }).error;
 
       if (error) {
         console.error("Error updating user profile:", error);
@@ -112,9 +111,8 @@ export async function POST(request: NextRequest) {
       });
     } else {
       // Create new profile
-      const { data, error } = await runAsUser(async (nhost) => {
-        return await nhost.graphql.request(
-          `
+      const insertResp = await nhost.graphql.request(
+        `
           mutation InsertUserProfile($profile: user_profiles_insert_input!) {
             insert_user_profiles_one(object: $profile) {
               user_id
@@ -126,15 +124,16 @@ export async function POST(request: NextRequest) {
             }
           }
         `,
-          {
-            profile: {
-              bio: bio?.trim() || null,
-              location: location?.trim() || null,
-              website: website?.trim() || null,
-            },
+        {
+          profile: {
+            bio: bio?.trim() || null,
+            location: location?.trim() || null,
+            website: website?.trim() || null,
           },
-        );
-      });
+        },
+      );
+      const data = (insertResp as unknown as { data?: unknown; error?: unknown }).data;
+      const error = (insertResp as unknown as { data?: unknown; error?: unknown }).error;
 
       if (error) {
         console.error("Error creating user profile:", error);

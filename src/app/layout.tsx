@@ -6,6 +6,8 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AppToaster } from "@/components/ui/toaster";
 import { VerifyModal } from "@/components/VerifyModal";
+import { AuthProvider } from "./lib/nhost/AuthProvider";
+import { QueryProvider } from "@/lib/graphql/QueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -63,11 +65,15 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${lora.variable} ${inter.variable} antialiased`}
         suppressHydrationWarning
       >
-        <Navbar />
-        {children}
-        <Footer />
-        <AppToaster />
-        <VerifyModal />
+        <AuthProvider>
+          <QueryProvider>
+            <Navbar />
+            {children}
+            <Footer />
+            <AppToaster />
+            <VerifyModal />
+          </QueryProvider>
+        </AuthProvider>
       </body>
     </html>
   );

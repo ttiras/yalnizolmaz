@@ -1,50 +1,83 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { MessageSquare, Send, LogIn } from "lucide-react";
-// import { postComment } from "@/lib/comments/mockClient";
 import type { CommentComposerProps, BlogComment } from "@/lib/types/comments";
+import { useInsertBlogCommentMutation } from "@/lib/graphql/__generated__/graphql";
+import { useAuth } from "@/app/lib/nhost/AuthProvider";
 
 type Props = CommentComposerProps & { loggedIn?: boolean };
 
 export default function CommentComposer({ slug, parentId, onSubmitted, loggedIn = false }: Props) {
+  const { isAuthenticated, session } = useAuth();
   const [body, setBody] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [csrfToken, setCsrfToken] = useState<string>("");
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const nextPath = `${pathname || "/"}${searchParams && searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
   const loginHref = `/login?next=${encodeURIComponent(nextPath || "/")}`;
 
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/guvenlik/belirteci", { cache: "no-store" });
+        if (!cancelled && res.ok) {
+          const data = (await res.json()) as { token?: string };
+          setCsrfToken(data.token || "");
+        }
+      } catch {}
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const { mutateAsync: insertComment } = useInsertBlogCommentMutation();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!body.trim() || !loggedIn) return;
+    if (!body.trim() || !loggedIn || !isAuthenticated || !session) return;
 
     setIsSubmitting(true);
 
     try {
-      // Submit the comment to backend
-      const resp = await fetch("/api/yorum/ekle", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug, body: body.trim(), parentId: parentId ?? null }),
+      const resp = await insertComment({
+        object: {
+          blog_slug: slug,
+          body: body.trim(),
+          ...(parentId ? { parent_id: parentId } : {}),
+        },
       });
-      if (!resp.ok) {
-        throw new Error("Yorum gönderilemedi");
-      }
-      const newComment: BlogComment = await resp.json();
 
-      // Call the callback
+      const created = resp?.insert_blog_comments_one;
+      if (!created?.id) throw new Error("Yorum gönderilemedi");
+
+      const userSafe = session?.user;
+      const newComment: BlogComment = {
+        id: String(created.id),
+        slug,
+        body: body.trim(),
+        createdAt: new Date().toISOString(),
+        parentId: parentId ?? null,
+        author: {
+          id: String(userSafe?.id || ""),
+          displayName: String(userSafe?.displayName || userSafe?.email || ""),
+          avatarUrl: userSafe?.avatarUrl ?? null,
+        },
+        likeCount: 0,
+      };
+
       onSubmitted?.(newComment);
 
-      // Show success message
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
 
-      // Reset form
       setBody("");
     } catch (error) {
       console.error("Failed to submit comment:", error);
@@ -53,21 +86,7 @@ export default function CommentComposer({ slug, parentId, onSubmitted, loggedIn 
     }
   };
 
-  if (!loggedIn) {
-    return (
-      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <div className="flex items-center justify-between gap-2 text-blue-700">
-          <div className="flex items-center gap-2">
-            <LogIn size={20} />
-            <span className="font-medium">Yorum yapmak için giriş yapın</span>
-          </div>
-          <a href={loginHref} className="text-sm underline">
-            Girişe git
-          </a>
-        </div>
-      </div>
-    );
-  }
+  // Auth gating is handled by parent (CommentsClient/AuthGate). Always render the form here.
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3">

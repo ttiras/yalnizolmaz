@@ -1,0 +1,31 @@
+# Comments operations
+
+query GetCommentsBySlug($slug: String!, $limit: Int! = 5, $offset: Int! = 0) {
+  blog_comments_aggregate(where: { blog_slug: { _eq: $slug } }) {
+    aggregate { count }
+  }
+  blog_comments(
+    where: { blog_slug: { _eq: $slug } }
+    order_by: { created_at: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    body
+    blog_slug
+    created_at
+    parent_id
+    user {
+      id
+      displayName
+      email
+      avatarUrl
+    }
+  }
+}
+
+mutation InsertBlogComment($object: blog_comments_insert_input!) {
+  insert_blog_comments_one(object: $object) {
+    id
+  }
+}

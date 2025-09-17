@@ -1,0 +1,34 @@
+# Blog posts and contributions operations
+
+query GetLatestPosts($limit: Int! = 10, $offset: Int! = 0) {
+  posts(order_by: { created_at: desc }, limit: $limit, offset: $offset) {
+    id
+    content
+    created_at
+    user_id
+  }
+}
+
+query GetContributionsByBlog($slug: String!) {
+  contributions(where: { blog_slug: { _eq: $slug } }, order_by: { created_at: desc }) {
+    id
+    slug: external_id
+    title
+    year
+    note
+    likeCount: contribution_likes_aggregate {
+      aggregate { count }
+    }
+    created_at
+    submitted_by
+  }
+}
+
+mutation InsertPost($object: posts_insert_input!) {
+  insert_posts_one(object: $object) {
+    id
+    content
+    created_at
+    user_id
+  }
+}

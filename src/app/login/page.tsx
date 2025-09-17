@@ -2,7 +2,8 @@ import AuthForm from "@/components/AuthForm";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth-session";
+import { createNhostClient } from "@/app/lib/nhost/server";
+import { createCsrfToken } from "@/lib/security/csrf";
 import { signIn } from "@/app/actions/auth";
 
 export const metadata: Metadata = {
@@ -11,7 +12,8 @@ export const metadata: Metadata = {
 };
 
 export default async function LoginPage({ searchParams }: { searchParams?: { next?: string } }) {
-  const s = await getSession();
+  const nhost = await createNhostClient();
+  const s = nhost.getUserSession();
   if (s) redirect(searchParams?.next ?? "/");
 
   async function signInAndRedirect(formData: FormData) {

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useMemo, useState } from "react";
 import { User, MessageSquare, MoreHorizontal, Flag } from "lucide-react";
 import HelpfulButton from "./HelpfulButton";
 import CommentComposer from "./CommentComposer";
@@ -16,6 +17,12 @@ export default function CommentCard({
   loggedIn = false,
 }: CommentCardProps) {
   const { id, body, author, createdAt, likeCount } = comment;
+  const [useFallbackAvatar, setUseFallbackAvatar] = useState<boolean>(!author.avatarUrl);
+  const avatarUrl = useMemo(() => author.avatarUrl || "", [author.avatarUrl]);
+  const initials = useMemo(
+    () => (author.displayName || "?").trim().charAt(0).toUpperCase(),
+    [author.displayName],
+  );
 
   return (
     <li
@@ -26,18 +33,22 @@ export default function CommentCard({
         <div className="flex gap-3">
           {/* Avatar */}
           <div className="flex-shrink-0">
-            {author.avatarUrl ? (
+            {useFallbackAvatar || !avatarUrl ? (
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 font-semibold text-white">
+                <span aria-hidden>{initials}</span>
+              </div>
+            ) : (
               <Image
-                src={author.avatarUrl}
+                src={avatarUrl}
                 alt={`${author.displayName} avatar`}
                 width={40}
                 height={40}
                 className="rounded-full object-cover"
+                onError={() => setUseFallbackAvatar(true)}
+                onLoadingComplete={({ naturalWidth }) => {
+                  if (!naturalWidth) setUseFallbackAvatar(true);
+                }}
               />
-            ) : (
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-purple-500">
-                <User size={20} className="text-white" />
-              </div>
             )}
           </div>
 
@@ -78,12 +89,7 @@ export default function CommentCard({
                 }}
               />
 
-              {!isReply && (
-                <button className="flex items-center gap-1 text-sm text-gray-500 underline transition-colors hover:text-blue-600">
-                  <MessageSquare size={14} />
-                  <span>Yanıtla</span>
-                </button>
-              )}
+              {/* Reply feature removed */}
 
               <button className="flex items-center gap-1 text-sm text-gray-500 transition-colors hover:text-red-600">
                 <Flag size={14} />
@@ -91,19 +97,7 @@ export default function CommentCard({
               </button>
             </div>
 
-            {/* Reply Composer (if logged in and not a reply) */}
-            {!isReply && loggedIn && (
-              <div className="mt-4 border-t border-gray-100 pt-4">
-                <CommentComposer
-                  slug={comment.slug}
-                  parentId={id}
-                  onSubmitted={(newReply) => {
-                    // Placeholder for adding reply to the list
-                    console.log("New reply submitted:", newReply);
-                  }}
-                />
-              </div>
-            )}
+            {/* Replies disabled */}
           </div>
         </div>
       </article>

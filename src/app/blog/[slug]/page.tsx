@@ -14,8 +14,8 @@ import { ArticleJsonLd, BreadcrumbJsonLd } from "./jsonld";
 import { mdxComponents } from "./mdx-components";
 import SizdenGelenlerForPost from "@/components/interactions/sizden-gelenler/SizdenGelenlerForPost";
 import CommentsSection from "@/components/interactions/comments/CommentsSection";
-import { getSession } from "@/lib/auth-session";
-import { getInitialComments } from "@/lib/comments/mockServer";
+import { createNhostClient } from "@/app/lib/nhost/server";
+import type { BlogComment } from "@/lib/types/comments";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -55,9 +55,76 @@ export default async function BlogPost({ params }: Params) {
   const prev = idx > 0 ? all[idx - 1] : null;
   const next = idx < all.length - 1 ? all[idx + 1] : null;
 
-  // Get initial comments for the blog post
-  const { totalCount, comments } = await getInitialComments(slug, 5);
-  const session = await getSession();
+  const nhost = await createNhostClient();
+  const session = nhost.getUserSession();
+
+  // Fetch initial comments + count from Hasura (anonymous read; public select allowed)
+  const graphqlUrl =
+    process.env.NEXT_PUBLIC_NHOST_GRAPHQL_URL || "https://local.hasura.local.nhost.run/v1/graphql";
+  const commentsRes = await fetch(graphqlUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: `
+        query GetCommentsBySlug($slug: String!, $limit: Int!, $offset: Int!) {
+          blog_comments_aggregate(where: { blog_slug: { _eq: $slug } }) {
+            aggregate { count }
+          }
+          blog_comments(
+            where: { blog_slug: { _eq: $slug } }
+            order_by: { created_at: desc }
+            limit: $limit
+            offset: $offset
+          ) {
+            id
+            body
+            blog_slug
+            created_at
+            parent_id
+            user { id displayName email avatarUrl }
+          }
+        }
+      `,
+      variables: { slug, limit: 5, offset: 0 },
+    }),
+    cache: "no-store",
+  });
+  const commentsJson = (await commentsRes.json()) as {
+    data?: {
+      blog_comments_aggregate: { aggregate?: { count?: number | null } | null };
+      blog_comments: Array<{
+        id: string;
+        body: string;
+        blog_slug: string;
+        created_at: string;
+        parent_id: string | null;
+        user?: {
+          id: string;
+          displayName?: string | null;
+          email?: string | null;
+          avatarUrl?: string | null;
+        } | null;
+      }>;
+    };
+    errors?: unknown;
+  };
+  const cdata = commentsJson.data;
+
+  const totalCount = cdata?.blog_comments_aggregate.aggregate?.count ?? 0;
+  const comments: BlogComment[] = (cdata?.blog_comments ?? []).map((c) => ({
+    id: c.id,
+    slug: c.blog_slug,
+    body: c.body,
+    createdAt: c.created_at,
+    parentId: c.parent_id,
+    author: {
+      id: c.user?.id ?? "",
+      displayName: c.user?.displayName || c.user?.email || "",
+      avatarUrl: c.user?.avatarUrl ?? null,
+    },
+    likeCount: 0,
+  }));
+
   return (
     <div className="bg-soft min-h-screen" style={{ backgroundColor: "var(--background)" }}>
       {/* Reading Progress Indicator */}

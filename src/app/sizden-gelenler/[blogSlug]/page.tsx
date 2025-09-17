@@ -1,43 +1,86 @@
 import Link from "next/link";
-import { getPostBySlug, getAllPosts } from "@/lib/mdx";
 import { notFound } from "next/navigation";
 import { contribTypeBySlug } from "@/lib/contribConfig";
+import { createNhostClient } from "@/app/lib/nhost/server";
 
 type Params = { params: Promise<{ blogSlug: string }> };
 
-export async function generateStaticParams() {
-  const posts = getAllPosts();
-  return posts
-    .filter((post) => contribTypeBySlug(post.slug) !== "none")
-    .map((post) => ({ blogSlug: post.slug }));
-}
-
 export async function generateMetadata({ params }: Params) {
   const { blogSlug } = await params;
-  const post = getPostBySlug(blogSlug);
-  if (!post) return {};
-
   return {
-    title: `Sizden Gelenler - ${post.data.title} | yalnizolmaz`,
-    description: `${post.data.description} Topluluktan gelen öneriler ve deneyimler.`,
+    title: `Sizden Gelenler - ${blogSlug} | yalnizolmaz`,
+    description: `Topluluktan gelen öneriler ve deneyimler (${blogSlug}).`,
   };
 }
 
 export default async function ContributionsByBlogSlug({ params }: Params) {
   const { blogSlug } = await params;
-  const post = getPostBySlug(blogSlug);
-
-  if (!post) {
-    notFound();
-  }
 
   const contribType = contribTypeBySlug(blogSlug);
   if (contribType === "none") {
     notFound();
   }
 
-  // Get mock contributions for this blog post
-  const contributions = await getContributionsForBlog(blogSlug);
+  // Fetch contributions via GraphQL (server-side)
+  const nhost = await createNhostClient();
+  const resp = await nhost.graphql.request({
+    query: `
+      query GetContributionsByBlog($slug: String!) {
+        contributions(where: { blog_slug: { _eq: $slug } }, order_by: { created_at: desc }) {
+          id
+          slug: external_id
+          title
+          year
+          note
+          created_at
+          contribution_likes_aggregate { aggregate { count } }
+          user: user { id email displayName avatarUrl }
+        }
+      }
+    `,
+    variables: { slug: blogSlug },
+  });
+
+  const data = (
+    resp as unknown as {
+      data?: {
+        contributions: Array<{
+          id: string;
+          slug: string | null;
+          title: string;
+          year?: number | null;
+          note: string;
+          created_at: string;
+          contribution_likes_aggregate: { aggregate?: { count?: number | null } | null };
+          user?: {
+            id: string;
+            email?: string | null;
+            displayName?: string | null;
+            avatarUrl?: string | null;
+          } | null;
+        }>;
+      };
+      error?: unknown;
+    }
+  ).data;
+
+  if (!data) {
+    notFound();
+  }
+
+  const contributions = data.contributions.map((c) => ({
+    id: c.id,
+    slug: c.slug || c.id,
+    title: c.title,
+    year: c.year ?? undefined,
+    note: c.note,
+    likeCount: c.contribution_likes_aggregate.aggregate?.count ?? 0,
+    createdAt: c.created_at,
+    submittedBy: {
+      displayName: c.user?.displayName || c.user?.email || "Anonim",
+      avatarUrl: c.user?.avatarUrl ?? null,
+    },
+  }));
 
   return (
     <main className="relative">
@@ -66,10 +109,10 @@ export default async function ContributionsByBlogSlug({ params }: Params) {
             Sizden Gelenler
           </h1>
           <h2 className="mb-4 text-2xl font-semibold" style={{ color: "var(--muted-foreground)" }}>
-            {post.data.title}
+            {blogSlug}
           </h2>
           <p className="max-w-2xl text-lg" style={{ color: "var(--muted-foreground)" }}>
-            {post.data.description}
+            Topluluktan gelen öneriler ve deneyimler.
           </p>
         </div>
       </section>
@@ -160,69 +203,4 @@ function formatDate(dateString: string): string {
   } else {
     return `${Math.floor(diffInHours / 24)} gün önce`;
   }
-}
-
-async function getContributionsForBlog(blogSlug: string) {
-  // Mock data - replace with real API call
-  const mockContributions: Record<
-    string,
-    {
-      id: string;
-      slug: string;
-      title: string;
-      year?: number;
-      note: string;
-      likeCount: number;
-      createdAt: string;
-      submittedBy: { displayName: string; avatarUrl: string | null };
-    }[]
-  > = {
-    "yalnizlar-icin-film-onerileri": [
-      {
-        id: "1",
-        slug: "anayurt-oteli-1987",
-        title: "Anayurt Oteli",
-        year: 1987,
-        note: "Bu film yalnızlığı çok güzel anlatıyor. Ömer Kavur'un en iyi filmi bence.",
-        likeCount: 15,
-        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        submittedBy: { displayName: "Ahmet123", avatarUrl: null },
-      },
-      {
-        id: "2",
-        slug: "uzak-2002",
-        title: "Uzak",
-        year: 2002,
-        note: "Sessizliğin ağırlığını hissettiren bir başyapıt. Nuri Bilge Ceylan'ın ustalığı.",
-        likeCount: 23,
-        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-        submittedBy: { displayName: "Ayşe456", avatarUrl: null },
-      },
-    ],
-    "yalnizken-iyi-gelen-kitaplar": [
-      {
-        id: "3",
-        slug: "saatleri-ayarlama-enstitusu",
-        title: "Saatleri Ayarlama Enstitüsü",
-        year: 1961,
-        note: "Ahmet Hamdi Tanpınar'ın yalnızlık temasını en güzel işlediği eser. Mutlaka okunmalı.",
-        likeCount: 18,
-        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-        submittedBy: { displayName: "Mehmet789", avatarUrl: null },
-      },
-    ],
-    "yalnizlik-sozleri": [
-      {
-        id: "4",
-        slug: "ozdemir-asaf-yalnizlik",
-        title: "Özdemir Asaf - Yalnızlık",
-        note: "Yalnızlık paylaşılmaz, paylaşıldığında yalnızlık olmaz. Bu söz çok etkileyici.",
-        likeCount: 31,
-        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-        submittedBy: { displayName: "Zeynep321", avatarUrl: null },
-      },
-    ],
-  };
-
-  return mockContributions[blogSlug] || [];
 }

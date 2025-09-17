@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CommentList from "./CommentList";
 import CommentComposer from "./CommentComposer";
 import { AuthGate } from "@/components/AuthGate";
 import LoadMoreButton from "./LoadMoreButton";
-import { initializeClientComments } from "@/lib/comments/mockClient";
 import type { CommentsSectionProps, BlogComment } from "@/lib/types/comments";
+import { useGetCommentsBySlugQuery } from "@/lib/graphql/__generated__/graphql";
 
 export default function CommentsClient({
   slug,
@@ -17,10 +17,31 @@ export default function CommentsClient({
   const [comments, setComments] = useState(initialComments);
   const [loadedIds, setLoadedIds] = useState(initialComments.map((c) => c.id));
 
-  // Initialize client comments when component mounts
+  // Client-side refresh of comments from GraphQL (anonymous/user select allowed)
+  const variables = useMemo(
+    () => ({ slug, limit: Math.max(initialComments.length, 5), offset: 0 }),
+    [slug, initialComments.length],
+  );
+  const { data } = useGetCommentsBySlugQuery(variables, { staleTime: 10_000 });
   useEffect(() => {
-    initializeClientComments(initialComments);
-  }, [initialComments]);
+    const list = data?.blog_comments ?? [];
+    if (!list.length) return;
+    const mapped: BlogComment[] = list.map((c) => ({
+      id: String(c.id),
+      slug: String(c.blog_slug),
+      body: String(c.body),
+      createdAt: String(c.created_at),
+      parentId: c.parent_id ? String(c.parent_id) : null,
+      author: {
+        id: String(c.user?.id ?? ""),
+        displayName: String(c.user?.displayName ?? c.user?.email ?? ""),
+        avatarUrl: c.user?.avatarUrl ?? null,
+      },
+      likeCount: 0,
+    }));
+    setComments(mapped);
+    setLoadedIds(mapped.map((m) => m.id));
+  }, [data]);
 
   const handleNewComment = (newComment: BlogComment) => {
     setComments((prev) => [newComment, ...prev]);

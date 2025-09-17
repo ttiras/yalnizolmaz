@@ -1,22 +1,13 @@
 "use server";
 
-import { cookies, headers } from "next/headers";
-import { getServerAuthApiBase } from "@/lib/nhost.server";
+import { headers } from "next/headers";
+import { createNhostClient } from "@/app/lib/nhost/server";
+import { verifyCsrfToken } from "@/lib/security/csrf";
+import { getRateLimiter, rateLimitKeyFromHeaders } from "@/lib/rate-limit";
 
 type SignInResult = { ok: true; next: string } | { ok: false; message: string };
 
-const SESSION_COOKIE = "nhostSession";
-
-async function setSessionCookie(session: unknown) {
-  const c = await cookies();
-  c.set(SESSION_COOKIE, JSON.stringify(session), {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    // Let Nhost manage refresh; cookie holds a serialized session for server checks
-  });
-}
+// Cookies are set/cleared via helpers from auth-session (adds timestamp cookie too)
 
 type MinimalUser = {
   id: string;
@@ -120,6 +111,26 @@ function safeNextFromInput(nextRaw: unknown, h: Headers): string | null {
 }
 
 export async function signIn(formData: FormData): Promise<SignInResult> {
+  // CSRF check first
+  const csrfToken = formData.get("_csrf") as string | null;
+  if (!(await verifyCsrfToken(csrfToken || undefined))) {
+    return { ok: false, message: "Geçersiz istek" };
+  }
+  // Basic rate limiting per IP+email
+  try {
+    const h = await headers();
+    const emailForKey = String(formData.get("email") || "")
+      .trim()
+      .toLowerCase();
+    const key = rateLimitKeyFromHeaders(h, `signin:${emailForKey}`);
+    const result = await getRateLimiter().allow(key);
+    if (!result.ok) {
+      return {
+        ok: false,
+        message: `Çok fazla istek. ${result.retryAfterSeconds} saniye sonra tekrar dene.`,
+      };
+    }
+  } catch {}
   const email = String(formData.get("email") || "").trim();
   const rawPassword = String(formData.get("password") || "");
   const password =
@@ -135,38 +146,22 @@ export async function signIn(formData: FormData): Promise<SignInResult> {
   }
 
   try {
-    // Use REST endpoint in dev to ensure correct local domain
-    const authBase = getServerAuthApiBase();
-    const res = await fetch(`${authBase}/signin/email-password`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-      cache: "no-store",
-    });
-
-    if (!res.ok) {
-      let message = "Giriş başarısız";
-      try {
-        const data = (await res.json()) as { error?: string; message?: string };
-        message = data.message || message;
-      } catch {}
-      console.error("[Auth Action] Sign in failed (REST):", message, res.status);
+    const nhost = await createNhostClient();
+    const res = await nhost.auth.signInEmailPassword({ email, password });
+    if (
+      res &&
+      typeof res === "object" &&
+      "error" in res &&
+      (res as { error?: { message?: string } }).error
+    ) {
+      const message = (res as { error?: { message?: string } }).error?.message || "Giriş başarısız";
+      console.error("[Auth Action] Sign in failed (SDK):", message);
       return { ok: false, message };
     }
-
-    const payload: unknown = await res.json();
-    let rawSession: unknown = payload;
-    if (payload && typeof payload === "object" && "session" in payload) {
-      const withSession = payload as { session?: unknown };
-      rawSession = withSession.session;
-    }
-    const normalized = normalizeSession(rawSession);
-    if (!normalized) {
-      console.error("[Auth Action] Sign in failed: No session returned (REST)");
+    const session = nhost.getUserSession();
+    if (!session) {
       return { ok: false, message: "Giriş başarısız" };
     }
-
-    await setSessionCookie(normalized);
     const h = await headers();
     const next = safeNextFromInput(formData.get("next"), h) || "/";
     console.log("[Auth Action] Sign in successful (REST), next path:", next);
@@ -178,6 +173,26 @@ export async function signIn(formData: FormData): Promise<SignInResult> {
 }
 
 export async function signUp(formData: FormData): Promise<SignInResult> {
+  // CSRF check first
+  const csrfToken = formData.get("_csrf") as string | null;
+  if (!(await verifyCsrfToken(csrfToken || undefined))) {
+    return { ok: false, message: "Geçersiz istek" };
+  }
+  // Basic rate limiting per IP+email
+  try {
+    const h = await headers();
+    const emailForKey = String(formData.get("email") || "")
+      .trim()
+      .toLowerCase();
+    const key = rateLimitKeyFromHeaders(h, `signup:${emailForKey}`);
+    const result = await getRateLimiter().allow(key);
+    if (!result.ok) {
+      return {
+        ok: false,
+        message: `Çok fazla istek. ${result.retryAfterSeconds} saniye sonra tekrar dene.`,
+      };
+    }
+  } catch {}
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "");
   if (!email || !password) {
@@ -190,35 +205,36 @@ export async function signUp(formData: FormData): Promise<SignInResult> {
 
   try {
     console.log("[Auth Action] signUp called for email:", email);
-    // Call Nhost Auth REST endpoint directly to ensure local dev hits the right domain
-    const authBase = getServerAuthApiBase(); // e.g., https://local.auth.local.nhost.run/v1
-    const res = await fetch(`${authBase}/signup/email-password`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-      cache: "no-store",
-    });
+    const nhost = await createNhostClient();
+    const res = await nhost.auth.signUpEmailPassword({ email, password });
 
     // Compute safe next path up-front (used in both branches)
     const h = await headers();
     const baseNext = safeNextFromInput(formData.get("next"), h) || "/";
 
-    if (!res.ok) {
-      let message = "Kayıt başarısız";
-      try {
-        const data = (await res.json()) as { error?: string; message?: string };
-        message = data.message || message;
-      } catch {}
-      console.error("[Auth Action] Sign up failed (REST):", message, res.status);
+    if (
+      res &&
+      typeof res === "object" &&
+      "error" in res &&
+      (res as { error?: { message?: string } }).error
+    ) {
+      const message = (res as { error?: { message?: string } }).error?.message || "Kayıt başarısız";
+      console.error("[Auth Action] Sign up failed (SDK):", message);
       return { ok: false, message };
     }
 
     // Success but no session in response when email verification is required.
+    const session = nhost.getUserSession();
     const url = new URL(`http://local${baseNext.startsWith("/") ? baseNext : "/"}`);
     if (!url.searchParams.has("verify")) url.searchParams.append("verify", "1");
     const nextWithVerify = `${url.pathname}${url.search}${url.hash}`;
     console.log("[Auth Action] Sign up (REST) pending verification, next path:", nextWithVerify);
-    return { ok: true, next: nextWithVerify };
+    if (!session) {
+      return { ok: true, next: nextWithVerify };
+    }
+    const h2 = await headers();
+    const next = safeNextFromInput(formData.get("next"), h2) || "/";
+    return { ok: true, next };
   } catch (err) {
     console.error("[Auth Action] Unexpected error in signUp:", err);
     return { ok: false, message: "Beklenmeyen bir hata oluştu" };
@@ -226,9 +242,11 @@ export async function signUp(formData: FormData): Promise<SignInResult> {
 }
 
 export async function signOut(): Promise<void> {
-  const jar = await cookies();
-  // Vercel-safe: only clear our httpOnly cookie; client SDK handles best-effort revocation
-  jar.delete(SESSION_COOKIE);
+  const nhost = await createNhostClient();
+  const s = nhost.getUserSession();
+  if (s) {
+    await nhost.auth.signOut({ refreshToken: s.refreshToken });
+  }
 }
 
 export async function getNextParam(): Promise<string | null> {

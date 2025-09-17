@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerNhostClient } from "@/lib/nhost.server";
-import { getSession, updateSessionUser } from "@/lib/auth-session";
+import { createNhostClient } from "@/app/lib/nhost/server";
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,20 +23,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Get session
-    const session = await getSession();
+    const nhost = await createNhostClient();
+    const session = nhost.getUserSession();
     if (!session?.user) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    // Create Nhost client and update user metadata
-    const nhost = createServerNhostClient();
-
-    // Set the access token for authenticated requests
-    nhost.graphql.setAccessToken(session.accessToken);
+    // nhost already has session via CookieStorage; call GraphQL directly
 
     // Update user metadata using GraphQL mutation
-    const { data, error } = await nhost.graphql.request(
-      `
+    const resp = await nhost.graphql.request({
+      query: `
       mutation UpdateDisplayName($userId: uuid!, $displayName: String!) {
         updateUser(
           pk_columns: { id: $userId }
@@ -48,11 +44,13 @@ export async function POST(request: NextRequest) {
         }
       }
     `,
-      {
+      variables: {
         userId: session.user.id,
         displayName: trimmedDisplayName,
       },
-    );
+    });
+    const data = (resp as unknown as { data?: unknown; error?: unknown }).data;
+    const error = (resp as unknown as { data?: unknown; error?: unknown }).error;
 
     if (error) {
       console.error("Error updating display name:", error);
@@ -64,10 +62,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Failed to update display name" }, { status: 500 });
     }
 
-    // Update the session with the new display name
-    await updateSessionUser({
-      displayName: updatedUser.displayName,
-    });
+    // Session cookie is updated by middleware on next navigation; no manual cookie writes here
 
     return NextResponse.json({
       message: "Display name updated successfully",

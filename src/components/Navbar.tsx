@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { getSession } from "@/lib/auth-session";
+import { createNhostClient } from "@/app/lib/nhost/server";
 import MobileNav from "@/components/MobileNav";
 import AvatarMenu from "@/components/AvatarMenu";
 
 export async function Navbar() {
-  const session = await getSession();
+  const nhost = await createNhostClient();
+  const session = nhost.getUserSession();
   const user = session?.user;
   const authenticated = Boolean(session);
   return (

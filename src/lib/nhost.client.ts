@@ -1,6 +1,6 @@
 "use client";
 
-import { NhostClient } from "@nhost/nhost-js";
+import { createClient, type NhostClient } from "@nhost/nhost-js";
 
 export function createBrowserNhostClient(): NhostClient | null {
   const subdomain = process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN;
@@ -8,10 +8,10 @@ export function createBrowserNhostClient(): NhostClient | null {
   if (!subdomain) return null; // Do NOT throw on the client
   // In dev, if region is absent, construct client with only subdomain
   if (!region && process.env.NODE_ENV !== "production") {
-    return new NhostClient({ subdomain });
+    return createClient({ subdomain });
   }
   if (!region) return null;
-  return new NhostClient({ subdomain, region });
+  return createClient({ subdomain, region });
 }
 
 export function hasClientNhostConfig(): boolean {

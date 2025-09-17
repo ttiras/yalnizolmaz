@@ -15,10 +15,14 @@
     "test:ui": "vitest --ui",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
-    "test:e2e:install": "playwright install --with-deps"
+    "test:e2e:install": "playwright install --with-deps",
+    "codegen": "pnpm graphql-codegen --config codegen.ts",
+    "codegen:fix": "bash scripts/codegen-wrapper.sh"
   },
   "dependencies": {
-    "@nhost/nhost-js": "^3.3.1",
+    "@nhost/nhost-js": "5.0.0-beta.9",
+    "@tanstack/react-query": "^5.89.0",
+    "graphql": "^16.9.0",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.542.0",
     "next": "15.5.0",
@@ -33,8 +37,14 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@graphql-codegen/cli": "^5.0.5",
+    "@graphql-codegen/schema-ast": "^4.1.0",
+    "@graphql-codegen/typescript": "^4.1.0",
+    "@graphql-codegen/typescript-operations": "^4.4.0",
+    "@graphql-codegen/typescript-react-query": "^6.1.0",
     "@playwright/test": "^1.55.0",
     "@tailwindcss/postcss": "^4",
+    "@tanstack/react-query-devtools": "^5.59.0",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",

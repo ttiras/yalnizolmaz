@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { signIn, signUp } from "@/app/actions/auth";
+import { createCsrfToken } from "@/lib/security/csrf";
 
 type AuthFormProps = {
   mode: "login" | "signup";
@@ -21,8 +22,44 @@ export default function AuthForm({ mode, action }: AuthFormProps) {
   const [errors, setErrors] = React.useState<{ email?: string; password?: string }>({});
   const [submitting, setSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string>("");
+  const [csrfToken, setCsrfToken] = React.useState<string>("");
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        // Ask server to set a fresh CSRF cookie and return the token
+        const res = await fetch("/api/guvenlik/belirteci", { cache: "no-store" });
+        if (!cancelled && res.ok) {
+          const data = (await res.json()) as { token?: string };
+          setCsrfToken(data.token || "");
+        }
+      } catch {}
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   const search = useSearchParams();
   const hasError = (search?.get("error") ?? "") !== "";
+  const [authenticated, setAuthenticated] = React.useState<boolean | null>(null);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/auth/session", { cache: "no-store" });
+        if (!cancelled && res.ok) {
+          const data = (await res.json()) as { authenticated?: boolean };
+          setAuthenticated(Boolean(data.authenticated));
+        }
+      } catch {
+        if (!cancelled) setAuthenticated(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   function validate() {
     const nextErr: { email?: string; password?: string } = {};
@@ -49,6 +86,7 @@ export default function AuthForm({ mode, action }: AuthFormProps) {
       const fd = new FormData();
       fd.set("email", email);
       fd.set("password", password);
+      fd.set("_csrf", csrfToken);
       // Only forward an explicit ?next=... value. Never default to the login page itself.
       const qsNext = search?.get("next") ?? null;
       let next: string | null = qsNext && typeof qsNext === "string" ? qsNext : null;
@@ -110,6 +148,7 @@ export default function AuthForm({ mode, action }: AuthFormProps) {
           noValidate
         >
           <input type="hidden" name="next" value={search?.get("next") ?? ""} />
+          <input type="hidden" name="_csrf" value={csrfToken} />
           <div>
             <label htmlFor="email" className="mb-1 block text-sm font-medium">
               E-posta
@@ -150,7 +189,7 @@ export default function AuthForm({ mode, action }: AuthFormProps) {
               {submitError}
             </div>
           ) : null}
-          {mode === "login" && hasError ? (
+          {mode === "login" && hasError && authenticated === false ? (
             <div
               role="alert"
               className="-mt-2 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700"
