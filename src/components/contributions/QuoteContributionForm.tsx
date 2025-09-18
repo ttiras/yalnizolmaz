@@ -122,7 +122,7 @@ export default function QuoteContributionForm({ blogSlug, onSubmitted }: QuoteCo
             <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
               <div className="text-center">
                 <blockquote className="text-lg italic text-gray-700 dark:text-gray-300">
-                  "{quote.trim()}"
+                  &quot;{quote.trim()}&quot;
                 </blockquote>
                 {author.trim() && (
                   <cite className="text-sm text-gray-500 mt-2 block">

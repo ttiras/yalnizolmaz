@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter, X } from "lucide-react";
 
@@ -121,7 +121,7 @@ export default function ContributionFilters({ currentType, currentSearch, curren
           )}
           {currentSearch && (
             <Badge variant="secondary" className="flex items-center gap-1">
-              Arama: "{currentSearch}"
+              Arama: &quot;{currentSearch}&quot;
               <button
                 onClick={() => {
                   setSearch("");
@@ -162,39 +162,33 @@ export default function ContributionFilters({ currentType, currentSearch, curren
             {/* Type Filter */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Katkı Türü</label>
-              <Select value={currentType} onValueChange={handleTypeChange}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {contributionTypes.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
-                      {type.label}
-                      {type.count > 0 && (
-                        <span className="ml-2 text-xs text-gray-500">
-                          ({type.count})
-                        </span>
-                      )}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
+              <Select 
+                value={currentType} 
+                onChange={(e) => handleTypeChange(e.target.value)}
+                placeholder="Katkı türü seçin"
+              >
+                {contributionTypes.map((type) => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                    {type.count > 0 && ` (${type.count})`}
+                  </option>
+                ))}
               </Select>
             </div>
 
             {/* Sort Filter */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Sıralama</label>
-              <Select value={currentSort} onValueChange={handleSortChange}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {sortOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
+              <Select 
+                value={currentSort} 
+                onChange={(e) => handleSortChange(e.target.value)}
+                placeholder="Sıralama seçin"
+              >
+                {sortOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
               </Select>
             </div>
           </div>

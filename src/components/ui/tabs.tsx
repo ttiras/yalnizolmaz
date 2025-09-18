@@ -37,7 +37,7 @@ const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
 Tabs.displayName = "Tabs"
 
 interface TabsListProps extends React.HTMLAttributes<HTMLDivElement> {
-  // Extends React.HTMLAttributes
+  children: React.ReactNode;
 }
 
 const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
