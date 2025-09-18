@@ -15,6 +15,11 @@ export function CardTitle({ className = "", ...props }: React.HTMLAttributes<HTM
   return <h3 className={cls} {...props} />;
 }
 
+export function CardDescription({ className = "", ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
+  const cls = `text-sm text-muted-foreground ${className}`;
+  return <p className={cls} {...props} />;
+}
+
 export function CardContent({ className = "", ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const cls = `${className}`;
   return <div className={cls} {...props} />;

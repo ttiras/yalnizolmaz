@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { contribTypeBySlug } from "@/lib/contribConfig";
-import { createNhostClient } from "@/app/lib/nhost/server";
+import ContributionForm from "@/components/contributions/ContributionForm";
 
 type Params = { params: Promise<{ blogSlug: string }> };
 
@@ -21,47 +21,41 @@ export default async function ContributionsByBlogSlug({ params }: Params) {
     notFound();
   }
 
-  // Fetch contributions via GraphQL (server-side)
-  const nhost = await createNhostClient();
-  const resp = await nhost.graphql.request({
-    query: `
-      query GetContributionsByBlog($slug: String!) {
-        contributions(where: { blog_slug: { _eq: $slug } }, order_by: { created_at: desc }) {
-          id
-          slug: external_id
-          title
-          year
-          note
-          created_at
-          contribution_likes_aggregate { aggregate { count } }
-          user: user { id displayName avatarUrl }
+  // Fetch contributions via anonymous GraphQL (server-side)
+  // Use the anonymous endpoint for reading contributions
+  const graphqlUrl = process.env.NEXT_PUBLIC_NHOST_GRAPHQL_URL || 
+    `https://${process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN}.nhost.run/v1/graphql`;
+  
+  const resp = await fetch(graphqlUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
+        query GetContributionsByBlog($slug: String!) {
+          contributions(where: { blog_slug: { _eq: $slug } }, order_by: { created_at: desc }) {
+            id
+            slug: external_id
+            title
+            year
+            note
+            created_at
+            user: user { 
+              id 
+              displayName 
+              avatarUrl 
+            }
+          }
         }
-      }
-    `,
-    variables: { slug: blogSlug },
+      `,
+      variables: { slug: blogSlug },
+    }),
   });
 
-  const data = (
-    resp as unknown as {
-      data?: {
-        contributions: Array<{
-          id: string;
-          slug: string | null;
-          title: string;
-          year?: number | null;
-          note: string;
-          created_at: string;
-          contribution_likes_aggregate: { aggregate?: { count?: number | null } | null };
-          user?: {
-            id: string;
-            displayName?: string | null;
-            avatarUrl?: string | null;
-          } | null;
-        }>;
-      };
-      error?: unknown;
-    }
-  ).data;
+  const result = await resp.json();
+
+  const data = result.data;
 
   if (!data) {
     notFound();
@@ -73,7 +67,7 @@ export default async function ContributionsByBlogSlug({ params }: Params) {
     title: c.title,
     year: c.year ?? undefined,
     note: c.note,
-    likeCount: c.contribution_likes_aggregate.aggregate?.count ?? 0,
+    likeCount: 0, // We'll add this back when we fix the aggregate query
     createdAt: c.created_at,
     submittedBy: {
       displayName: c.user?.displayName || "Anonim",
@@ -116,8 +110,34 @@ export default async function ContributionsByBlogSlug({ params }: Params) {
         </div>
       </section>
 
+      {/* Contribution Form */}
+      <section className="relative mx-auto max-w-6xl px-6 py-12 md:px-8">
+        <div className="mb-8 text-center">
+          <h2 className="mb-4 text-2xl font-bold" style={{ color: "var(--foreground)" }}>
+            Katkıda Bulun
+          </h2>
+          <p className="text-lg" style={{ color: "var(--muted-foreground)" }}>
+            Bu konuda düşüncelerinizi paylaşın ve topluluğa katkıda bulunun.
+          </p>
+        </div>
+        
+        <ContributionForm 
+          blogSlug={blogSlug} 
+          contributionType={contribType}
+        />
+      </section>
+
       {/* Contributions Grid */}
       <section className="relative mx-auto max-w-6xl px-6 py-12 md:px-8">
+        <div className="mb-8">
+          <h2 className="mb-4 text-2xl font-bold" style={{ color: "var(--foreground)" }}>
+            Topluluk Katkıları
+          </h2>
+          <p className="text-lg" style={{ color: "var(--muted-foreground)" }}>
+            Diğer okuyucuların paylaştığı öneriler ve deneyimler.
+          </p>
+        </div>
+
         {contributions.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {contributions.map((contribution) => (
