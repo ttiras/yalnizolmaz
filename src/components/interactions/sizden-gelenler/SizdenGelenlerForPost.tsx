@@ -1,6 +1,6 @@
 import { contribTypeBySlug } from "@/content/contribConfig";
 import SizdenGelenlerSection from "@/components/interactions/sizden-gelenler/SizdenGelenlerSection";
-import { createNhostClient } from "@/app/lib/nhost/server";
+import { headers } from "next/headers";
 import { type ContributionMovie } from "@/lib/types/contributions";
 import {
   GetPopularContributionsDocument,
@@ -9,18 +9,47 @@ import {
   type GetRecentContributionsQuery,
 } from "@/lib/graphql/__generated__/graphql";
 
-async function fetchInitialContributions(slug: string, limit: number = 6) {
-  const nhost = await createNhostClient();
-  const graphql = nhost.graphql;
+function getHasuraGraphqlUrl(): string {
+  const envUrl = process.env.NEXT_PUBLIC_NHOST_GRAPHQL_URL;
+  if (envUrl) return envUrl;
+  const sub = process.env.NHOST_SUBDOMAIN || process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN || "local";
+  const region = process.env.NHOST_REGION || process.env.NEXT_PUBLIC_NHOST_REGION || "local";
+  if (sub === "local" || region === "local")
+    return "https://local.hasura.local.nhost.run/v1/graphql";
+  return `https://${sub}.hasura.${region}.nhost.run/v1/graphql`;
+}
 
+async function anonymousGraphql<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
+  const url = getHasuraGraphqlUrl();
+  const h = await headers();
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      // Forward trace headers if any; do NOT forward cookies
+      "x-forwarded-host": h.get("x-forwarded-host") || "",
+    },
+    body: JSON.stringify({ query, variables }),
+    cache: "no-store",
+  });
+  const data = (await res.json()) as { data?: T; errors?: Array<{ message: string }> };
+  if (!res.ok || data.errors) {
+    throw new Error(data.errors?.map((e) => e.message).join("; ") || `GraphQL ${res.status}`);
+  }
+  return data.data as T;
+}
+
+async function fetchInitialContributions(slug: string, limit: number = 6) {
   const [popularResp, recentResp] = await Promise.all([
-    graphql.request<GetPopularContributionsQuery>({
-      query: GetPopularContributionsDocument,
-      variables: { slug, limit, offset: 0 },
+    anonymousGraphql<GetPopularContributionsQuery>(GetPopularContributionsDocument, {
+      slug,
+      limit,
+      offset: 0,
     }),
-    graphql.request<GetRecentContributionsQuery>({
-      query: GetRecentContributionsDocument,
-      variables: { slug, limit, offset: 0 },
+    anonymousGraphql<GetRecentContributionsQuery>(GetRecentContributionsDocument, {
+      slug,
+      limit,
+      offset: 0,
     }),
   ]);
 
@@ -39,8 +68,8 @@ async function fetchInitialContributions(slug: string, limit: number = 6) {
       : null,
   });
 
-  const popular: ContributionMovie[] = (popularResp.data?.contributions ?? []).map(mapItem);
-  const recent: ContributionMovie[] = (recentResp.data?.contributions ?? []).map(mapItem);
+  const popular: ContributionMovie[] = (popularResp?.contributions ?? []).map(mapItem);
+  const recent: ContributionMovie[] = (recentResp?.contributions ?? []).map(mapItem);
 
   return { popular, recent } as const;
 }
