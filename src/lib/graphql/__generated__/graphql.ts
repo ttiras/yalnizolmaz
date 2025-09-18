@@ -12408,10 +12408,7 @@ export type GetPopularContributionsQuery = {
     created_at: string;
     submitted_by: string;
     user: { __typename?: "users"; id: string; displayName: string; avatarUrl: string };
-    likes: {
-      __typename?: "contribution_likes_aggregate";
-      aggregate?: { __typename?: "contribution_likes_aggregate_fields"; count: number } | null;
-    };
+    likes_list: Array<{ __typename?: "contribution_likes"; user_id: string }>;
   }>;
 };
 
@@ -12433,10 +12430,7 @@ export type GetRecentContributionsQuery = {
     created_at: string;
     submitted_by: string;
     user: { __typename?: "users"; id: string; displayName: string; avatarUrl: string };
-    likes: {
-      __typename?: "contribution_likes_aggregate";
-      aggregate?: { __typename?: "contribution_likes_aggregate_fields"; count: number } | null;
-    };
+    likes_list: Array<{ __typename?: "contribution_likes"; user_id: string }>;
   }>;
 };
 
@@ -13036,10 +13030,8 @@ export const GetPopularContributionsDocument = `
       displayName
       avatarUrl
     }
-    likes: contribution_likes_aggregate {
-      aggregate {
-        count
-      }
+    likes_list: contribution_likes {
+      user_id
     }
   }
 }
@@ -13089,10 +13081,8 @@ export const GetRecentContributionsDocument = `
       displayName
       avatarUrl
     }
-    likes: contribution_likes_aggregate {
-      aggregate {
-        count
-      }
+    likes_list: contribution_likes {
+      user_id
     }
   }
 }

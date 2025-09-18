@@ -61,7 +61,7 @@ async function fetchInitialContributions(slug: string, limit: number = 6) {
     year: c.year ?? undefined,
     posterUrl: c.poster_url ?? undefined,
     sourceUrl: c.source_url ?? undefined,
-    likeCount: Number(c.likes?.aggregate?.count ?? 0),
+    likeCount: Number(c.likes_list?.length ?? 0),
     createdAt: String(c.created_at),
     submittedBy: c.user
       ? { displayName: c.user.displayName ?? null, avatarUrl: c.user.avatarUrl ?? null }

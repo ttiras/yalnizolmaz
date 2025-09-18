@@ -18,7 +18,7 @@ query GetPopularContributions($slug: String!, $limit: Int = 6, $offset: Int = 0)
       displayName
       avatarUrl
     }
-    likes: contribution_likes_aggregate { aggregate { count } }
+    likes_list: contribution_likes { user_id }
   }
 }
 
@@ -42,7 +42,7 @@ query GetRecentContributions($slug: String!, $limit: Int = 6, $offset: Int = 0) 
       displayName
       avatarUrl
     }
-    likes: contribution_likes_aggregate { aggregate { count } }
+    likes_list: contribution_likes { user_id }
   }
 }
 
