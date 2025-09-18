@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Film, BookOpen, Music, FileText, Quote, Heart, ExternalLink } from "lucide-react";
@@ -52,12 +53,7 @@ export default function RecentContributions({ contributions }: RecentContributio
     return (
       <div className="py-12 text-center">
         <div className="mb-4 text-gray-400">
-          <svg
-            className="mx-auto h-12 w-12"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
+          <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -81,7 +77,8 @@ export default function RecentContributions({ contributions }: RecentContributio
       {contributions.map((contribution) => {
         const Icon = typeIcons[contribution.type as keyof typeof typeIcons] || FileText;
         const typeLabel = typeLabels[contribution.type as keyof typeof typeLabels] || "Diğer";
-        const typeColor = typeColors[contribution.type as keyof typeof typeColors] || "from-gray-500 to-gray-600";
+        const typeColor =
+          typeColors[contribution.type as keyof typeof typeColors] || "from-gray-500 to-gray-600";
 
         return (
           <Card
@@ -93,7 +90,9 @@ export default function RecentContributions({ contributions }: RecentContributio
               {/* Header */}
               <div className="mb-4 flex items-start justify-between">
                 <div className="flex items-center gap-2">
-                  <div className={`h-8 w-8 rounded-lg bg-gradient-to-br ${typeColor} flex items-center justify-center`}>
+                  <div
+                    className={`h-8 w-8 rounded-lg bg-gradient-to-br ${typeColor} flex items-center justify-center`}
+                  >
                     <Icon className="h-4 w-4 text-white" />
                   </div>
                   <div>
@@ -105,7 +104,10 @@ export default function RecentContributions({ contributions }: RecentContributio
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-1 text-xs" style={{ color: "var(--muted-foreground)" }}>
+                <div
+                  className="flex items-center gap-1 text-xs"
+                  style={{ color: "var(--muted-foreground)" }}
+                >
                   <Heart className="h-3 w-3" />
                   {contribution.likeCount}
                 </div>
@@ -114,25 +116,27 @@ export default function RecentContributions({ contributions }: RecentContributio
               {/* Poster */}
               {contribution.posterUrl && (
                 <div className="mb-4">
-                  <img
+                  <Image
                     src={contribution.posterUrl}
                     alt={contribution.title}
-                    className="h-32 w-full object-cover rounded-lg"
+                    width={400}
+                    height={128}
+                    className="h-32 w-full rounded-lg object-cover"
                   />
                 </div>
               )}
 
               {/* Title */}
-              <h3 className="mb-2 text-lg font-semibold line-clamp-2" style={{ color: "var(--foreground)" }}>
+              <h3
+                className="mb-2 line-clamp-2 text-lg font-semibold"
+                style={{ color: "var(--foreground)" }}
+              >
                 {contribution.title}
                 {contribution.year && ` (${contribution.year})`}
               </h3>
 
               {/* Note */}
-              <p
-                className="mb-4 line-clamp-3 text-sm"
-                style={{ color: "var(--muted-foreground)" }}
-              >
+              <p className="mb-4 line-clamp-3 text-sm" style={{ color: "var(--muted-foreground)" }}>
                 {contribution.note}
               </p>
 
@@ -158,7 +162,7 @@ export default function RecentContributions({ contributions }: RecentContributio
                     href={contribution.sourceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                    className="text-sm text-gray-500 transition-colors hover:text-gray-700"
                   >
                     <ExternalLink className="h-4 w-4" />
                   </a>

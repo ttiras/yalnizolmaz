@@ -4,10 +4,12 @@ import { contribTypeBySlug } from "@/lib/contribConfig";
 import { ContributionTypeCard } from "@/components/contributions/ContributionTypeCard";
 import { ContributionStats } from "@/components/contributions/ContributionStats";
 import RecentContributions from "@/components/contributions/RecentContributions";
+import { Contribution } from "@/lib/types/contributions";
 
 export const metadata = {
   title: "Sizden Gelenler | yalnizolmaz",
-  description: "Topluluktan gelen öneriler, deneyimler ve paylaşımlar. Yalnızlık teması etrafında bir araya gelen hikayeler.",
+  description:
+    "Topluluktan gelen öneriler, deneyimler ve paylaşımlar. Yalnızlık teması etrafında bir araya gelen hikayeler.",
 };
 
 export default async function ContributionsPage() {
@@ -20,14 +22,17 @@ export default async function ContributionsPage() {
   });
 
   // Group posts by contribution type
-  const postsByType = contribPosts.reduce((acc, post) => {
-    const type = contribTypeBySlug(post.slug);
-    if (!acc[type]) {
-      acc[type] = [];
-    }
-    acc[type].push(post);
-    return acc;
-  }, {} as Record<string, typeof contribPosts>);
+  const postsByType = contribPosts.reduce(
+    (acc, post) => {
+      const type = contribTypeBySlug(post.slug);
+      if (!acc[type]) {
+        acc[type] = [];
+      }
+      acc[type].push(post);
+      return acc;
+    },
+    {} as Record<string, typeof contribPosts>,
+  );
 
   // For now, use empty contributions to avoid GraphQL errors
   const recentContributions: Contribution[] = [];
@@ -43,7 +48,7 @@ export default async function ContributionsPage() {
     },
     {
       type: "book" as const,
-      title: "Kitap Önerileri", 
+      title: "Kitap Önerileri",
       description: "Yalnızlıkla ilgili en etkileyici kitaplar",
       icon: "📚",
       color: "from-blue-500 to-indigo-500",
@@ -100,8 +105,11 @@ export default async function ContributionsPage() {
             >
               Sizden Gelenler
             </h1>
-            <p className="mx-auto max-w-3xl text-xl leading-relaxed md:text-2xl" style={{ color: "var(--muted-foreground)" }}>
-              Yalnızlık teması etrafında bir araya gelen topluluk. Paylaştığınız her film, kitap, 
+            <p
+              className="mx-auto max-w-3xl text-xl leading-relaxed md:text-2xl"
+              style={{ color: "var(--muted-foreground)" }}
+            >
+              Yalnızlık teması etrafında bir araya gelen topluluk. Paylaştığınız her film, kitap,
               şiir ve müzik, birbirimizi daha iyi anlamamıza yardımcı oluyor.
             </p>
           </div>
@@ -123,7 +131,7 @@ export default async function ContributionsPage() {
             Katkı Türleri
           </h2>
           <p className="mx-auto max-w-2xl text-lg" style={{ color: "var(--muted-foreground)" }}>
-            Hangi konuda paylaşım yapmak istiyorsunuz? Aşağıdaki kategorilerden birini seçin ve 
+            Hangi konuda paylaşım yapmak istiyorsunuz? Aşağıdaki kategorilerden birini seçin ve
             topluluğa katkıda bulunun.
           </p>
         </div>
@@ -138,7 +146,7 @@ export default async function ContributionsPage() {
               icon={type.icon}
               color={type.color}
               count={type.count}
-              href={`/sizden-gelenler/${postsByType[type.type]?.[0]?.slug || '#'}`}
+              href={`/sizden-gelenler/${postsByType[type.type]?.[0]?.slug || "#"}`}
             />
           ))}
         </div>
@@ -157,9 +165,9 @@ export default async function ContributionsPage() {
             Topluluktan en son gelen katkıları keşfedin ve ilham alın.
           </p>
         </div>
-        
+
         <RecentContributions contributions={recentContributions} />
-        
+
         {/* View All Link */}
         <div className="mt-8 text-center">
           <Link
@@ -179,10 +187,10 @@ export default async function ContributionsPage() {
       <section className="relative mx-auto max-w-4xl px-6 py-16 md:px-8">
         <div
           className="rounded-3xl border p-8 text-center md:p-12"
-          style={{ 
-            borderColor: "var(--border)", 
+          style={{
+            borderColor: "var(--border)",
             backgroundColor: "var(--card)",
-            background: "linear-gradient(135deg, var(--card) 0%, var(--background) 100%)"
+            background: "linear-gradient(135deg, var(--card) 0%, var(--background) 100%)",
           }}
         >
           <h3
@@ -192,7 +200,7 @@ export default async function ContributionsPage() {
             Siz de Katkıda Bulunun
           </h3>
           <p className="mb-8 text-lg" style={{ color: "var(--muted-foreground)" }}>
-            Yalnızlıkla ilgili deneyimlerinizi, önerilerinizi ve düşüncelerinizi paylaşın. 
+            Yalnızlıkla ilgili deneyimlerinizi, önerilerinizi ve düşüncelerinizi paylaşın.
             Topluluğun bir parçası olun.
           </p>
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">

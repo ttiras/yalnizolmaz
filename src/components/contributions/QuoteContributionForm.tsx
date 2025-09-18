@@ -11,10 +11,13 @@ import { AuthGate } from "@/components/AuthGate";
 
 interface QuoteContributionFormProps {
   blogSlug: string;
-  onSubmitted?: (contribution: any) => void;
+  onSubmitted?: (contribution: { id: string; title: string; type: string }) => void;
 }
 
-export default function QuoteContributionForm({ blogSlug, onSubmitted }: QuoteContributionFormProps) {
+export default function QuoteContributionForm({
+  blogSlug,
+  onSubmitted,
+}: QuoteContributionFormProps) {
   const { isAuthenticated } = useAuth();
   const [quote, setQuote] = useState("");
   const [author, setAuthor] = useState("");
@@ -23,7 +26,7 @@ export default function QuoteContributionForm({ blogSlug, onSubmitted }: QuoteCo
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!quote.trim()) {
       setError("Lütfen sözü yazın");
       return;
@@ -69,15 +72,13 @@ export default function QuoteContributionForm({ blogSlug, onSubmitted }: QuoteCo
   };
 
   const formContent = (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="mx-auto w-full max-w-2xl">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Quote className="h-5 w-5" />
           Yalnızlık Sözü Paylaş
         </CardTitle>
-        <CardDescription>
-          Yalnızlıkla ilgili anlamlı bir sözü paylaşın.
-        </CardDescription>
+        <CardDescription>Yalnızlıkla ilgili anlamlı bir sözü paylaşın.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -95,9 +96,7 @@ export default function QuoteContributionForm({ blogSlug, onSubmitted }: QuoteCo
               className="resize-none text-lg"
               required
             />
-            <p className="text-xs text-gray-500">
-              Sözü tırnak işaretleri olmadan yazın.
-            </p>
+            <p className="text-xs text-gray-500">Sözü tırnak işaretleri olmadan yazın.</p>
           </div>
 
           {/* Author */}
@@ -119,15 +118,13 @@ export default function QuoteContributionForm({ blogSlug, onSubmitted }: QuoteCo
 
           {/* Preview */}
           {quote.trim() && (
-            <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
+            <div className="rounded-lg border bg-gray-50 p-4 dark:bg-gray-800">
               <div className="text-center">
-                <blockquote className="text-lg italic text-gray-700 dark:text-gray-300">
+                <blockquote className="text-lg text-gray-700 italic dark:text-gray-300">
                   &quot;{quote.trim()}&quot;
                 </blockquote>
                 {author.trim() && (
-                  <cite className="text-sm text-gray-500 mt-2 block">
-                    — {author.trim()}
-                  </cite>
+                  <cite className="mt-2 block text-sm text-gray-500">— {author.trim()}</cite>
                 )}
               </div>
             </div>
@@ -135,20 +132,16 @@ export default function QuoteContributionForm({ blogSlug, onSubmitted }: QuoteCo
 
           {/* Error Message */}
           {error && (
-            <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600 dark:border-red-800 dark:bg-red-900/20">
               {error}
             </div>
           )}
 
           {/* Submit Button */}
-          <Button
-            type="submit"
-            disabled={!quote.trim() || isSubmitting}
-            className="w-full"
-          >
+          <Button type="submit" disabled={!quote.trim() || isSubmitting} className="w-full">
             {isSubmitting ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Paylaşılıyor...
               </>
             ) : (
@@ -161,11 +154,7 @@ export default function QuoteContributionForm({ blogSlug, onSubmitted }: QuoteCo
   );
 
   if (!isAuthenticated) {
-    return (
-      <AuthGate mode="inline">
-        {formContent}
-      </AuthGate>
-    );
+    return <AuthGate mode="inline">{formContent}</AuthGate>;
   }
 
   return formContent;

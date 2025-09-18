@@ -15,22 +15,19 @@ export async function ContributionGrid({ type, search, sort, page }: Contributio
   const nhost = await createNhostClient();
 
   // Build where clause
-  const whereClause: any = { status: { _eq: "published" } };
-  
+  const whereClause: Record<string, unknown> = { status: { _eq: "published" } };
+
   if (type !== "all") {
     whereClause.type = { _eq: type };
   }
-  
+
   if (search) {
-    whereClause._or = [
-      { title: { _ilike: `%${search}%` } },
-      { note: { _ilike: `%${search}%` } },
-    ];
+    whereClause._or = [{ title: { _ilike: `%${search}%` } }, { note: { _ilike: `%${search}%` } }];
   }
 
   // Build order clause
-  let orderClause: any = { created_at: "desc" };
-  
+  let orderClause: Record<string, unknown> = { created_at: "desc" };
+
   switch (sort) {
     case "oldest":
       orderClause = { created_at: "asc" };
@@ -120,12 +117,7 @@ export async function ContributionGrid({ type, search, sort, page }: Contributio
     return (
       <div className="py-12 text-center">
         <div className="mb-4 text-gray-400">
-          <svg
-            className="mx-auto h-12 w-12"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
+          <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -167,12 +159,7 @@ export async function ContributionGrid({ type, search, sort, page }: Contributio
     return (
       <div className="py-12 text-center">
         <div className="mb-4 text-gray-400">
-          <svg
-            className="mx-auto h-12 w-12"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
+          <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -196,7 +183,8 @@ export async function ContributionGrid({ type, search, sort, page }: Contributio
       {/* Results Info */}
       <div className="flex items-center justify-between">
         <p className="text-sm" style={{ color: "var(--muted-foreground)" }}>
-          {totalCount} katkıdan {((page - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(page * ITEMS_PER_PAGE, totalCount)} arası gösteriliyor
+          {totalCount} katkıdan {(page - 1) * ITEMS_PER_PAGE + 1}-
+          {Math.min(page * ITEMS_PER_PAGE, totalCount)} arası gösteriliyor
         </p>
       </div>
 

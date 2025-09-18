@@ -11,7 +11,7 @@ import { AuthGate } from "@/components/AuthGate";
 
 interface PoemContributionFormProps {
   blogSlug: string;
-  onSubmitted?: (contribution: any) => void;
+  onSubmitted?: (contribution: { id: string; title: string; type: string }) => void;
 }
 
 export default function PoemContributionForm({ blogSlug, onSubmitted }: PoemContributionFormProps) {
@@ -25,7 +25,7 @@ export default function PoemContributionForm({ blogSlug, onSubmitted }: PoemCont
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!title.trim() || !poem.trim()) {
       setError("Lütfen şiir başlığını ve içeriğini yazın");
       return;
@@ -70,7 +70,7 @@ export default function PoemContributionForm({ blogSlug, onSubmitted }: PoemCont
   };
 
   const formContent = (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="mx-auto w-full max-w-2xl">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FileText className="h-5 w-5" />
@@ -125,9 +125,7 @@ export default function PoemContributionForm({ blogSlug, onSubmitted }: PoemCont
               className="resize-none font-mono text-sm"
               required
             />
-            <p className="text-xs text-gray-500">
-              Şiiri olduğu gibi, satır satır yazın.
-            </p>
+            <p className="text-xs text-gray-500">Şiiri olduğu gibi, satır satır yazın.</p>
           </div>
 
           {/* Personal Note */}
@@ -150,7 +148,7 @@ export default function PoemContributionForm({ blogSlug, onSubmitted }: PoemCont
 
           {/* Error Message */}
           {error && (
-            <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600 dark:border-red-800 dark:bg-red-900/20">
               {error}
             </div>
           )}
@@ -163,7 +161,7 @@ export default function PoemContributionForm({ blogSlug, onSubmitted }: PoemCont
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Paylaşılıyor...
               </>
             ) : (
@@ -176,11 +174,7 @@ export default function PoemContributionForm({ blogSlug, onSubmitted }: PoemCont
   );
 
   if (!isAuthenticated) {
-    return (
-      <AuthGate mode="inline">
-        {formContent}
-      </AuthGate>
-    );
+    return <AuthGate mode="inline">{formContent}</AuthGate>;
   }
 
   return formContent;

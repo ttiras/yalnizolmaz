@@ -26,7 +26,7 @@ export default function SizdenGelenlerSection({
   slug,
   typeSlug,
   initialPopular,
-  initialNew: _initialNew = [],
+  initialNew = [],
   loggedIn = false,
   showForm = true,
   emptyStateText = "Henüz bir öneri yok. İlk öneriyi siz yapın!",

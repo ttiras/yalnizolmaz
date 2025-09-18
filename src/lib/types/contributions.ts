@@ -1,13 +1,20 @@
-export type ContributionMovie = {
+export type Contribution = {
   id: string;
   title: string;
   year?: number;
+  note: string;
+  type: string;
   posterUrl?: string | null;
-  sourceUrl?: string | null; // canonical IMDb/TMDb URL to display (optional for now)
+  sourceUrl?: string | null;
   likeCount: number;
-  createdAt: string; // ISO
-  submittedBy?: { displayName?: string | null; avatarUrl?: string | null } | null;
+  createdAt: string;
+  submittedBy: {
+    displayName: string;
+    avatarUrl?: string | null;
+  };
 };
+
+export type ContributionMovie = Contribution;
 
 export type SizdenGelenlerProps = {
   slug: string; // blog slug, e.g., "yalnizlar-icin-film-onerileri"

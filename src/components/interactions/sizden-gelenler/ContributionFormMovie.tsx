@@ -54,6 +54,8 @@ export default function ContributionFormMovie({
         id: String(created.id),
         title: String(created.title),
         year: created.year ?? undefined,
+        note: note || "",
+        type: "film",
         posterUrl: created.poster_url ?? undefined,
         sourceUrl: created.source_url ?? undefined,
         likeCount: 0,

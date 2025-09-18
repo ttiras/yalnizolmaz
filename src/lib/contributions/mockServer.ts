@@ -28,6 +28,8 @@ export async function getInitialContributions(
       id,
       title: `Topluluk Önerisi ${i + 1}`,
       year,
+      note: `Bu öneri hakkında düşünceler... ${i + 1}`,
+      type: "film",
       posterUrl: null,
       sourceUrl: null,
       likeCount: Math.floor(rand() * 123),

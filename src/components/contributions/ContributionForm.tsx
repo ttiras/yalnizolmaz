@@ -13,10 +13,14 @@ import QuoteContributionForm from "./QuoteContributionForm";
 interface ContributionFormProps {
   blogSlug: string;
   contributionType: "film" | "book" | "music" | "poem" | "quote";
-  onSubmitted?: (contribution: any) => void;
+  onSubmitted?: (contribution: { id: string; title: string; type: string }) => void;
 }
 
-export default function ContributionForm({ blogSlug, contributionType, onSubmitted }: ContributionFormProps) {
+export default function ContributionForm({
+  blogSlug,
+  contributionType,
+  onSubmitted,
+}: ContributionFormProps) {
   const [activeTab, setActiveTab] = useState(contributionType);
 
   const contributionTypes = [
@@ -70,28 +74,39 @@ export default function ContributionForm({ blogSlug, contributionType, onSubmitt
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="mx-auto w-full max-w-4xl">
       <Card>
         <CardHeader>
           <CardTitle>Katkıda Bulun</CardTitle>
           <CardDescription>
-            Yalnızlık teması etrafında topluluğa katkıda bulunun. Beğendiğiniz içerikleri paylaşın ve düşüncelerinizi yazın.
+            Yalnızlık teması etrafında topluluğa katkıda bulunun. Beğendiğiniz içerikleri paylaşın
+            ve düşüncelerinizi yazın.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full">
+          <Tabs
+            value={activeTab}
+            onValueChange={(value) =>
+              setActiveTab(value as "film" | "book" | "music" | "poem" | "quote")
+            }
+            className="w-full"
+          >
             <TabsList className="grid w-full grid-cols-5">
               {contributionTypes.map((type) => {
                 const Icon = type.icon;
                 return (
-                  <TabsTrigger key={type.value} value={type.value} className="flex items-center gap-2">
+                  <TabsTrigger
+                    key={type.value}
+                    value={type.value}
+                    className="flex items-center gap-2"
+                  >
                     <Icon className="h-4 w-4" />
                     <span className="hidden sm:inline">{type.label}</span>
                   </TabsTrigger>
                 );
               })}
             </TabsList>
-            
+
             {contributionTypes.map((type) => (
               <TabsContent key={type.value} value={type.value} className="mt-6">
                 {renderForm()}

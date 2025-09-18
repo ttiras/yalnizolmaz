@@ -5,50 +5,32 @@ import { generateItemSlug } from "@/lib/contribConfig";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { 
-      type, 
-      title, 
-      note, 
-      year, 
-      externalId, 
-      posterUrl, 
-      sourceUrl, 
-      blogSlug 
-    } = body;
+    const { type, title, note, year, externalId, posterUrl, sourceUrl, blogSlug } = body;
 
     // Validate required fields
     if (!type || !title || !note || !blogSlug) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     // Validate contribution type
     const validTypes = ["film", "book", "music", "poem", "quote"];
     if (!validTypes.includes(type)) {
-      return NextResponse.json(
-        { error: "Invalid contribution type" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid contribution type" }, { status: 400 });
     }
 
-    // Get user session
+    // Get user session from cookies
     const nhost = await createNhostClient();
-    const session = await nhost.auth.getSession();
+    const session = nhost.getUserSession();
 
     if (!session?.user) {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Authentication required" }, { status: 401 });
     }
 
     // Generate slug for the contribution
     // const slug = generateItemSlug(title, year);
 
     // Insert contribution into database
-    const { data, error } = await nhost.graphql.request({
+    const resp = await nhost.graphql.request({
       query: `
         mutation InsertContribution($object: contributions_insert_input!) {
           insert_contributions_one(object: $object) {
@@ -86,23 +68,46 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    if (error) {
-      console.error("GraphQL error:", error);
-      return NextResponse.json(
-        { error: "Failed to create contribution" },
-        { status: 500 }
-      );
+    const result = resp as unknown as {
+      data?: {
+        insert_contributions_one?: {
+          id: string;
+          title: string;
+          note: string;
+          year: number | null;
+          type: string;
+          external_id: string | null;
+          poster_url: string | null;
+          source_url: string | null;
+          blog_slug: string;
+          submitted_by: string;
+          status: string;
+          created_at: string;
+          user: {
+            id: string;
+            displayName: string | null;
+            avatarUrl: string | null;
+          };
+        };
+      };
+      error?: unknown;
+    };
+
+    if (result.error) {
+      console.error("GraphQL error:", result.error);
+      return NextResponse.json({ error: "Failed to create contribution" }, { status: 500 });
+    }
+
+    if (!result.data?.insert_contributions_one) {
+      return NextResponse.json({ error: "Failed to create contribution" }, { status: 500 });
     }
 
     return NextResponse.json({
       success: true,
-      contribution: data.insert_contributions_one,
+      contribution: result.data.insert_contributions_one,
     });
   } catch (error) {
     console.error("Contribution creation error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

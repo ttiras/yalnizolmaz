@@ -27,10 +27,13 @@ interface MovieSearchResult {
 
 interface MovieContributionFormProps {
   blogSlug: string;
-  onSubmitted?: (contribution: any) => void;
+  onSubmitted?: (contribution: { id: string; title: string; type: string }) => void;
 }
 
-export default function MovieContributionForm({ blogSlug, onSubmitted }: MovieContributionFormProps) {
+export default function MovieContributionForm({
+  blogSlug,
+  onSubmitted,
+}: MovieContributionFormProps) {
   const { isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<MovieSearchResult[]>([]);
@@ -85,7 +88,7 @@ export default function MovieContributionForm({ blogSlug, onSubmitted }: MovieCo
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!selectedMovie || !note.trim()) {
       setError("Lütfen bir film seçin ve düşüncelerinizi yazın");
       return;
@@ -133,7 +136,7 @@ export default function MovieContributionForm({ blogSlug, onSubmitted }: MovieCo
   };
 
   const formContent = (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="mx-auto w-full max-w-2xl">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Film className="h-5 w-5" />
@@ -151,7 +154,7 @@ export default function MovieContributionForm({ blogSlug, onSubmitted }: MovieCo
               Film Ara
             </label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <Input
                 id="movie-search"
                 type="text"
@@ -161,43 +164,43 @@ export default function MovieContributionForm({ blogSlug, onSubmitted }: MovieCo
                 className="pl-10"
               />
               {isSearching && (
-                <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-gray-400" />
+                <Loader2 className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 animate-spin text-gray-400" />
               )}
             </div>
 
             {/* Search Results */}
             {searchResults.length > 0 && (
-              <div className="max-h-60 overflow-y-auto border rounded-lg bg-white dark:bg-gray-800">
+              <div className="max-h-60 overflow-y-auto rounded-lg border bg-white dark:bg-gray-800">
                 {searchResults.map((movie) => (
                   <button
                     key={movie.id}
                     type="button"
                     onClick={() => handleMovieSelect(movie)}
-                    className="w-full p-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 border-b last:border-b-0"
+                    className="w-full border-b p-3 text-left last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
                     <div className="flex gap-3">
                       {movie.posterUrl && (
                         <img
                           src={movie.posterUrl}
                           alt={movie.title}
-                          className="w-12 h-16 object-cover rounded"
+                          className="h-16 w-12 rounded object-cover"
                         />
                       )}
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm truncate">{movie.title}</h4>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="truncate text-sm font-medium">{movie.title}</h4>
                         {movie.originalTitle !== movie.title && (
-                          <p className="text-xs text-gray-500 truncate">{movie.originalTitle}</p>
+                          <p className="truncate text-xs text-gray-500">{movie.originalTitle}</p>
                         )}
-                        <div className="flex items-center gap-2 mt-1">
+                        <div className="mt-1 flex items-center gap-2">
                           {movie.year && (
                             <Badge variant="secondary" className="text-xs">
-                              <Calendar className="h-3 w-3 mr-1" />
+                              <Calendar className="mr-1 h-3 w-3" />
                               {movie.year}
                             </Badge>
                           )}
                           {movie.rating > 0 && (
                             <Badge variant="outline" className="text-xs">
-                              <Star className="h-3 w-3 mr-1" />
+                              <Star className="mr-1 h-3 w-3" />
                               {movie.rating.toFixed(1)}
                             </Badge>
                           )}
@@ -212,13 +215,13 @@ export default function MovieContributionForm({ blogSlug, onSubmitted }: MovieCo
 
           {/* Selected Movie */}
           {selectedMovie && (
-            <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
+            <div className="rounded-lg border bg-gray-50 p-4 dark:bg-gray-800">
               <div className="flex gap-3">
                 {selectedMovie.posterUrl && (
                   <img
                     src={selectedMovie.posterUrl}
                     alt={selectedMovie.title}
-                    className="w-16 h-20 object-cover rounded"
+                    className="h-20 w-16 rounded object-cover"
                   />
                 )}
                 <div className="flex-1">
@@ -226,22 +229,22 @@ export default function MovieContributionForm({ blogSlug, onSubmitted }: MovieCo
                   {selectedMovie.originalTitle !== selectedMovie.title && (
                     <p className="text-sm text-gray-500">{selectedMovie.originalTitle}</p>
                   )}
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="mt-1 flex items-center gap-2">
                     {selectedMovie.year && (
                       <Badge variant="secondary" className="text-xs">
-                        <Calendar className="h-3 w-3 mr-1" />
+                        <Calendar className="mr-1 h-3 w-3" />
                         {selectedMovie.year}
                       </Badge>
                     )}
                     {selectedMovie.rating > 0 && (
                       <Badge variant="outline" className="text-xs">
-                        <Star className="h-3 w-3 mr-1" />
+                        <Star className="mr-1 h-3 w-3" />
                         {selectedMovie.rating.toFixed(1)}
                       </Badge>
                     )}
                   </div>
                   {selectedMovie.overview && (
-                    <p className="text-sm text-gray-600 mt-2 line-clamp-2">
+                    <p className="mt-2 line-clamp-2 text-sm text-gray-600">
                       {selectedMovie.overview}
                     </p>
                   )}
@@ -278,7 +281,7 @@ export default function MovieContributionForm({ blogSlug, onSubmitted }: MovieCo
 
           {/* Error Message */}
           {error && (
-            <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600 dark:border-red-800 dark:bg-red-900/20">
               {error}
             </div>
           )}
@@ -291,7 +294,7 @@ export default function MovieContributionForm({ blogSlug, onSubmitted }: MovieCo
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Ekleniyor...
               </>
             ) : (
@@ -304,11 +307,7 @@ export default function MovieContributionForm({ blogSlug, onSubmitted }: MovieCo
   );
 
   if (!isAuthenticated) {
-    return (
-      <AuthGate mode="inline">
-        {formContent}
-      </AuthGate>
-    );
+    return <AuthGate mode="inline">{formContent}</AuthGate>;
   }
 
   return formContent;

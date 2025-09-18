@@ -1,11 +1,12 @@
 import { Suspense } from "react";
 import { ContributionGrid } from "@/components/contributions/ContributionGrid";
-import { ContributionFilters } from "@/components/contributions/ContributionFilters";
+import ContributionFilters from "@/components/contributions/ContributionFilters";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const metadata = {
   title: "Tüm Katkılar | Sizden Gelenler | yalnizolmaz",
-  description: "Topluluktan gelen tüm öneriler, deneyimler ve paylaşımlar. Yalnızlık teması etrafında bir araya gelen hikayeler.",
+  description:
+    "Topluluktan gelen tüm öneriler, deneyimler ve paylaşımlar. Yalnızlık teması etrafında bir araya gelen hikayeler.",
 };
 
 interface SearchParams {
@@ -49,9 +50,12 @@ export default async function AllContributionsPage({ searchParams }: SearchParam
             >
               Tüm Katkılar
             </h1>
-            <p className="mx-auto max-w-3xl text-xl leading-relaxed md:text-2xl" style={{ color: "var(--muted-foreground)" }}>
-              Topluluktan gelen tüm öneriler, deneyimler ve paylaşımlar. 
-              Yalnızlık teması etrafında bir araya gelen hikayeler.
+            <p
+              className="mx-auto max-w-3xl text-xl leading-relaxed md:text-2xl"
+              style={{ color: "var(--muted-foreground)" }}
+            >
+              Topluluktan gelen tüm öneriler, deneyimler ve paylaşımlar. Yalnızlık teması etrafında
+              bir araya gelen hikayeler.
             </p>
           </div>
         </div>
@@ -59,22 +63,13 @@ export default async function AllContributionsPage({ searchParams }: SearchParam
 
       {/* Filters */}
       <section className="relative mx-auto max-w-7xl px-6 py-8 md:px-8">
-        <ContributionFilters 
-          currentType={type}
-          currentSearch={search}
-          currentSort={sort}
-        />
+        <ContributionFilters currentType={type} currentSearch={search} currentSort={sort} />
       </section>
 
       {/* Contributions Grid */}
       <section className="relative mx-auto max-w-7xl px-6 py-12 md:px-8">
         <Suspense fallback={<ContributionGridSkeleton />}>
-          <ContributionGrid 
-            type={type}
-            search={search}
-            sort={sort}
-            page={page}
-          />
+          <ContributionGrid type={type} search={search} sort={sort} page={page} />
         </Suspense>
       </section>
     </main>
@@ -85,7 +80,11 @@ function ContributionGridSkeleton() {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 9 }).map((_, i) => (
-        <div key={i} className="rounded-lg border p-6" style={{ borderColor: "var(--border)", backgroundColor: "var(--card)" }}>
+        <div
+          key={i}
+          className="rounded-lg border p-6"
+          style={{ borderColor: "var(--border)", backgroundColor: "var(--card)" }}
+        >
           <div className="mb-4 flex items-center gap-2">
             <Skeleton className="h-8 w-8 rounded-lg" />
             <div className="space-y-1">

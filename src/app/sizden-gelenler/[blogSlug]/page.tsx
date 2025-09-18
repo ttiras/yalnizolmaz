@@ -23,13 +23,14 @@ export default async function ContributionsByBlogSlug({ params }: Params) {
 
   // Fetch contributions via anonymous GraphQL (server-side)
   // Use the anonymous endpoint for reading contributions
-  const graphqlUrl = process.env.NEXT_PUBLIC_NHOST_GRAPHQL_URL || 
+  const graphqlUrl =
+    process.env.NEXT_PUBLIC_NHOST_GRAPHQL_URL ||
     `https://${process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN}.nhost.run/v1/graphql`;
-  
+
   const resp = await fetch(graphqlUrl, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       query: `
@@ -61,19 +62,33 @@ export default async function ContributionsByBlogSlug({ params }: Params) {
     notFound();
   }
 
-  const contributions = data.contributions.map((c) => ({
-    id: c.id,
-    slug: c.slug || c.id,
-    title: c.title,
-    year: c.year ?? undefined,
-    note: c.note,
-    likeCount: 0, // We'll add this back when we fix the aggregate query
-    createdAt: c.created_at,
-    submittedBy: {
-      displayName: c.user?.displayName || "Anonim",
-      avatarUrl: c.user?.avatarUrl ?? null,
-    },
-  }));
+  const contributions = data.contributions.map(
+    (c: {
+      id: string;
+      slug: string | null;
+      title: string;
+      year?: number | null;
+      note: string;
+      created_at: string;
+      user?: {
+        id: string;
+        displayName?: string | null;
+        avatarUrl?: string | null;
+      } | null;
+    }) => ({
+      id: c.id,
+      slug: c.slug || c.id,
+      title: c.title,
+      year: c.year ?? undefined,
+      note: c.note,
+      likeCount: 0, // We'll add this back when we fix the aggregate query
+      createdAt: c.created_at,
+      submittedBy: {
+        displayName: c.user?.displayName || "Anonim",
+        avatarUrl: c.user?.avatarUrl ?? null,
+      },
+    }),
+  );
 
   return (
     <main className="relative">
@@ -120,11 +135,8 @@ export default async function ContributionsByBlogSlug({ params }: Params) {
             Bu konuda düşüncelerinizi paylaşın ve topluluğa katkıda bulunun.
           </p>
         </div>
-        
-        <ContributionForm 
-          blogSlug={blogSlug} 
-          contributionType={contribType}
-        />
+
+        <ContributionForm blogSlug={blogSlug} contributionType={contribType} />
       </section>
 
       {/* Contributions Grid */}
@@ -140,44 +152,61 @@ export default async function ContributionsByBlogSlug({ params }: Params) {
 
         {contributions.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {contributions.map((contribution) => (
-              <Link
-                key={contribution.id}
-                href={`/sizden-gelenler/${blogSlug}/${contribution.slug}`}
-                className="group overflow-hidden rounded-2xl border transition-all hover:shadow-xl"
-                style={{ borderColor: "var(--border)", backgroundColor: "var(--card)" }}
-              >
-                <div className="p-6">
-                  <div className="mb-3 flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-400"></div>
-                    <span className="text-sm font-medium" style={{ color: "var(--foreground)" }}>
-                      {contribution.submittedBy?.displayName || "Anonim"}
-                    </span>
-                    <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>
-                      {formatDate(contribution.createdAt)}
-                    </span>
+            {contributions.map(
+              (contribution: {
+                id: string;
+                slug: string;
+                title: string;
+                year?: number;
+                note: string;
+                likeCount: number;
+                createdAt: string;
+                submittedBy: {
+                  displayName: string;
+                  avatarUrl: string | null;
+                };
+              }) => (
+                <Link
+                  key={contribution.id}
+                  href={`/sizden-gelenler/${blogSlug}/${contribution.slug}`}
+                  className="group overflow-hidden rounded-2xl border transition-all hover:shadow-xl"
+                  style={{ borderColor: "var(--border)", backgroundColor: "var(--card)" }}
+                >
+                  <div className="p-6">
+                    <div className="mb-3 flex items-center gap-2">
+                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-400"></div>
+                      <span className="text-sm font-medium" style={{ color: "var(--foreground)" }}>
+                        {contribution.submittedBy?.displayName || "Anonim"}
+                      </span>
+                      <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>
+                        {formatDate(contribution.createdAt)}
+                      </span>
+                    </div>
+                    <h3
+                      className="mb-2 text-lg font-semibold"
+                      style={{ color: "var(--foreground)" }}
+                    >
+                      {contribution.title}
+                      {contribution.year && ` (${contribution.year})`}
+                    </h3>
+                    <p
+                      className="mb-3 line-clamp-2 text-sm"
+                      style={{ color: "var(--muted-foreground)" }}
+                    >
+                      {contribution.note}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>
+                        {contribution.likeCount} beğeni
+                      </span>
+                      <span className="text-xs" style={{ color: "var(--accent)" }}>
+                        Detayları gör →
+                      </span>
+                    </div>
                   </div>
-                  <h3 className="mb-2 text-lg font-semibold" style={{ color: "var(--foreground)" }}>
-                    {contribution.title}
-                    {contribution.year && ` (${contribution.year})`}
-                  </h3>
-                  <p
-                    className="mb-3 line-clamp-2 text-sm"
-                    style={{ color: "var(--muted-foreground)" }}
-                  >
-                    {contribution.note}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>
-                      {contribution.likeCount} beğeni
-                    </span>
-                    <span className="text-xs" style={{ color: "var(--accent)" }}>
-                      Detayları gör →
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ),
+            )}
           </div>
         ) : (
           <div className="py-12 text-center">

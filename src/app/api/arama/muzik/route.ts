@@ -16,7 +16,10 @@ export async function GET(request: NextRequest) {
     const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
     if (!clientId || !clientSecret) {
-      return NextResponse.json({ error: "Spotify API credentials not configured" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Spotify API credentials not configured" },
+        { status: 500 },
+      );
     }
 
     // Get access token
@@ -43,7 +46,7 @@ export async function GET(request: NextRequest) {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      }
+      },
     );
 
     if (!searchResponse.ok) {
@@ -54,53 +57,98 @@ export async function GET(request: NextRequest) {
 
     let results = [];
     if (type === "track") {
-      results = searchData.tracks?.items?.map((track: any) => ({
-        id: track.id,
-        name: track.name,
-        artists: track.artists.map((artist: any) => ({
-          id: artist.id,
-          name: artist.name,
-        })),
-        album: {
-          id: track.album.id,
-          name: track.album.name,
-          images: track.album.images,
-          releaseDate: track.album.release_date,
-        },
-        duration: track.duration_ms,
-        popularity: track.popularity,
-        previewUrl: track.preview_url,
-        externalUrls: track.external_urls,
-        explicit: track.explicit,
-        trackNumber: track.track_number,
-        discNumber: track.disc_number,
-      })) || [];
+      results =
+        searchData.tracks?.items?.map(
+          (track: {
+            id: string;
+            name: string;
+            artists: Array<{ id: string; name: string }>;
+            album: {
+              id: string;
+              name: string;
+              images: Array<{ url: string; width: number; height: number }>;
+              release_date: string;
+            };
+            external_urls: { spotify: string };
+            preview_url: string | null;
+            duration_ms: number;
+            popularity: number;
+            explicit: boolean;
+            track_number: number;
+            disc_number: number;
+          }) => ({
+            id: track.id,
+            name: track.name,
+            artists: track.artists.map((artist: { id: string; name: string }) => ({
+              id: artist.id,
+              name: artist.name,
+            })),
+            album: {
+              id: track.album.id,
+              name: track.album.name,
+              images: track.album.images,
+              releaseDate: track.album.release_date,
+            },
+            duration: track.duration_ms,
+            popularity: track.popularity,
+            previewUrl: track.preview_url,
+            externalUrls: track.external_urls,
+            explicit: track.explicit,
+            trackNumber: track.track_number,
+            discNumber: track.disc_number,
+          }),
+        ) || [];
     } else if (type === "album") {
-      results = searchData.albums?.items?.map((album: any) => ({
-        id: album.id,
-        name: album.name,
-        artists: album.artists.map((artist: any) => ({
-          id: artist.id,
-          name: artist.name,
-        })),
-        images: album.images,
-        releaseDate: album.release_date,
-        totalTracks: album.total_tracks,
-        albumType: album.album_type,
-        popularity: album.popularity,
-        externalUrls: album.external_urls,
-        genres: album.genres,
-      })) || [];
+      results =
+        searchData.albums?.items?.map(
+          (album: {
+            id: string;
+            name: string;
+            artists: Array<{ id: string; name: string }>;
+            images: Array<{ url: string; width: number; height: number }>;
+            release_date: string;
+            total_tracks: number;
+            album_type: string;
+            external_urls: { spotify: string };
+            popularity: number;
+            genres: string[];
+          }) => ({
+            id: album.id,
+            name: album.name,
+            artists: album.artists.map((artist: { id: string; name: string }) => ({
+              id: artist.id,
+              name: artist.name,
+            })),
+            images: album.images,
+            releaseDate: album.release_date,
+            totalTracks: album.total_tracks,
+            albumType: album.album_type,
+            popularity: album.popularity,
+            externalUrls: album.external_urls,
+            genres: album.genres,
+          }),
+        ) || [];
     } else if (type === "artist") {
-      results = searchData.artists?.items?.map((artist: any) => ({
-        id: artist.id,
-        name: artist.name,
-        images: artist.images,
-        popularity: artist.popularity,
-        genres: artist.genres,
-        externalUrls: artist.external_urls,
-        followers: artist.followers,
-      })) || [];
+      results =
+        searchData.artists?.items?.map(
+          (artist: {
+            id: string;
+            name: string;
+            images: Array<{ url: string; width: number; height: number }>;
+            popularity: number;
+            genres: string[];
+            external_urls: { spotify: string };
+            followers: { total: number };
+          }) => ({
+            id: artist.id,
+            name: artist.name,
+            images: artist.images,
+            popularity: artist.popularity,
+            genres: artist.genres,
+            externalUrls: artist.external_urls,
+            followers: artist.followers,
+          }),
+        ) || [];
     }
 
     return NextResponse.json({
@@ -110,9 +158,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Music search error:", error);
-    return NextResponse.json(
-      { error: "Failed to search music" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to search music" }, { status: 500 });
   }
 }

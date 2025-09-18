@@ -59,13 +59,15 @@ async function fetchInitialContributions(slug: string, limit: number = 6) {
     id: String(c.id),
     title: String(c.title),
     year: c.year ?? undefined,
+    note: "",
+    type: "film",
     posterUrl: c.poster_url ?? undefined,
     sourceUrl: c.source_url ?? undefined,
     likeCount: Number(c.likes_list?.length ?? 0),
     createdAt: String(c.created_at),
     submittedBy: c.user
-      ? { displayName: c.user.displayName ?? null, avatarUrl: c.user.avatarUrl ?? null }
-      : null,
+      ? { displayName: c.user.displayName ?? "Anonim", avatarUrl: c.user.avatarUrl ?? null }
+      : { displayName: "Anonim", avatarUrl: null },
   });
 
   const popular: ContributionMovie[] = (popularResp?.contributions ?? [])

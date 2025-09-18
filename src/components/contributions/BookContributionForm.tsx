@@ -32,7 +32,7 @@ interface BookSearchResult {
 
 interface BookContributionFormProps {
   blogSlug: string;
-  onSubmitted?: (contribution: any) => void;
+  onSubmitted?: (contribution: { id: string; title: string; type: string }) => void;
 }
 
 export default function BookContributionForm({ blogSlug, onSubmitted }: BookContributionFormProps) {
@@ -90,7 +90,7 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!selectedBook || !note.trim()) {
       setError("Lütfen bir kitap seçin ve düşüncelerinizi yazın");
       return;
@@ -138,7 +138,7 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
   };
 
   const formContent = (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="mx-auto w-full max-w-2xl">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <BookOpen className="h-5 w-5" />
@@ -156,7 +156,7 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
               Kitap Ara
             </label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <Input
                 id="book-search"
                 type="text"
@@ -166,46 +166,46 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
                 className="pl-10"
               />
               {isSearching && (
-                <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-gray-400" />
+                <Loader2 className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 animate-spin text-gray-400" />
               )}
             </div>
 
             {/* Search Results */}
             {searchResults.length > 0 && (
-              <div className="max-h-60 overflow-y-auto border rounded-lg bg-white dark:bg-gray-800">
+              <div className="max-h-60 overflow-y-auto rounded-lg border bg-white dark:bg-gray-800">
                 {searchResults.map((book) => (
                   <button
                     key={book.id}
                     type="button"
                     onClick={() => handleBookSelect(book)}
-                    className="w-full p-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 border-b last:border-b-0"
+                    className="w-full border-b p-3 text-left last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
                     <div className="flex gap-3">
                       {book.imageUrl && (
                         <img
                           src={book.imageUrl}
                           alt={book.title}
-                          className="w-12 h-16 object-cover rounded"
+                          className="h-16 w-12 rounded object-cover"
                         />
                       )}
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm truncate">{book.title}</h4>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="truncate text-sm font-medium">{book.title}</h4>
                         {book.authors.length > 0 && (
-                          <p className="text-xs text-gray-500 truncate flex items-center gap-1">
+                          <p className="flex items-center gap-1 truncate text-xs text-gray-500">
                             <User className="h-3 w-3" />
                             {book.authors.join(", ")}
                           </p>
                         )}
-                        <div className="flex items-center gap-2 mt-1">
+                        <div className="mt-1 flex items-center gap-2">
                           {book.year && (
                             <Badge variant="secondary" className="text-xs">
-                              <Calendar className="h-3 w-3 mr-1" />
+                              <Calendar className="mr-1 h-3 w-3" />
                               {book.year}
                             </Badge>
                           )}
                           {book.averageRating > 0 && (
                             <Badge variant="outline" className="text-xs">
-                              <Star className="h-3 w-3 mr-1" />
+                              <Star className="mr-1 h-3 w-3" />
                               {book.averageRating.toFixed(1)}
                             </Badge>
                           )}
@@ -216,7 +216,7 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
                           )}
                         </div>
                         {book.categories.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mt-1">
+                          <div className="mt-1 flex flex-wrap gap-1">
                             {book.categories.slice(0, 2).map((category) => (
                               <Badge key={category} variant="secondary" className="text-xs">
                                 {category}
@@ -234,33 +234,33 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
 
           {/* Selected Book */}
           {selectedBook && (
-            <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
+            <div className="rounded-lg border bg-gray-50 p-4 dark:bg-gray-800">
               <div className="flex gap-3">
                 {selectedBook.imageUrl && (
                   <img
                     src={selectedBook.imageUrl}
                     alt={selectedBook.title}
-                    className="w-16 h-20 object-cover rounded"
+                    className="h-20 w-16 rounded object-cover"
                   />
                 )}
                 <div className="flex-1">
                   <h3 className="font-medium">{selectedBook.title}</h3>
                   {selectedBook.authors.length > 0 && (
-                    <p className="text-sm text-gray-500 flex items-center gap-1">
+                    <p className="flex items-center gap-1 text-sm text-gray-500">
                       <User className="h-3 w-3" />
                       {selectedBook.authors.join(", ")}
                     </p>
                   )}
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="mt-1 flex items-center gap-2">
                     {selectedBook.year && (
                       <Badge variant="secondary" className="text-xs">
-                        <Calendar className="h-3 w-3 mr-1" />
+                        <Calendar className="mr-1 h-3 w-3" />
                         {selectedBook.year}
                       </Badge>
                     )}
                     {selectedBook.averageRating > 0 && (
                       <Badge variant="outline" className="text-xs">
-                        <Star className="h-3 w-3 mr-1" />
+                        <Star className="mr-1 h-3 w-3" />
                         {selectedBook.averageRating.toFixed(1)}
                       </Badge>
                     )}
@@ -271,7 +271,7 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
                     )}
                   </div>
                   {selectedBook.description && (
-                    <p className="text-sm text-gray-600 mt-2 line-clamp-2">
+                    <p className="mt-2 line-clamp-2 text-sm text-gray-600">
                       {selectedBook.description}
                     </p>
                   )}
@@ -308,7 +308,7 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
 
           {/* Error Message */}
           {error && (
-            <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600 dark:border-red-800 dark:bg-red-900/20">
               {error}
             </div>
           )}
@@ -321,7 +321,7 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Ekleniyor...
               </>
             ) : (
@@ -334,11 +334,7 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
   );
 
   if (!isAuthenticated) {
-    return (
-      <AuthGate mode="inline">
-        {formContent}
-      </AuthGate>
-    );
+    return <AuthGate mode="inline">{formContent}</AuthGate>;
   }
 
   return formContent;

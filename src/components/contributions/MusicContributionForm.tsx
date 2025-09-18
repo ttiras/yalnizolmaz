@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Select } from "@/components/ui/select";
 import { Search, Music, Calendar, Star, ExternalLink, Loader2, User, Disc } from "lucide-react";
+import Image from "next/image";
 import { AuthGate } from "@/components/AuthGate";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 
@@ -35,10 +36,13 @@ interface MusicSearchResult {
 
 interface MusicContributionFormProps {
   blogSlug: string;
-  onSubmitted?: (contribution: any) => void;
+  onSubmitted?: (contribution: { id: string; title: string; type: string }) => void;
 }
 
-export default function MusicContributionForm({ blogSlug, onSubmitted }: MusicContributionFormProps) {
+export default function MusicContributionForm({
+  blogSlug,
+  onSubmitted,
+}: MusicContributionFormProps) {
   const { isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchType, setSearchType] = useState<"track" | "album" | "artist">("track");
@@ -94,7 +98,7 @@ export default function MusicContributionForm({ blogSlug, onSubmitted }: MusicCo
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!selectedMusic || !note.trim()) {
       setError("Lütfen bir müzik seçin ve düşüncelerinizi yazın");
       return;
@@ -113,7 +117,9 @@ export default function MusicContributionForm({ blogSlug, onSubmitted }: MusicCo
           type: "music",
           title: selectedMusic.name,
           note: note.trim(),
-          year: selectedMusic.album?.releaseDate ? new Date(selectedMusic.album.releaseDate).getFullYear() : null,
+          year: selectedMusic.album?.releaseDate
+            ? new Date(selectedMusic.album.releaseDate).getFullYear()
+            : null,
           externalId: selectedMusic.id,
           posterUrl: selectedMusic.album?.images?.[0]?.url || null,
           sourceUrl: selectedMusic.externalUrls.spotify,
@@ -148,7 +154,7 @@ export default function MusicContributionForm({ blogSlug, onSubmitted }: MusicCo
   };
 
   const formContent = (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="mx-auto w-full max-w-2xl">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Music className="h-5 w-5" />
@@ -165,8 +171,8 @@ export default function MusicContributionForm({ blogSlug, onSubmitted }: MusicCo
             <label htmlFor="search-type" className="text-sm font-medium">
               Arama Türü
             </label>
-            <Select 
-              value={searchType} 
+            <Select
+              value={searchType}
               onChange={(e) => setSearchType(e.target.value as "track" | "album" | "artist")}
               placeholder="Arama türü seçin"
             >
@@ -182,7 +188,7 @@ export default function MusicContributionForm({ blogSlug, onSubmitted }: MusicCo
               Müzik Ara
             </label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <Input
                 id="music-search"
                 type="text"
@@ -192,52 +198,54 @@ export default function MusicContributionForm({ blogSlug, onSubmitted }: MusicCo
                 className="pl-10"
               />
               {isSearching && (
-                <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-gray-400" />
+                <Loader2 className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 animate-spin text-gray-400" />
               )}
             </div>
 
             {/* Search Results */}
             {searchResults.length > 0 && (
-              <div className="max-h-60 overflow-y-auto border rounded-lg bg-white dark:bg-gray-800">
+              <div className="max-h-60 overflow-y-auto rounded-lg border bg-white dark:bg-gray-800">
                 {searchResults.map((music) => (
                   <button
                     key={music.id}
                     type="button"
                     onClick={() => handleMusicSelect(music)}
-                    className="w-full p-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 border-b last:border-b-0"
+                    className="w-full border-b p-3 text-left last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
                     <div className="flex gap-3">
                       {music.album?.images?.[0] && (
-                        <img
+                        <Image
                           src={music.album.images[0].url}
                           alt={music.name}
-                          className="w-12 h-12 object-cover rounded"
+                          width={48}
+                          height={48}
+                          className="h-12 w-12 rounded object-cover"
                         />
                       )}
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm truncate">{music.name}</h4>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="truncate text-sm font-medium">{music.name}</h4>
                         {music.artists.length > 0 && (
-                          <p className="text-xs text-gray-500 truncate flex items-center gap-1">
+                          <p className="flex items-center gap-1 truncate text-xs text-gray-500">
                             <User className="h-3 w-3" />
-                            {music.artists.map(artist => artist.name).join(", ")}
+                            {music.artists.map((artist) => artist.name).join(", ")}
                           </p>
                         )}
                         {music.album && (
-                          <p className="text-xs text-gray-500 truncate flex items-center gap-1">
+                          <p className="flex items-center gap-1 truncate text-xs text-gray-500">
                             <Disc className="h-3 w-3" />
                             {music.album.name}
                           </p>
                         )}
-                        <div className="flex items-center gap-2 mt-1">
+                        <div className="mt-1 flex items-center gap-2">
                           {music.album?.releaseDate && (
                             <Badge variant="secondary" className="text-xs">
-                              <Calendar className="h-3 w-3 mr-1" />
+                              <Calendar className="mr-1 h-3 w-3" />
                               {new Date(music.album.releaseDate).getFullYear()}
                             </Badge>
                           )}
                           {music.popularity > 0 && (
                             <Badge variant="outline" className="text-xs">
-                              <Star className="h-3 w-3 mr-1" />
+                              <Star className="mr-1 h-3 w-3" />
                               {music.popularity}%
                             </Badge>
                           )}
@@ -262,39 +270,41 @@ export default function MusicContributionForm({ blogSlug, onSubmitted }: MusicCo
 
           {/* Selected Music */}
           {selectedMusic && (
-            <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
+            <div className="rounded-lg border bg-gray-50 p-4 dark:bg-gray-800">
               <div className="flex gap-3">
                 {selectedMusic.album?.images?.[0] && (
-                  <img
+                  <Image
                     src={selectedMusic.album.images[0].url}
                     alt={selectedMusic.name}
-                    className="w-16 h-16 object-cover rounded"
+                    width={64}
+                    height={64}
+                    className="h-16 w-16 rounded object-cover"
                   />
                 )}
                 <div className="flex-1">
                   <h3 className="font-medium">{selectedMusic.name}</h3>
                   {selectedMusic.artists.length > 0 && (
-                    <p className="text-sm text-gray-500 flex items-center gap-1">
+                    <p className="flex items-center gap-1 text-sm text-gray-500">
                       <User className="h-3 w-3" />
-                      {selectedMusic.artists.map(artist => artist.name).join(", ")}
+                      {selectedMusic.artists.map((artist) => artist.name).join(", ")}
                     </p>
                   )}
                   {selectedMusic.album && (
-                    <p className="text-sm text-gray-500 flex items-center gap-1">
+                    <p className="flex items-center gap-1 text-sm text-gray-500">
                       <Disc className="h-3 w-3" />
                       {selectedMusic.album.name}
                     </p>
                   )}
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="mt-1 flex items-center gap-2">
                     {selectedMusic.album?.releaseDate && (
                       <Badge variant="secondary" className="text-xs">
-                        <Calendar className="h-3 w-3 mr-1" />
+                        <Calendar className="mr-1 h-3 w-3" />
                         {new Date(selectedMusic.album.releaseDate).getFullYear()}
                       </Badge>
                     )}
                     {selectedMusic.popularity > 0 && (
                       <Badge variant="outline" className="text-xs">
-                        <Star className="h-3 w-3 mr-1" />
+                        <Star className="mr-1 h-3 w-3" />
                         {selectedMusic.popularity}%
                       </Badge>
                     )}
@@ -357,7 +367,7 @@ export default function MusicContributionForm({ blogSlug, onSubmitted }: MusicCo
 
           {/* Error Message */}
           {error && (
-            <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600 dark:border-red-800 dark:bg-red-900/20">
               {error}
             </div>
           )}
@@ -370,7 +380,7 @@ export default function MusicContributionForm({ blogSlug, onSubmitted }: MusicCo
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Ekleniyor...
               </>
             ) : (
@@ -383,11 +393,7 @@ export default function MusicContributionForm({ blogSlug, onSubmitted }: MusicCo
   );
 
   if (!isAuthenticated) {
-    return (
-      <AuthGate mode="inline">
-        {formContent}
-      </AuthGate>
-    );
+    return <AuthGate mode="inline">{formContent}</AuthGate>;
   }
 
   return formContent;
