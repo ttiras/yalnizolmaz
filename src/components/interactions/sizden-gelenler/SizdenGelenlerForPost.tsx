@@ -68,7 +68,9 @@ async function fetchInitialContributions(slug: string, limit: number = 6) {
       : null,
   });
 
-  const popular: ContributionMovie[] = (popularResp?.contributions ?? []).map(mapItem);
+  const popular: ContributionMovie[] = (popularResp?.contributions ?? [])
+    .map(mapItem)
+    .sort((a, b) => b.likeCount - a.likeCount || b.createdAt.localeCompare(a.createdAt));
   const recent: ContributionMovie[] = (recentResp?.contributions ?? []).map(mapItem);
 
   return { popular, recent } as const;

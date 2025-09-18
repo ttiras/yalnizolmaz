@@ -13020,7 +13020,7 @@ export const GetPopularContributionsDocument = `
     query GetPopularContributions($slug: String!, $limit: Int = 6, $offset: Int = 0) {
   contributions(
     where: {blog_slug: {_eq: $slug}, status: {_neq: "hidden"}}
-    order_by: [{contribution_likes_aggregate: {count: desc}}, {created_at: desc}]
+    order_by: [{created_at: desc}]
     limit: $limit
     offset: $offset
   ) {
