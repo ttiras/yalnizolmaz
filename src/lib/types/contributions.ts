@@ -22,6 +22,7 @@ export type SizdenGelenlerProps = {
 export type ContributionFormMovieProps = {
   onSubmitted?: (created: ContributionMovie) => void;
   loggedIn?: boolean;
+  slug: string;
 };
 
 export type MovieSearchResult = {

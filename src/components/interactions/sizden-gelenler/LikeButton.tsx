@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { AuthGate } from "@/components/AuthGate";
-import { useAuth } from "@/lib/use-auth";
+import { useAuth } from "@/app/lib/nhost/AuthProvider";
+import {
+  useLikeContributionMutation,
+  useUnlikeContributionMutation,
+} from "@/lib/graphql/__generated__/graphql";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -14,15 +18,18 @@ interface LikeButtonProps {
 }
 
 export default function LikeButton({
+  contributionId,
   initialLiked = false,
   initialCount,
   onToggle,
-}: Omit<LikeButtonProps, "contributionId">) {
+}: LikeButtonProps) {
   const [liked, setLiked] = useState(initialLiked);
   const [count, setCount] = useState(initialCount);
-  const { authenticated: loggedIn } = useAuth();
+  const { isAuthenticated: loggedIn, session } = useAuth();
+  const { mutateAsync: like } = useLikeContributionMutation();
+  const { mutateAsync: unlike } = useUnlikeContributionMutation();
 
-  const handleToggle = () => {
+  const handleToggle = async () => {
     const nextLiked = !liked;
     const nextCount = nextLiked ? count + 1 : count - 1;
 
@@ -30,8 +37,19 @@ export default function LikeButton({
     setLiked(nextLiked);
     setCount(nextCount);
 
-    // Call the callback for future backend integration
-    onToggle?.(nextLiked);
+    try {
+      if (nextLiked) {
+        await like({ id: contributionId });
+      } else if (session?.user?.id) {
+        await unlike({ id: contributionId, userId: session.user.id });
+      }
+    } catch {
+      // Revert on failure
+      setLiked(liked);
+      setCount(count);
+    } finally {
+      onToggle?.(nextLiked);
+    }
   };
 
   const button = (

@@ -23,7 +23,7 @@ function generateJsonLd(contributions: ContributionMovie[]) {
 }
 
 export default function SizdenGelenlerSection({
-  slug: _slug,
+  slug,
   typeSlug,
   initialPopular,
   initialNew: _initialNew = [],
@@ -44,7 +44,11 @@ export default function SizdenGelenlerSection({
         />
       )}
 
-      <section id="sizden-gelenler" className="mt-16 border-t border-gray-200 pt-8">
+      <section
+        id="sizden-gelenler"
+        className="mt-16 border-t border-gray-200 pt-8"
+        data-slug={slug}
+      >
         <div className="mx-auto max-w-4xl">
           {/* Header */}
           <div className="mb-8">
@@ -62,6 +66,7 @@ export default function SizdenGelenlerSection({
             loggedIn={loggedIn}
             showForm={showForm}
             emptyStateText={emptyStateText}
+            slug={slug}
           />
         </div>
       </section>

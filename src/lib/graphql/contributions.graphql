@@ -1,0 +1,85 @@
+# List popular contributions for a blog slug (by like count desc then created_at desc)
+query GetPopularContributions($slug: String!, $limit: Int = 6, $offset: Int = 0) {
+  contributions(
+    where: { blog_slug: { _eq: $slug }, status: { _neq: "hidden" } }
+    order_by: [ { contribution_likes_aggregate: { count: desc } }, { created_at: desc } ]
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    title
+    year
+    poster_url
+    source_url
+    created_at
+    submitted_by
+    user: user {
+      id
+      displayName
+      avatarUrl
+    }
+    likes: contribution_likes_aggregate { aggregate { count } }
+  }
+}
+
+# List recent contributions
+query GetRecentContributions($slug: String!, $limit: Int = 6, $offset: Int = 0) {
+  contributions(
+    where: { blog_slug: { _eq: $slug }, status: { _neq: "hidden" } }
+    order_by: [ { created_at: desc } ]
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    title
+    year
+    poster_url
+    source_url
+    created_at
+    submitted_by
+    user: user {
+      id
+      displayName
+      avatarUrl
+    }
+    likes: contribution_likes_aggregate { aggregate { count } }
+  }
+}
+
+mutation InsertContributionMovie($slug: String!, $title: String!, $year: Int, $posterUrl: String, $sourceUrl: String, $externalId: String, $note: String) {
+  insert_contributions_one(object: {
+    blog_slug: $slug,
+    type: film,
+    title: $title,
+    year: $year,
+    poster_url: $posterUrl,
+    source_url: $sourceUrl,
+    external_id: $externalId,
+    note: $note
+  }) {
+    id
+    title
+    year
+    poster_url
+    source_url
+    created_at
+    submitted_by
+    user { id displayName avatarUrl }
+  }
+}
+
+mutation LikeContribution($id: uuid!) {
+  insert_contribution_likes_one(object: { contribution_id: $id }) {
+    contribution_id
+    user_id
+  }
+}
+
+mutation UnlikeContribution($id: uuid!, $userId: uuid!) {
+  delete_contribution_likes_by_pk(contribution_id: $id, user_id: $userId) {
+    contribution_id
+    user_id
+  }
+}
+
+

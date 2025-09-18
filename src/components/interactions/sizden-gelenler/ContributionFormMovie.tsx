@@ -8,17 +8,22 @@ import type {
   MovieSearchResult,
   ContributionMovie,
 } from "@/lib/types/contributions";
+import { useAuth } from "@/app/lib/nhost/AuthProvider";
+import { useInsertContributionMovieMutation } from "@/lib/graphql/__generated__/graphql";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
 export default function ContributionFormMovie({
   onSubmitted,
   loggedIn = false,
+  slug,
 }: ContributionFormMovieProps) {
   const [selectedMovie, setSelectedMovie] = useState<MovieSearchResult | null>(null);
   const [note, setNote] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const { session, isAuthenticated } = useAuth();
+  const { mutateAsync: insertContribution } = useInsertContributionMovieMutation();
 
   const handleMovieSelect = (movie: MovieSearchResult) => {
     setSelectedMovie(movie);
@@ -27,30 +32,39 @@ export default function ContributionFormMovie({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!selectedMovie || !loggedIn) return;
+    if (!selectedMovie || !loggedIn || !isAuthenticated || !session) return;
 
     setIsSubmitting(true);
 
     try {
-      // Simulate API call - replace with real submission later
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Create a mock contribution
-      const newContribution: ContributionMovie = {
-        id: `temp-${Date.now()}`,
+      const resp = await insertContribution({
+        slug,
         title: selectedMovie.title,
-        year: selectedMovie.year,
-        posterUrl: selectedMovie.posterUrl,
-        sourceUrl: selectedMovie.sourceUrl,
+        year: selectedMovie.year ?? null,
+        posterUrl: selectedMovie.posterUrl ?? null,
+        sourceUrl: selectedMovie.sourceUrl ?? null,
+        externalId: selectedMovie.externalId ?? null,
+        note: note || null,
+      });
+
+      const created = resp.insert_contributions_one;
+      if (!created?.id) throw new Error("Öneri gönderilemedi");
+
+      const newContribution: ContributionMovie = {
+        id: String(created.id),
+        title: String(created.title),
+        year: created.year ?? undefined,
+        posterUrl: created.poster_url ?? undefined,
+        sourceUrl: created.source_url ?? undefined,
         likeCount: 0,
-        createdAt: new Date().toISOString(),
+        createdAt: String(created.created_at),
         submittedBy: {
-          displayName: "Anonim Kullanıcı",
-          avatarUrl: null,
+          displayName:
+            created.user?.displayName ?? session.user?.displayName ?? session.user?.email ?? null,
+          avatarUrl: created.user?.avatarUrl ?? session.user?.avatarUrl ?? null,
         },
       };
 
-      // Call the callback
       onSubmitted?.(newContribution);
 
       // Show success message

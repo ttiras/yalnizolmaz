@@ -92,6 +92,7 @@ export default function ContributionCard({ contribution }: ContributionCardProps
           {/* Like Button */}
           <div className="flex items-center justify-end">
             <LikeButton
+              contributionId={contribution.id}
               initialLiked={false}
               initialCount={likeCount}
               onToggle={(nextLiked) => {

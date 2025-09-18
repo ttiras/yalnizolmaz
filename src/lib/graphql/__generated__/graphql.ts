@@ -12390,6 +12390,108 @@ export type InsertBlogCommentMutation = {
   insert_blog_comments_one?: { __typename?: "blog_comments"; id: string } | null;
 };
 
+export type GetPopularContributionsQueryVariables = Exact<{
+  slug: Scalars["String"]["input"];
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+}>;
+
+export type GetPopularContributionsQuery = {
+  __typename?: "query_root";
+  contributions: Array<{
+    __typename?: "contributions";
+    id: string;
+    title: string;
+    year?: number | null;
+    poster_url?: string | null;
+    source_url?: string | null;
+    created_at: string;
+    submitted_by: string;
+    user: { __typename?: "users"; id: string; displayName: string; avatarUrl: string };
+    likes: {
+      __typename?: "contribution_likes_aggregate";
+      aggregate?: { __typename?: "contribution_likes_aggregate_fields"; count: number } | null;
+    };
+  }>;
+};
+
+export type GetRecentContributionsQueryVariables = Exact<{
+  slug: Scalars["String"]["input"];
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+}>;
+
+export type GetRecentContributionsQuery = {
+  __typename?: "query_root";
+  contributions: Array<{
+    __typename?: "contributions";
+    id: string;
+    title: string;
+    year?: number | null;
+    poster_url?: string | null;
+    source_url?: string | null;
+    created_at: string;
+    submitted_by: string;
+    user: { __typename?: "users"; id: string; displayName: string; avatarUrl: string };
+    likes: {
+      __typename?: "contribution_likes_aggregate";
+      aggregate?: { __typename?: "contribution_likes_aggregate_fields"; count: number } | null;
+    };
+  }>;
+};
+
+export type InsertContributionMovieMutationVariables = Exact<{
+  slug: Scalars["String"]["input"];
+  title: Scalars["String"]["input"];
+  year?: InputMaybe<Scalars["Int"]["input"]>;
+  posterUrl?: InputMaybe<Scalars["String"]["input"]>;
+  sourceUrl?: InputMaybe<Scalars["String"]["input"]>;
+  externalId?: InputMaybe<Scalars["String"]["input"]>;
+  note?: InputMaybe<Scalars["String"]["input"]>;
+}>;
+
+export type InsertContributionMovieMutation = {
+  __typename?: "mutation_root";
+  insert_contributions_one?: {
+    __typename?: "contributions";
+    id: string;
+    title: string;
+    year?: number | null;
+    poster_url?: string | null;
+    source_url?: string | null;
+    created_at: string;
+    submitted_by: string;
+    user: { __typename?: "users"; id: string; displayName: string; avatarUrl: string };
+  } | null;
+};
+
+export type LikeContributionMutationVariables = Exact<{
+  id: Scalars["uuid"]["input"];
+}>;
+
+export type LikeContributionMutation = {
+  __typename?: "mutation_root";
+  insert_contribution_likes_one?: {
+    __typename?: "contribution_likes";
+    contribution_id: string;
+    user_id: string;
+  } | null;
+};
+
+export type UnlikeContributionMutationVariables = Exact<{
+  id: Scalars["uuid"]["input"];
+  userId: Scalars["uuid"]["input"];
+}>;
+
+export type UnlikeContributionMutation = {
+  __typename?: "mutation_root";
+  delete_contribution_likes_by_pk?: {
+    __typename?: "contribution_likes";
+    contribution_id: string;
+    user_id: string;
+  } | null;
+};
+
 export type GetUserProfileQueryVariables = Exact<{
   userId: Scalars["uuid"]["input"];
 }>;
@@ -12910,6 +13012,217 @@ export const useInsertBlogCommentMutation = <TError = unknown, TContext = unknow
       InsertBlogCommentMutation,
       InsertBlogCommentMutationVariables
     >(InsertBlogCommentDocument),
+    ...options,
+  });
+};
+
+export const GetPopularContributionsDocument = `
+    query GetPopularContributions($slug: String!, $limit: Int = 6, $offset: Int = 0) {
+  contributions(
+    where: {blog_slug: {_eq: $slug}, status: {_neq: "hidden"}}
+    order_by: [{contribution_likes_aggregate: {count: desc}}, {created_at: desc}]
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    title
+    year
+    poster_url
+    source_url
+    created_at
+    submitted_by
+    user: user {
+      id
+      displayName
+      avatarUrl
+    }
+    likes: contribution_likes_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}
+    `;
+
+export const useGetPopularContributionsQuery = <
+  TData = GetPopularContributionsQuery,
+  TError = unknown,
+>(
+  variables: GetPopularContributionsQueryVariables,
+  options?: Omit<UseQueryOptions<GetPopularContributionsQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetPopularContributionsQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetPopularContributionsQuery, TError, TData>({
+    queryKey: ["GetPopularContributions", variables],
+    queryFn: useAuthenticatedFetcher<
+      GetPopularContributionsQuery,
+      GetPopularContributionsQueryVariables
+    >(GetPopularContributionsDocument).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetPopularContributionsQuery.getKey = (variables: GetPopularContributionsQueryVariables) => [
+  "GetPopularContributions",
+  variables,
+];
+
+export const GetRecentContributionsDocument = `
+    query GetRecentContributions($slug: String!, $limit: Int = 6, $offset: Int = 0) {
+  contributions(
+    where: {blog_slug: {_eq: $slug}, status: {_neq: "hidden"}}
+    order_by: [{created_at: desc}]
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    title
+    year
+    poster_url
+    source_url
+    created_at
+    submitted_by
+    user: user {
+      id
+      displayName
+      avatarUrl
+    }
+    likes: contribution_likes_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}
+    `;
+
+export const useGetRecentContributionsQuery = <
+  TData = GetRecentContributionsQuery,
+  TError = unknown,
+>(
+  variables: GetRecentContributionsQueryVariables,
+  options?: Omit<UseQueryOptions<GetRecentContributionsQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetRecentContributionsQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetRecentContributionsQuery, TError, TData>({
+    queryKey: ["GetRecentContributions", variables],
+    queryFn: useAuthenticatedFetcher<
+      GetRecentContributionsQuery,
+      GetRecentContributionsQueryVariables
+    >(GetRecentContributionsDocument).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetRecentContributionsQuery.getKey = (variables: GetRecentContributionsQueryVariables) => [
+  "GetRecentContributions",
+  variables,
+];
+
+export const InsertContributionMovieDocument = `
+    mutation InsertContributionMovie($slug: String!, $title: String!, $year: Int, $posterUrl: String, $sourceUrl: String, $externalId: String, $note: String) {
+  insert_contributions_one(
+    object: {blog_slug: $slug, type: film, title: $title, year: $year, poster_url: $posterUrl, source_url: $sourceUrl, external_id: $externalId, note: $note}
+  ) {
+    id
+    title
+    year
+    poster_url
+    source_url
+    created_at
+    submitted_by
+    user {
+      id
+      displayName
+      avatarUrl
+    }
+  }
+}
+    `;
+
+export const useInsertContributionMovieMutation = <TError = unknown, TContext = unknown>(
+  options?: UseMutationOptions<
+    InsertContributionMovieMutation,
+    TError,
+    InsertContributionMovieMutationVariables,
+    TContext
+  >,
+) => {
+  return useMutation<
+    InsertContributionMovieMutation,
+    TError,
+    InsertContributionMovieMutationVariables,
+    TContext
+  >({
+    mutationKey: ["InsertContributionMovie"],
+    mutationFn: useAuthenticatedFetcher<
+      InsertContributionMovieMutation,
+      InsertContributionMovieMutationVariables
+    >(InsertContributionMovieDocument),
+    ...options,
+  });
+};
+
+export const LikeContributionDocument = `
+    mutation LikeContribution($id: uuid!) {
+  insert_contribution_likes_one(object: {contribution_id: $id}) {
+    contribution_id
+    user_id
+  }
+}
+    `;
+
+export const useLikeContributionMutation = <TError = unknown, TContext = unknown>(
+  options?: UseMutationOptions<
+    LikeContributionMutation,
+    TError,
+    LikeContributionMutationVariables,
+    TContext
+  >,
+) => {
+  return useMutation<LikeContributionMutation, TError, LikeContributionMutationVariables, TContext>(
+    {
+      mutationKey: ["LikeContribution"],
+      mutationFn: useAuthenticatedFetcher<
+        LikeContributionMutation,
+        LikeContributionMutationVariables
+      >(LikeContributionDocument),
+      ...options,
+    },
+  );
+};
+
+export const UnlikeContributionDocument = `
+    mutation UnlikeContribution($id: uuid!, $userId: uuid!) {
+  delete_contribution_likes_by_pk(contribution_id: $id, user_id: $userId) {
+    contribution_id
+    user_id
+  }
+}
+    `;
+
+export const useUnlikeContributionMutation = <TError = unknown, TContext = unknown>(
+  options?: UseMutationOptions<
+    UnlikeContributionMutation,
+    TError,
+    UnlikeContributionMutationVariables,
+    TContext
+  >,
+) => {
+  return useMutation<
+    UnlikeContributionMutation,
+    TError,
+    UnlikeContributionMutationVariables,
+    TContext
+  >({
+    mutationKey: ["UnlikeContribution"],
+    mutationFn: useAuthenticatedFetcher<
+      UnlikeContributionMutation,
+      UnlikeContributionMutationVariables
+    >(UnlikeContributionDocument),
     ...options,
   });
 };

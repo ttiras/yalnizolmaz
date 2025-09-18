@@ -11,6 +11,7 @@ interface SizdenGelenlerClientProps {
   loggedIn: boolean;
   showForm?: boolean;
   emptyStateText?: string;
+  slug: string;
 }
 
 export default function SizdenGelenlerClient({
@@ -18,6 +19,7 @@ export default function SizdenGelenlerClient({
   loggedIn,
   showForm = true,
   emptyStateText = "Henüz bir öneri yok. İlk öneriyi siz yapın!",
+  slug,
 }: SizdenGelenlerClientProps) {
   const [contributions, setContributions] = useState(initialContributions);
 
@@ -65,7 +67,11 @@ export default function SizdenGelenlerClient({
       {showForm && (
         <Card>
           <CardContent className="p-6">
-            <ContributionFormMovie onSubmitted={handleNewContribution} loggedIn={loggedIn} />
+            <ContributionFormMovie
+              onSubmitted={handleNewContribution}
+              loggedIn={loggedIn}
+              slug={slug}
+            />
           </CardContent>
         </Card>
       )}
