@@ -34,7 +34,7 @@ export default async function ContributionsByBlogSlug({ params }: Params) {
           note
           created_at
           contribution_likes_aggregate { aggregate { count } }
-          user: user { id email displayName avatarUrl }
+          user: user { id displayName avatarUrl }
         }
       }
     `,
@@ -54,7 +54,6 @@ export default async function ContributionsByBlogSlug({ params }: Params) {
           contribution_likes_aggregate: { aggregate?: { count?: number | null } | null };
           user?: {
             id: string;
-            email?: string | null;
             displayName?: string | null;
             avatarUrl?: string | null;
           } | null;
@@ -77,7 +76,7 @@ export default async function ContributionsByBlogSlug({ params }: Params) {
     likeCount: c.contribution_likes_aggregate.aggregate?.count ?? 0,
     createdAt: c.created_at,
     submittedBy: {
-      displayName: c.user?.displayName || c.user?.email || "Anonim",
+      displayName: c.user?.displayName || "Anonim",
       avatarUrl: c.user?.avatarUrl ?? null,
     },
   }));
