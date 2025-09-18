@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { Search, Film } from "lucide-react";
 import Image from "next/image";
 import type { MovieSearchResult } from "@/lib/types/contributions";
+import { Input } from "@/components/ui/input";
 
 interface MovieSearchInputProps {
   onSelect: (movie: MovieSearchResult) => void;
@@ -140,7 +141,7 @@ export default function MovieSearchInput({ onSelect }: MovieSearchInputProps) {
           className="absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400"
           size={20}
         />
-        <input
+        <Input
           ref={inputRef}
           type="text"
           value={query}
@@ -149,7 +150,7 @@ export default function MovieSearchInput({ onSelect }: MovieSearchInputProps) {
           onFocus={() => query && setIsOpen(true)}
           onBlur={handleBlur}
           placeholder="Film adı yazın…"
-          className="w-full rounded-lg border border-gray-200 py-3 pr-4 pl-10 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          className="py-3 pr-4 pl-10"
         />
         {isLoading && (
           <div className="absolute top-1/2 right-3 -translate-y-1/2 transform">

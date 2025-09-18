@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Sheet } from "@/components/ui/sheet";
 
 type TocItem = {
   id: string;
@@ -87,10 +91,9 @@ export function TableOfContents() {
   return (
     <>
       {/* Mobile TOC Toggle */}
-      <button
+      <Button
         onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="fixed right-6 bottom-6 z-50 flex h-12 w-12 items-center justify-center rounded-full shadow-lg transition-all duration-300 hover:scale-105 lg:hidden"
-        style={{ backgroundColor: "var(--accent)", color: "var(--accent-contrast)" }}
+        className="fixed right-6 bottom-6 z-50 h-12 w-12 rounded-full p-0 shadow-lg transition-transform duration-300 hover:scale-105 lg:hidden"
       >
         <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -100,23 +103,12 @@ export function TableOfContents() {
             d={isMobileOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 10h16M4 14h16M4 18h16"}
           />
         </svg>
-      </button>
+      </Button>
 
-      {/* Mobile TOC Overlay */}
-      {isMobileOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-          onClick={() => setIsMobileOpen(false)}
-        >
-          <div
-            className="absolute right-6 bottom-20 left-6 mx-auto max-w-sm rounded-xl border p-4 shadow-xl backdrop-blur-sm"
-            style={{
-              maxHeight: "60vh",
-              borderColor: "var(--border)",
-              backgroundColor: "var(--card)",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
+      {/* Mobile TOC Sheet */}
+      <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen} side="bottom">
+        <Card className="m-4 mx-auto max-w-sm">
+          <CardContent className="p-4">
             <div
               className="mb-3 flex items-center gap-2 text-sm font-bold"
               style={{ color: "var(--foreground)" }}
@@ -131,36 +123,29 @@ export function TableOfContents() {
               </svg>
               İçindekiler
             </div>
-            <nav
-              className="toc-scroll space-y-1 overflow-y-auto pr-2"
-              style={{ maxHeight: "calc(60vh - 80px)" }}
-            >
+            <ScrollArea style={{ maxHeight: "60vh" }} className="space-y-1 pr-2">
               {toc.map((item) => (
-                <button
+                <Button
                   key={item.id}
                   onClick={() => {
                     scrollToSection(item.id);
                     setIsMobileOpen(false);
                   }}
-                  className="block w-full text-left text-sm font-medium transition-all duration-200"
+                  variant="ghost"
+                  size="sm"
+                  className="block w-full justify-start px-2 py-1.5 text-sm font-medium"
                   style={{
                     color: activeId === item.id ? "var(--accent)" : "var(--muted-foreground)",
+                    backgroundColor: activeId === item.id ? "var(--muted)" : "transparent",
                   }}
                 >
-                  <div
-                    className="rounded-md px-2 py-1.5 transition-colors hover:opacity-80"
-                    style={{
-                      backgroundColor: activeId === item.id ? "var(--muted)" : "transparent",
-                    }}
-                  >
-                    {item.text}
-                  </div>
-                </button>
+                  {item.text}
+                </Button>
               ))}
-            </nav>
-          </div>
-        </div>
-      )}
+            </ScrollArea>
+          </CardContent>
+        </Card>
+      </Sheet>
 
       {/* Desktop TOC Sidebar */}
       <div
@@ -169,77 +154,73 @@ export function TableOfContents() {
         } hidden lg:block`}
         style={{ maxHeight: "80vh" }}
       >
-        <div
-          className="flex h-full max-w-xs flex-col rounded-xl border p-4 shadow-lg backdrop-blur-sm"
-          style={{
-            borderColor: "var(--border)",
-            backgroundColor: "var(--card)",
-          }}
-        >
-          {/* Header */}
-          <div
-            className="mb-3 flex items-center gap-2 text-sm font-bold"
-            style={{ color: "var(--foreground)" }}
-          >
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M4 6h16M4 10h16M4 14h16M4 18h16"
-              />
-            </svg>
-            İçindekiler
-          </div>
+        <Card className="flex h-full max-w-xs flex-col">
+          <CardContent className="p-4">
+            {/* Header */}
+            <div
+              className="mb-3 flex items-center gap-2 text-sm font-bold"
+              style={{ color: "var(--foreground)" }}
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M4 6h16M4 10h16M4 14h16M4 18h16"
+                />
+              </svg>
+              İçindekiler
+            </div>
 
-          {/* TOC Items */}
-          <nav
-            className="toc-scroll flex-1 space-y-1 overflow-y-auto pr-2"
-            style={{ maxHeight: "calc(80vh - 120px)" }}
-          >
-            {toc.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="block w-full text-left text-sm font-medium transition-all duration-200"
-                style={{
-                  color: activeId === item.id ? "var(--accent)" : "var(--muted-foreground)",
-                }}
+            {/* TOC Items */}
+            <ScrollArea className="flex-1 pr-2" style={{ maxHeight: "calc(80vh - 120px)" }}>
+              <nav className="space-y-1">
+                {toc.map((item) => (
+                  <Button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    variant="ghost"
+                    size="sm"
+                    className="block w-full justify-start px-2 py-1.5 text-sm font-medium"
+                    style={{
+                      color: activeId === item.id ? "var(--accent)" : "var(--muted-foreground)",
+                      backgroundColor: activeId === item.id ? "var(--muted)" : "transparent",
+                    }}
+                  >
+                    {item.text}
+                  </Button>
+                ))}
+              </nav>
+            </ScrollArea>
+
+            {/* Progress Indicator */}
+            <div className="mt-4 border-t pt-3" style={{ borderColor: "var(--border)" }}>
+              <div
+                className="flex items-center gap-2 text-xs"
+                style={{ color: "var(--muted-foreground)" }}
               >
                 <div
-                  className="rounded-md px-2 py-1.5 transition-colors hover:opacity-80"
-                  style={{ backgroundColor: activeId === item.id ? "var(--muted)" : "transparent" }}
+                  className="h-1 flex-1 rounded-full"
+                  style={{ backgroundColor: "var(--muted)" }}
                 >
-                  {item.text}
+                  <div
+                    className="bg-accent h-full rounded-full transition-all duration-300"
+                    style={{
+                      width: `${Math.min(
+                        100,
+                        ((toc.findIndex((item) => item.id === activeId) + 1) / toc.length) * 100,
+                      )}%`,
+                      backgroundColor: "var(--accent)",
+                    }}
+                  />
                 </div>
-              </button>
-            ))}
-          </nav>
-
-          {/* Progress Indicator */}
-          <div className="mt-4 border-t pt-3" style={{ borderColor: "var(--border)" }}>
-            <div
-              className="flex items-center gap-2 text-xs"
-              style={{ color: "var(--muted-foreground)" }}
-            >
-              <div className="h-1 flex-1 rounded-full" style={{ backgroundColor: "var(--muted)" }}>
-                <div
-                  className="bg-accent h-full rounded-full transition-all duration-300"
-                  style={{
-                    width: `${Math.min(
-                      100,
-                      ((toc.findIndex((item) => item.id === activeId) + 1) / toc.length) * 100,
-                    )}%`,
-                    backgroundColor: "var(--accent)",
-                  }}
-                />
+                <span>
+                  {Math.max(1, toc.findIndex((item) => item.id === activeId) + 1)}/{toc.length}
+                </span>
               </div>
-              <span>
-                {Math.max(1, toc.findIndex((item) => item.id === activeId) + 1)}/{toc.length}
-              </span>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </>
   );

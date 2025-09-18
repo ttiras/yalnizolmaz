@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
@@ -30,21 +31,23 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <div className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-neutral-300 bg-transparent dark:border-neutral-700">
+      <Button variant="outline" size="sm" className="h-9 w-9 p-0" aria-hidden>
         <div className="h-4 w-4 animate-pulse rounded-full bg-neutral-300 dark:bg-neutral-600" />
-      </div>
+      </Button>
     );
   }
 
   const opposite = theme === "dark" ? "light" : "dark";
 
   return (
-    <button
+    <Button
       type="button"
       aria-label={theme === "dark" ? "Açık moda geç" : "Koyu moda geç"}
       aria-pressed={theme === "dark"}
       onClick={() => apply(opposite)}
-      className="group relative inline-flex h-9 w-9 items-center justify-center rounded-md border border-neutral-300 bg-transparent text-sm transition-all duration-200 hover:scale-105 hover:bg-neutral-100 active:scale-95 dark:border-neutral-700 dark:hover:bg-neutral-800"
+      variant="outline"
+      size="sm"
+      className="group relative h-9 w-9 p-0"
     >
       <div className="relative overflow-hidden">
         {/* Sun icon */}
@@ -72,9 +75,6 @@ export function ThemeToggle() {
           <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 1 0 9.79 9.79Z" />
         </svg>
       </div>
-
-      {/* Hover effect overlay */}
-      <div className="absolute inset-0 rounded-md bg-gradient-to-r from-amber-400 to-orange-400 opacity-0 transition-opacity duration-200 group-hover:opacity-10" />
-    </button>
+    </Button>
   );
 }

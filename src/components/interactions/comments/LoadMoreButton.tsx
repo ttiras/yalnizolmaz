@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { fetchMoreComments } from "@/lib/comments/mockClient";
 import type { LoadMoreButtonProps } from "@/lib/types/comments";
+import { Button } from "@/components/ui/button";
 
 export default function LoadMoreButton({ slug, alreadyLoadedIds, onLoaded }: LoadMoreButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
@@ -27,16 +28,8 @@ export default function LoadMoreButton({ slug, alreadyLoadedIds, onLoaded }: Loa
   };
 
   return (
-    <button
-      onClick={handleLoadMore}
-      disabled={isLoading}
-      className={`w-full rounded-lg px-4 py-3 font-medium transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:outline-none ${
-        isLoading
-          ? "cursor-not-allowed bg-gray-100 text-gray-400"
-          : "border border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100"
-      } `}
-    >
+    <Button onClick={handleLoadMore} disabled={isLoading} variant="outline" className="w-full">
       {isLoading ? "Yükleniyor..." : "Daha fazla yorum"}
-    </button>
+    </Button>
   );
 }

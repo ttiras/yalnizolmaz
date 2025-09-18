@@ -7,29 +7,33 @@ export async function POST(request: NextRequest) {
 
     // Validate input
     if (!displayName || typeof displayName !== "string") {
-      return NextResponse.json({ message: "Display name is required" }, { status: 400 });
+      return NextResponse.json({ message: "Görünen ad gereklidir" }, { status: 400 });
     }
 
     const trimmedDisplayName = displayName.trim();
     if (trimmedDisplayName.length === 0) {
-      return NextResponse.json({ message: "Display name cannot be empty" }, { status: 400 });
+      return NextResponse.json({ message: "Görünen ad boş olamaz" }, { status: 400 });
     }
 
     if (trimmedDisplayName.length > 100) {
       return NextResponse.json(
-        { message: "Display name must be 100 characters or less" },
+        { message: "Görünen ad 100 karakter veya daha az olmalıdır" },
         { status: 400 },
       );
     }
 
-    // Get session
     const nhost = await createNhostClient();
     const session = nhost.getUserSession();
     if (!session?.user) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Yetkisiz işlem" }, { status: 401 });
     }
 
-    // nhost already has session via CookieStorage; call GraphQL directly
+    // Refresh session for API context (middleware doesn't run on /api/*)
+    const refreshed = await nhost.refreshSession(60).catch(() => null);
+    const activeSession = refreshed ?? nhost.getUserSession();
+    if (!activeSession?.user) {
+      return NextResponse.json({ message: "Oturum süresi doldu" }, { status: 401 });
+    }
 
     // Update user metadata using GraphQL mutation
     const resp = await nhost.graphql.request({
@@ -45,31 +49,37 @@ export async function POST(request: NextRequest) {
       }
     `,
       variables: {
-        userId: session.user.id,
+        userId: activeSession.user.id,
         displayName: trimmedDisplayName,
       },
     });
-    const data = (resp as unknown as { data?: unknown; error?: unknown }).data;
-    const error = (resp as unknown as { data?: unknown; error?: unknown }).error;
-
-    if (error) {
-      console.error("Error updating display name:", error);
-      return NextResponse.json({ message: "Failed to update display name" }, { status: 500 });
+    const anyResp = resp as unknown as {
+      data?: { updateUser?: { id: string; displayName: string } };
+      error?: unknown;
+      body?: { data?: { updateUser?: { id: string; displayName: string } }; errors?: unknown };
+    };
+    const gqlErrors = anyResp.error ?? anyResp.body?.errors;
+    if (gqlErrors) {
+      console.error("Error updating display name:", gqlErrors);
+      return NextResponse.json({ message: "Görünen ad güncellenemedi" }, { status: 500 });
     }
 
-    const updatedUser = (data as { updateUser?: { id: string; displayName: string } })?.updateUser;
+    const updatedUser = anyResp.body?.data?.updateUser ?? anyResp.data?.updateUser;
     if (!updatedUser) {
-      return NextResponse.json({ message: "Failed to update display name" }, { status: 500 });
+      return NextResponse.json({ message: "Görünen ad güncellenemedi" }, { status: 500 });
     }
 
-    // Session cookie is updated by middleware on next navigation; no manual cookie writes here
+    // Force-refresh session so cookie carries updated user fields immediately
+    try {
+      await nhost.refreshSession(0);
+    } catch {}
 
     return NextResponse.json({
-      message: "Display name updated successfully",
+      message: "Görünen ad başarıyla güncellendi",
       user: updatedUser,
     });
   } catch (error) {
     console.error("Error in update display name API:", error);
-    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ message: "Sunucu hatası" }, { status: 500 });
   }
 }

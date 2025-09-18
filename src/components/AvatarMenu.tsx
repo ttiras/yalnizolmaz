@@ -4,6 +4,9 @@ import * as React from "react";
 import Link from "next/link";
 import UserAvatar from "@/components/UserAvatar";
 import { SignOutButton } from "@/components/SignOutButton";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 type AvatarMenuProps = {
   avatarUrl?: string | null;
@@ -33,9 +36,11 @@ export default function AvatarMenu({ avatarUrl, displayName, email }: AvatarMenu
 
   return (
     <div ref={rootRef} className="relative">
-      <button
+      <Button
         type="button"
-        className="inline-flex h-9 w-9 items-center justify-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 focus-visible:outline-none dark:focus-visible:ring-slate-500"
+        variant="outline"
+        size="sm"
+        className="h-9 w-9 rounded-full p-0"
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
@@ -46,35 +51,30 @@ export default function AvatarMenu({ avatarUrl, displayName, email }: AvatarMenu
           email={email ?? null}
           size={28}
         />
-      </button>
+      </Button>
       {open && (
-        <div
+        <Card
           role="menu"
           aria-label="Kullanıcı menüsü"
-          className="absolute right-0 z-50 mt-2 w-52 origin-top-right rounded-xl border p-2 shadow-lg"
-          style={{ backgroundColor: "var(--card)", borderColor: "var(--border)" }}
+          className="absolute right-0 z-50 mt-2 w-56 origin-top-right"
         >
-          <Link
-            role="menuitem"
-            href="/profil"
-            className="block rounded-md px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-100/70 hover:text-neutral-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 dark:text-slate-200 dark:hover:bg-slate-800/70 dark:hover:text-white"
-            onClick={() => setOpen(false)}
-          >
-            Profil
-          </Link>
-          <Link
-            role="menuitem"
-            href="/profil"
-            className="block rounded-md px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-100/70 hover:text-neutral-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-600 dark:text-slate-200 dark:hover:bg-slate-800/70 dark:hover:text-white"
-            onClick={() => setOpen(false)}
-          >
-            Ayarlar
-          </Link>
-          <div className="my-1 h-px bg-neutral-200 dark:bg-slate-700" />
-          <div className="px-1 py-1">
-            <SignOutButton>Çıkış</SignOutButton>
-          </div>
-        </div>
+          <CardContent className="p-2">
+            <Button asChild variant="ghost" size="sm" className="w-full justify-start">
+              <Link role="menuitem" href="/profil" onClick={() => setOpen(false)}>
+                Profil
+              </Link>
+            </Button>
+            <Button asChild variant="ghost" size="sm" className="w-full justify-start">
+              <Link role="menuitem" href="/profil" onClick={() => setOpen(false)}>
+                Ayarlar
+              </Link>
+            </Button>
+            <Separator className="my-2" />
+            <div className="px-1 py-1">
+              <SignOutButton>Çıkış</SignOutButton>
+            </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

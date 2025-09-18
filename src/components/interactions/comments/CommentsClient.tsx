@@ -7,6 +7,7 @@ import { AuthGate } from "@/components/AuthGate";
 import LoadMoreButton from "./LoadMoreButton";
 import type { CommentsSectionProps, BlogComment } from "@/lib/types/comments";
 import { useGetCommentsBySlugQuery } from "@/lib/graphql/__generated__/graphql";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function CommentsClient({
   slug,
@@ -58,27 +59,29 @@ export default function CommentsClient({
       {/* Comments List */}
       <div className="mb-8">
         {comments.length > 0 ? (
-          <CommentList comments={comments} loggedIn={loggedIn} />
+          <CommentList comments={comments} />
         ) : (
-          <div className="py-12 text-center">
-            <div className="mb-4 text-gray-400">
-              <svg
-                className="mx-auto h-12 w-12"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1}
-                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                />
-              </svg>
-            </div>
-            <h3 className="mb-2 text-lg font-medium text-gray-900">Henüz yorum yok</h3>
-            <p className="text-gray-500">İlk yorumu siz yapın!</p>
-          </div>
+          <Card className="text-center">
+            <CardContent className="py-12">
+              <div className="mb-4 text-gray-400">
+                <svg
+                  className="mx-auto h-12 w-12"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1}
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                  />
+                </svg>
+              </div>
+              <h3 className="mb-2 text-lg font-medium text-gray-900">Henüz yorum yok</h3>
+              <p className="text-gray-500">İlk yorumu siz yapın!</p>
+            </CardContent>
+          </Card>
         )}
       </div>
 
@@ -90,15 +93,17 @@ export default function CommentsClient({
       )}
 
       {/* Comment Composer */}
-      <div className="rounded-2xl bg-gray-50 p-6">
-        {loggedIn ? (
-          <CommentComposer slug={slug} onSubmitted={handleNewComment} loggedIn={true} />
-        ) : (
-          <AuthGate mode="inline">
-            <CommentComposer slug={slug} onSubmitted={handleNewComment} />
-          </AuthGate>
-        )}
-      </div>
+      <Card>
+        <CardContent className="p-0">
+          {loggedIn ? (
+            <CommentComposer slug={slug} onSubmitted={handleNewComment} loggedIn={true} />
+          ) : (
+            <AuthGate mode="inline">
+              <CommentComposer slug={slug} onSubmitted={handleNewComment} />
+            </AuthGate>
+          )}
+        </CardContent>
+      </Card>
     </>
   );
 }

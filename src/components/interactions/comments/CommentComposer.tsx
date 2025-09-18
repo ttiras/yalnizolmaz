@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
-import { MessageSquare, Send, LogIn } from "lucide-react";
+import { useState } from "react";
+import { MessageSquare, Send } from "lucide-react";
 import type { CommentComposerProps, BlogComment } from "@/lib/types/comments";
 import { useInsertBlogCommentMutation } from "@/lib/graphql/__generated__/graphql";
 import { useAuth } from "@/app/lib/nhost/AuthProvider";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 type Props = CommentComposerProps & { loggedIn?: boolean };
 
@@ -14,28 +16,7 @@ export default function CommentComposer({ slug, parentId, onSubmitted, loggedIn 
   const [body, setBody] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [csrfToken, setCsrfToken] = useState<string>("");
-
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const nextPath = `${pathname || "/"}${searchParams && searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
-  const loginHref = `/login?next=${encodeURIComponent(nextPath || "/")}`;
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const res = await fetch("/api/guvenlik/belirteci", { cache: "no-store" });
-        if (!cancelled && res.ok) {
-          const data = (await res.json()) as { token?: string };
-          setCsrfToken(data.token || "");
-        }
-      } catch {}
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  // CSRF token is not required for GraphQL mutations in this flow
 
   const { mutateAsync: insertComment } = useInsertBlogCommentMutation();
 
@@ -91,15 +72,14 @@ export default function CommentComposer({ slug, parentId, onSubmitted, loggedIn 
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       <div>
-        <label htmlFor="comment-body" className="mb-2 block text-sm font-medium text-gray-700">
+        <Label htmlFor="comment-body" className="mb-2">
           {parentId ? "Yanıtla" : "Yorumunuz"}
-        </label>
-        <textarea
+        </Label>
+        <Textarea
           id="comment-body"
           value={body}
           onChange={(e) => setBody(e.target.value)}
           placeholder={parentId ? "Yanıtınızı yazın..." : "Düşüncelerinizi paylaşın..."}
-          className="min-h-[96px] w-full resize-none rounded-lg border border-gray-200 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
           maxLength={800}
           disabled={isSubmitting}
         />
@@ -109,15 +89,7 @@ export default function CommentComposer({ slug, parentId, onSubmitted, loggedIn 
       </div>
 
       <div className="flex items-center justify-between">
-        <button
-          type="submit"
-          disabled={!body.trim() || isSubmitting}
-          className={`flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:outline-none ${
-            body.trim() && !isSubmitting
-              ? "bg-blue-600 text-white hover:bg-blue-700"
-              : "cursor-not-allowed bg-gray-300 text-gray-500"
-          } `}
-        >
+        <Button type="submit" disabled={!body.trim() || isSubmitting} className="gap-2">
           {isSubmitting ? (
             <>
               <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
@@ -129,7 +101,7 @@ export default function CommentComposer({ slug, parentId, onSubmitted, loggedIn 
               <span>{parentId ? "Yanıtla" : "Yorum Gönder"}</span>
             </>
           )}
-        </button>
+        </Button>
       </div>
 
       {showSuccess && (

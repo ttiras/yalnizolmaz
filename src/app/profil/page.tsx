@@ -1,15 +1,6 @@
 import { redirect } from "next/navigation";
 import { createNhostClient } from "@/app/lib/nhost/server";
-import ProfilePage from "@/components/ProfilePage";
-
-type UserProfile = {
-  user_id: string;
-  bio?: string | null;
-  location?: string | null;
-  website?: string | null;
-  created_at?: string;
-  updated_at?: string;
-};
+import ProfileClient from "@/components/ProfileClient";
 
 export default async function Profile() {
   const nhost = await createNhostClient();
@@ -19,40 +10,6 @@ export default async function Profile() {
     redirect("/login?next=/profil");
   }
 
-  try {
-    // Get user profile data from public.user_profiles table
-    const resp = await nhost.graphql.request({
-      query: `
-        query GetUserProfile($userId: uuid!) {
-          user_profiles(where: { user_id: { _eq: $userId } }) {
-            user_id
-            bio
-            location
-            website
-            created_at
-            updated_at
-          }
-        }
-      `,
-      variables: {
-        userId: session.user!.id,
-      },
-    });
-    const profileData = (resp as unknown as { data?: unknown; error?: unknown }).data;
-    const profileError = (resp as unknown as { data?: unknown; error?: unknown }).error;
-
-    if (profileError) {
-      console.error("Error fetching user profile:", profileError);
-    }
-
-    const profile = profileData
-      ? ((profileData as { user_profiles?: unknown[] })
-          ?.user_profiles?.[0] as UserProfile | null) || null
-      : null;
-
-    return <ProfilePage user={session.user} profile={profile} />;
-  } catch (error) {
-    console.error("Error in profile page:", error);
-    return <ProfilePage user={session.user} profile={null} />;
-  }
+  // Render client component using React Query; provide initial user for immediate paint
+  return <ProfileClient initialUser={session.user} />;
 }

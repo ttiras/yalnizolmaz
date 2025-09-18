@@ -1,7 +1,7 @@
 import * as React from "react";
 
 export function Card({ className = "", ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  const cls = `rounded-lg border p-6 shadow-sm ${className}`;
+  const cls = `rounded-lg border bg-background p-6 shadow-sm ${className}`;
   return <div className={cls} {...props} />;
 }
 

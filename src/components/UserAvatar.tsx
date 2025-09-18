@@ -37,7 +37,7 @@ export default function UserAvatar({ src, name, email, size = 32, className }: U
     <span
       aria-hidden
       className={
-        "inline-flex items-center justify-center rounded-full border bg-neutral-200 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 " +
+        "inline-flex items-center justify-center overflow-hidden rounded-full border text-neutral-700 dark:text-neutral-200 " +
         (className || "")
       }
       style={{
@@ -47,7 +47,10 @@ export default function UserAvatar({ src, name, email, size = 32, className }: U
         borderColor: "var(--border)",
       }}
     >
-      {displayChar}
+      <span className="absolute inset-0 bg-gradient-to-br from-fuchsia-400 to-blue-400 dark:from-fuchsia-700 dark:to-blue-700" />
+      <span className="relative z-10 font-semibold text-white mix-blend-overlay">
+        {displayChar}
+      </span>
     </span>
   );
 }

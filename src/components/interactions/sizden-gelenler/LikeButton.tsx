@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AuthGate } from "@/components/AuthGate";
 import { useAuth } from "@/lib/use-auth";
 import { Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface LikeButtonProps {
   contributionId: string;
@@ -34,19 +35,17 @@ export default function LikeButton({
   };
 
   const button = (
-    <button
+    <Button
       onClick={handleToggle}
       aria-pressed={liked}
       disabled={!loggedIn}
-      className={`flex items-center gap-1 rounded-full px-2 py-1 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:outline-none ${
-        liked
-          ? "bg-red-50 text-red-500 hover:bg-red-100"
-          : "text-gray-500 hover:bg-red-50 hover:text-red-500"
-      } ${!loggedIn ? "opacity-60" : ""}`}
+      variant={liked ? "destructive" : "outline"}
+      size="sm"
+      className={`${liked ? "text-white" : "text-gray-600"}`}
     >
       <Heart size={16} className={liked ? "fill-current" : ""} />
       <span className="font-medium">{count}</span>
-    </button>
+    </Button>
   );
 
   if (loggedIn) return button;

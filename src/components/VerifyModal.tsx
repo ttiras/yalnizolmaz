@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useSearchParams } from "next/navigation";
 import { Dialog } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 export function VerifyModal() {
   const search = useSearchParams();
@@ -22,13 +23,9 @@ export function VerifyModal() {
           Doğrulama e-postası gelmediyse <strong>Spam</strong> klasörünü kontrol et veya birkaç
           dakika sonra yeniden dene.
         </p>
-        <button
-          type="button"
-          className="inline-flex items-center rounded-md bg-neutral-900 px-3 py-2 text-white hover:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-white"
-          onClick={() => setOpen(false)}
-        >
+        <Button type="button" onClick={() => setOpen(false)}>
           Anladım
-        </button>
+        </Button>
       </div>
     </Dialog>
   );

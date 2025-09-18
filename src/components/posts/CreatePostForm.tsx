@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useInsertPostMutation } from "@/lib/graphql/__generated__/graphql";
 import { useQueryClient } from "@tanstack/react-query";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 export default function CreatePostForm() {
   const [content, setContent] = useState("");
@@ -34,23 +36,16 @@ export default function CreatePostForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
-      <textarea
-        className="w-full rounded border p-2"
+      <Textarea
         placeholder="Ne düşünüyorsun?"
         value={content}
         onChange={(e) => setContent(e.target.value)}
         disabled={submitting}
       />
       <div>
-        <button
-          type="submit"
-          disabled={submitting || !content.trim()}
-          className={`rounded px-4 py-2 ${
-            submitting || !content.trim() ? "bg-gray-300" : "bg-blue-600 text-white"
-          }`}
-        >
+        <Button type="submit" disabled={submitting || !content.trim()} className="w-full sm:w-auto">
           {submitting ? "Gönderiliyor…" : "Gönder"}
-        </button>
+        </Button>
       </div>
     </form>
   );

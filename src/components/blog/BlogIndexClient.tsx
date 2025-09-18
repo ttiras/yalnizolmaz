@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 
 export type BlogListItem = {
   slug: string;
@@ -55,35 +57,19 @@ export function BlogIndexClient({ posts }: { posts: BlogListItem[] }) {
         style={{ borderColor: "var(--border)" }}
       >
         <div className="flex flex-col gap-4 p-4 md:flex-row md:items-center md:justify-between">
-          <input
+          <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Ara: başlık, etiket, açıklama"
-            className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-2 md:max-w-md"
-            style={{
-              borderColor: "var(--border)",
-              backgroundColor: "var(--card)",
-              color: "var(--foreground)",
-            }}
             aria-label="Blogda ara"
+            className="md:max-w-md"
           />
           <div className="flex flex-wrap gap-2">
             {allTags.map(([t, count]) => (
-              <button
-                key={t}
-                onClick={() => toggleTag(t)}
-                className={`rounded-full border px-3 py-1 text-xs transition-colors ${
-                  activeTags.has(t)
-                    ? "border-blue-600 bg-blue-600 text-white"
-                    : "hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                }`}
-                style={{
-                  borderColor: activeTags.has(t) ? undefined : "var(--border)",
-                  color: activeTags.has(t) ? undefined : "var(--foreground)",
-                }}
-                aria-pressed={activeTags.has(t)}
-              >
-                #{t} <span className="opacity-60">({count})</span>
+              <button key={t} onClick={() => toggleTag(t)} aria-pressed={activeTags.has(t)}>
+                <Badge variant={activeTags.has(t) ? "default" : "outline"}>
+                  #{t} <span className="opacity-60">({count})</span>
+                </Badge>
               </button>
             ))}
           </div>

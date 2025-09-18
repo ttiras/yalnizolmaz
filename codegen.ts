@@ -39,7 +39,7 @@ const config: CodegenConfig = {
           func: "../queryHooks#useAuthenticatedFetcher",
           isReactHook: true,
         },
-        useTypeImports: true,
+        useTypeImports: false,
         reactQueryVersion: 5,
       },
     },

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Hand } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface HelpfulButtonProps {
   commentId: string;
@@ -31,15 +32,15 @@ export default function HelpfulButton({
   };
 
   return (
-    <button
+    <Button
       onClick={handleToggle}
       aria-pressed={liked}
-      className={`flex items-center gap-1 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:outline-none ${
-        liked ? "text-blue-600" : "text-gray-500 hover:text-blue-600"
-      } `}
+      variant="ghost"
+      size="sm"
+      className={liked ? "text-blue-600" : "text-gray-500 hover:text-blue-600"}
     >
       <Hand size={16} className={liked ? "fill-current" : ""} />
       <span className="font-medium">{count}</span>
-    </button>
+    </Button>
   );
 }

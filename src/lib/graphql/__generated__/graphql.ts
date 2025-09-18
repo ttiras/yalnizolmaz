@@ -1,9 +1,4 @@
-import {
-  useQuery,
-  useMutation,
-  type UseQueryOptions,
-  type UseMutationOptions,
-} from "@tanstack/react-query";
+import { useQuery, useMutation, UseQueryOptions, UseMutationOptions } from "@tanstack/react-query";
 import { useAuthenticatedFetcher } from "../queryHooks";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -26,7 +21,7 @@ export type Scalars = {
   bigint: { input: number; output: number };
   bytea: { input: Buffer; output: Buffer };
   citext: { input: string; output: string };
-  jsonb: { input: Record<string, unknown>; output: Record<string, unknown> };
+  jsonb: { input: Record<string, any>; output: Record<string, any> };
   timestamptz: { input: string; output: string };
   uuid: { input: string; output: string };
 };
@@ -2108,6 +2103,17 @@ export type Blog_Comment_Reports_Aggregate = {
   nodes: Array<Blog_Comment_Reports>;
 };
 
+export type Blog_Comment_Reports_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Blog_Comment_Reports_Aggregate_Bool_Exp_Count>;
+};
+
+export type Blog_Comment_Reports_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Blog_Comment_Reports_Select_Column>>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+  filter?: InputMaybe<Blog_Comment_Reports_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
 /** aggregate fields of "blog_comment_reports" */
 export type Blog_Comment_Reports_Aggregate_Fields = {
   __typename?: "blog_comment_reports_aggregate_fields";
@@ -2120,6 +2126,20 @@ export type Blog_Comment_Reports_Aggregate_Fields = {
 export type Blog_Comment_Reports_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Blog_Comment_Reports_Select_Column>>;
   distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+};
+
+/** order by aggregate values of table "blog_comment_reports" */
+export type Blog_Comment_Reports_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Blog_Comment_Reports_Max_Order_By>;
+  min?: InputMaybe<Blog_Comment_Reports_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "blog_comment_reports" */
+export type Blog_Comment_Reports_Arr_Rel_Insert_Input = {
+  data: Array<Blog_Comment_Reports_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Blog_Comment_Reports_On_Conflict>;
 };
 
 /** Boolean expression to filter rows from the table "blog_comment_reports". All fields are combined with a logical 'AND'. */
@@ -2171,6 +2191,17 @@ export type Blog_Comment_Reports_Max_Fields = {
   status?: Maybe<Scalars["String"]["output"]>;
 };
 
+/** order by max() on columns of table "blog_comment_reports" */
+export type Blog_Comment_Reports_Max_Order_By = {
+  comment_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  details?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  reason?: InputMaybe<Order_By>;
+  reporter_id?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
+};
+
 /** aggregate min on columns */
 export type Blog_Comment_Reports_Min_Fields = {
   __typename?: "blog_comment_reports_min_fields";
@@ -2181,6 +2212,17 @@ export type Blog_Comment_Reports_Min_Fields = {
   reason?: Maybe<Scalars["String"]["output"]>;
   reporter_id?: Maybe<Scalars["uuid"]["output"]>;
   status?: Maybe<Scalars["String"]["output"]>;
+};
+
+/** order by min() on columns of table "blog_comment_reports" */
+export type Blog_Comment_Reports_Min_Order_By = {
+  comment_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  details?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  reason?: InputMaybe<Order_By>;
+  reporter_id?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "blog_comment_reports" */
@@ -3695,6 +3737,17 @@ export type Contribution_Reports_Aggregate = {
   nodes: Array<Contribution_Reports>;
 };
 
+export type Contribution_Reports_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Contribution_Reports_Aggregate_Bool_Exp_Count>;
+};
+
+export type Contribution_Reports_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Contribution_Reports_Select_Column>>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+  filter?: InputMaybe<Contribution_Reports_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
 /** aggregate fields of "contribution_reports" */
 export type Contribution_Reports_Aggregate_Fields = {
   __typename?: "contribution_reports_aggregate_fields";
@@ -3707,6 +3760,20 @@ export type Contribution_Reports_Aggregate_Fields = {
 export type Contribution_Reports_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Contribution_Reports_Select_Column>>;
   distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+};
+
+/** order by aggregate values of table "contribution_reports" */
+export type Contribution_Reports_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Contribution_Reports_Max_Order_By>;
+  min?: InputMaybe<Contribution_Reports_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "contribution_reports" */
+export type Contribution_Reports_Arr_Rel_Insert_Input = {
+  data: Array<Contribution_Reports_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Contribution_Reports_On_Conflict>;
 };
 
 /** Boolean expression to filter rows from the table "contribution_reports". All fields are combined with a logical 'AND'. */
@@ -3758,6 +3825,17 @@ export type Contribution_Reports_Max_Fields = {
   status?: Maybe<Scalars["String"]["output"]>;
 };
 
+/** order by max() on columns of table "contribution_reports" */
+export type Contribution_Reports_Max_Order_By = {
+  contribution_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  details?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  reason?: InputMaybe<Order_By>;
+  reporter_id?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
+};
+
 /** aggregate min on columns */
 export type Contribution_Reports_Min_Fields = {
   __typename?: "contribution_reports_min_fields";
@@ -3768,6 +3846,17 @@ export type Contribution_Reports_Min_Fields = {
   reason?: Maybe<Scalars["String"]["output"]>;
   reporter_id?: Maybe<Scalars["uuid"]["output"]>;
   status?: Maybe<Scalars["String"]["output"]>;
+};
+
+/** order by min() on columns of table "contribution_reports" */
+export type Contribution_Reports_Min_Order_By = {
+  contribution_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  details?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  reason?: InputMaybe<Order_By>;
+  reporter_id?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "contribution_reports" */
@@ -4086,6 +4175,17 @@ export type Contributions_Aggregate = {
   nodes: Array<Contributions>;
 };
 
+export type Contributions_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Contributions_Aggregate_Bool_Exp_Count>;
+};
+
+export type Contributions_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Contributions_Select_Column>>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+  filter?: InputMaybe<Contributions_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
 /** aggregate fields of "contributions" */
 export type Contributions_Aggregate_Fields = {
   __typename?: "contributions_aggregate_fields";
@@ -4108,10 +4208,37 @@ export type Contributions_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
+/** order by aggregate values of table "contributions" */
+export type Contributions_Aggregate_Order_By = {
+  avg?: InputMaybe<Contributions_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Contributions_Max_Order_By>;
+  min?: InputMaybe<Contributions_Min_Order_By>;
+  stddev?: InputMaybe<Contributions_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Contributions_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Contributions_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Contributions_Sum_Order_By>;
+  var_pop?: InputMaybe<Contributions_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Contributions_Var_Samp_Order_By>;
+  variance?: InputMaybe<Contributions_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "contributions" */
+export type Contributions_Arr_Rel_Insert_Input = {
+  data: Array<Contributions_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Contributions_On_Conflict>;
+};
+
 /** aggregate avg on columns */
 export type Contributions_Avg_Fields = {
   __typename?: "contributions_avg_fields";
   year?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** order by avg() on columns of table "contributions" */
+export type Contributions_Avg_Order_By = {
+  year?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "contributions". All fields are combined with a logical 'AND'. */
@@ -4187,6 +4314,22 @@ export type Contributions_Max_Fields = {
   year?: Maybe<Scalars["Int"]["output"]>;
 };
 
+/** order by max() on columns of table "contributions" */
+export type Contributions_Max_Order_By = {
+  blog_slug?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  external_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  note?: InputMaybe<Order_By>;
+  poster_url?: InputMaybe<Order_By>;
+  source_url?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
+  submitted_by?: InputMaybe<Order_By>;
+  title?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  year?: InputMaybe<Order_By>;
+};
+
 /** aggregate min on columns */
 export type Contributions_Min_Fields = {
   __typename?: "contributions_min_fields";
@@ -4202,6 +4345,22 @@ export type Contributions_Min_Fields = {
   title?: Maybe<Scalars["String"]["output"]>;
   updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
   year?: Maybe<Scalars["Int"]["output"]>;
+};
+
+/** order by min() on columns of table "contributions" */
+export type Contributions_Min_Order_By = {
+  blog_slug?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  external_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  note?: InputMaybe<Order_By>;
+  poster_url?: InputMaybe<Order_By>;
+  source_url?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
+  submitted_by?: InputMaybe<Order_By>;
+  title?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  year?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "contributions" */
@@ -4305,16 +4464,31 @@ export type Contributions_Stddev_Fields = {
   year?: Maybe<Scalars["Float"]["output"]>;
 };
 
+/** order by stddev() on columns of table "contributions" */
+export type Contributions_Stddev_Order_By = {
+  year?: InputMaybe<Order_By>;
+};
+
 /** aggregate stddev_pop on columns */
 export type Contributions_Stddev_Pop_Fields = {
   __typename?: "contributions_stddev_pop_fields";
   year?: Maybe<Scalars["Float"]["output"]>;
 };
 
+/** order by stddev_pop() on columns of table "contributions" */
+export type Contributions_Stddev_Pop_Order_By = {
+  year?: InputMaybe<Order_By>;
+};
+
 /** aggregate stddev_samp on columns */
 export type Contributions_Stddev_Samp_Fields = {
   __typename?: "contributions_stddev_samp_fields";
   year?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** order by stddev_samp() on columns of table "contributions" */
+export type Contributions_Stddev_Samp_Order_By = {
+  year?: InputMaybe<Order_By>;
 };
 
 /** Streaming cursor of the table "contributions" */
@@ -4346,6 +4520,11 @@ export type Contributions_Stream_Cursor_Value_Input = {
 export type Contributions_Sum_Fields = {
   __typename?: "contributions_sum_fields";
   year?: Maybe<Scalars["Int"]["output"]>;
+};
+
+/** order by sum() on columns of table "contributions" */
+export type Contributions_Sum_Order_By = {
+  year?: InputMaybe<Order_By>;
 };
 
 /** update columns of table "contributions" */
@@ -4393,16 +4572,31 @@ export type Contributions_Var_Pop_Fields = {
   year?: Maybe<Scalars["Float"]["output"]>;
 };
 
+/** order by var_pop() on columns of table "contributions" */
+export type Contributions_Var_Pop_Order_By = {
+  year?: InputMaybe<Order_By>;
+};
+
 /** aggregate var_samp on columns */
 export type Contributions_Var_Samp_Fields = {
   __typename?: "contributions_var_samp_fields";
   year?: Maybe<Scalars["Float"]["output"]>;
 };
 
+/** order by var_samp() on columns of table "contributions" */
+export type Contributions_Var_Samp_Order_By = {
+  year?: InputMaybe<Order_By>;
+};
+
 /** aggregate variance on columns */
 export type Contributions_Variance_Fields = {
   __typename?: "contributions_variance_fields";
   year?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** order by variance() on columns of table "contributions" */
+export type Contributions_Variance_Order_By = {
+  year?: InputMaybe<Order_By>;
 };
 
 /** ordering argument of a cursor */
@@ -4942,6 +5136,17 @@ export type Messages_Aggregate = {
   nodes: Array<Messages>;
 };
 
+export type Messages_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Messages_Aggregate_Bool_Exp_Count>;
+};
+
+export type Messages_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Messages_Select_Column>>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+  filter?: InputMaybe<Messages_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
 /** aggregate fields of "messages" */
 export type Messages_Aggregate_Fields = {
   __typename?: "messages_aggregate_fields";
@@ -4964,10 +5169,37 @@ export type Messages_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
+/** order by aggregate values of table "messages" */
+export type Messages_Aggregate_Order_By = {
+  avg?: InputMaybe<Messages_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Messages_Max_Order_By>;
+  min?: InputMaybe<Messages_Min_Order_By>;
+  stddev?: InputMaybe<Messages_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Messages_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Messages_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Messages_Sum_Order_By>;
+  var_pop?: InputMaybe<Messages_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Messages_Var_Samp_Order_By>;
+  variance?: InputMaybe<Messages_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "messages" */
+export type Messages_Arr_Rel_Insert_Input = {
+  data: Array<Messages_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Messages_On_Conflict>;
+};
+
 /** aggregate avg on columns */
 export type Messages_Avg_Fields = {
   __typename?: "messages_avg_fields";
   id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** order by avg() on columns of table "messages" */
+export type Messages_Avg_Order_By = {
+  id?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "messages". All fields are combined with a logical 'AND'. */
@@ -5019,6 +5251,16 @@ export type Messages_Max_Fields = {
   updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
 };
 
+/** order by max() on columns of table "messages" */
+export type Messages_Max_Order_By = {
+  body?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  recipient_id?: InputMaybe<Order_By>;
+  sender_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
 /** aggregate min on columns */
 export type Messages_Min_Fields = {
   __typename?: "messages_min_fields";
@@ -5028,6 +5270,16 @@ export type Messages_Min_Fields = {
   recipient_id?: Maybe<Scalars["uuid"]["output"]>;
   sender_id?: Maybe<Scalars["uuid"]["output"]>;
   updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
+};
+
+/** order by min() on columns of table "messages" */
+export type Messages_Min_Order_By = {
+  body?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  recipient_id?: InputMaybe<Order_By>;
+  sender_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "messages" */
@@ -5095,16 +5347,31 @@ export type Messages_Stddev_Fields = {
   id?: Maybe<Scalars["Float"]["output"]>;
 };
 
+/** order by stddev() on columns of table "messages" */
+export type Messages_Stddev_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
 /** aggregate stddev_pop on columns */
 export type Messages_Stddev_Pop_Fields = {
   __typename?: "messages_stddev_pop_fields";
   id?: Maybe<Scalars["Float"]["output"]>;
 };
 
+/** order by stddev_pop() on columns of table "messages" */
+export type Messages_Stddev_Pop_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
 /** aggregate stddev_samp on columns */
 export type Messages_Stddev_Samp_Fields = {
   __typename?: "messages_stddev_samp_fields";
   id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** order by stddev_samp() on columns of table "messages" */
+export type Messages_Stddev_Samp_Order_By = {
+  id?: InputMaybe<Order_By>;
 };
 
 /** Streaming cursor of the table "messages" */
@@ -5129,6 +5396,11 @@ export type Messages_Stream_Cursor_Value_Input = {
 export type Messages_Sum_Fields = {
   __typename?: "messages_sum_fields";
   id?: Maybe<Scalars["Int"]["output"]>;
+};
+
+/** order by sum() on columns of table "messages" */
+export type Messages_Sum_Order_By = {
+  id?: InputMaybe<Order_By>;
 };
 
 /** update columns of table "messages" */
@@ -5162,16 +5434,31 @@ export type Messages_Var_Pop_Fields = {
   id?: Maybe<Scalars["Float"]["output"]>;
 };
 
+/** order by var_pop() on columns of table "messages" */
+export type Messages_Var_Pop_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
 /** aggregate var_samp on columns */
 export type Messages_Var_Samp_Fields = {
   __typename?: "messages_var_samp_fields";
   id?: Maybe<Scalars["Float"]["output"]>;
 };
 
+/** order by var_samp() on columns of table "messages" */
+export type Messages_Var_Samp_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
 /** aggregate variance on columns */
 export type Messages_Variance_Fields = {
   __typename?: "messages_variance_fields";
   id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** order by variance() on columns of table "messages" */
+export type Messages_Variance_Order_By = {
+  id?: InputMaybe<Order_By>;
 };
 
 /** mutation root */
@@ -7547,6 +7834,17 @@ export type Post_Reports_Aggregate = {
   nodes: Array<Post_Reports>;
 };
 
+export type Post_Reports_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Post_Reports_Aggregate_Bool_Exp_Count>;
+};
+
+export type Post_Reports_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Post_Reports_Select_Column>>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+  filter?: InputMaybe<Post_Reports_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
 /** aggregate fields of "post_reports" */
 export type Post_Reports_Aggregate_Fields = {
   __typename?: "post_reports_aggregate_fields";
@@ -7559,6 +7857,20 @@ export type Post_Reports_Aggregate_Fields = {
 export type Post_Reports_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Post_Reports_Select_Column>>;
   distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+};
+
+/** order by aggregate values of table "post_reports" */
+export type Post_Reports_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Post_Reports_Max_Order_By>;
+  min?: InputMaybe<Post_Reports_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "post_reports" */
+export type Post_Reports_Arr_Rel_Insert_Input = {
+  data: Array<Post_Reports_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Post_Reports_On_Conflict>;
 };
 
 /** Boolean expression to filter rows from the table "post_reports". All fields are combined with a logical 'AND'. */
@@ -7610,6 +7922,17 @@ export type Post_Reports_Max_Fields = {
   status?: Maybe<Scalars["String"]["output"]>;
 };
 
+/** order by max() on columns of table "post_reports" */
+export type Post_Reports_Max_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  details?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  post_id?: InputMaybe<Order_By>;
+  reason?: InputMaybe<Order_By>;
+  reporter_id?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
+};
+
 /** aggregate min on columns */
 export type Post_Reports_Min_Fields = {
   __typename?: "post_reports_min_fields";
@@ -7620,6 +7943,17 @@ export type Post_Reports_Min_Fields = {
   reason?: Maybe<Scalars["String"]["output"]>;
   reporter_id?: Maybe<Scalars["uuid"]["output"]>;
   status?: Maybe<Scalars["String"]["output"]>;
+};
+
+/** order by min() on columns of table "post_reports" */
+export type Post_Reports_Min_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  details?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  post_id?: InputMaybe<Order_By>;
+  reason?: InputMaybe<Order_By>;
+  reporter_id?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "post_reports" */
@@ -7812,6 +8146,17 @@ export type Posts_Aggregate = {
   nodes: Array<Posts>;
 };
 
+export type Posts_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Posts_Aggregate_Bool_Exp_Count>;
+};
+
+export type Posts_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Posts_Select_Column>>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+  filter?: InputMaybe<Posts_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
 /** aggregate fields of "posts" */
 export type Posts_Aggregate_Fields = {
   __typename?: "posts_aggregate_fields";
@@ -7824,6 +8169,20 @@ export type Posts_Aggregate_Fields = {
 export type Posts_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Posts_Select_Column>>;
   distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+};
+
+/** order by aggregate values of table "posts" */
+export type Posts_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Posts_Max_Order_By>;
+  min?: InputMaybe<Posts_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "posts" */
+export type Posts_Arr_Rel_Insert_Input = {
+  data: Array<Posts_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Posts_On_Conflict>;
 };
 
 /** Boolean expression to filter rows from the table "posts". All fields are combined with a logical 'AND'. */
@@ -7872,6 +8231,15 @@ export type Posts_Max_Fields = {
   user_id?: Maybe<Scalars["uuid"]["output"]>;
 };
 
+/** order by max() on columns of table "posts" */
+export type Posts_Max_Order_By = {
+  content?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  user_id?: InputMaybe<Order_By>;
+};
+
 /** aggregate min on columns */
 export type Posts_Min_Fields = {
   __typename?: "posts_min_fields";
@@ -7880,6 +8248,15 @@ export type Posts_Min_Fields = {
   id?: Maybe<Scalars["uuid"]["output"]>;
   updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
   user_id?: Maybe<Scalars["uuid"]["output"]>;
+};
+
+/** order by min() on columns of table "posts" */
+export type Posts_Min_Order_By = {
+  content?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  user_id?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "posts" */
@@ -8039,15 +8416,15 @@ export type Query_Root = {
   blog_comment_helpful_aggregate: Blog_Comment_Helpful_Aggregate;
   /** fetch data from the table: "blog_comment_helpful" using primary key columns */
   blog_comment_helpful_by_pk?: Maybe<Blog_Comment_Helpful>;
-  /** fetch data from the table: "blog_comment_reports" */
+  /** An array relationship */
   blog_comment_reports: Array<Blog_Comment_Reports>;
-  /** fetch aggregated fields from the table: "blog_comment_reports" */
+  /** An aggregate relationship */
   blog_comment_reports_aggregate: Blog_Comment_Reports_Aggregate;
   /** fetch data from the table: "blog_comment_reports" using primary key columns */
   blog_comment_reports_by_pk?: Maybe<Blog_Comment_Reports>;
-  /** fetch data from the table: "blog_comments" */
+  /** An array relationship */
   blog_comments: Array<Blog_Comments>;
-  /** fetch aggregated fields from the table: "blog_comments" */
+  /** An aggregate relationship */
   blog_comments_aggregate: Blog_Comments_Aggregate;
   /** fetch data from the table: "blog_comments" using primary key columns */
   blog_comments_by_pk?: Maybe<Blog_Comments>;
@@ -8075,9 +8452,9 @@ export type Query_Root = {
   contribution_likes_aggregate: Contribution_Likes_Aggregate;
   /** fetch data from the table: "contribution_likes" using primary key columns */
   contribution_likes_by_pk?: Maybe<Contribution_Likes>;
-  /** fetch data from the table: "contribution_reports" */
+  /** An array relationship */
   contribution_reports: Array<Contribution_Reports>;
-  /** fetch aggregated fields from the table: "contribution_reports" */
+  /** An aggregate relationship */
   contribution_reports_aggregate: Contribution_Reports_Aggregate;
   /** fetch data from the table: "contribution_reports" using primary key columns */
   contribution_reports_by_pk?: Maybe<Contribution_Reports>;
@@ -8087,9 +8464,9 @@ export type Query_Root = {
   contribution_types_aggregate: Contribution_Types_Aggregate;
   /** fetch data from the table: "contribution_types" using primary key columns */
   contribution_types_by_pk?: Maybe<Contribution_Types>;
-  /** fetch data from the table: "contributions" */
+  /** An array relationship */
   contributions: Array<Contributions>;
-  /** fetch aggregated fields from the table: "contributions" */
+  /** An aggregate relationship */
   contributions_aggregate: Contributions_Aggregate;
   /** fetch data from the table: "contributions" using primary key columns */
   contributions_by_pk?: Maybe<Contributions>;
@@ -8123,23 +8500,23 @@ export type Query_Root = {
   post_likes_aggregate: Post_Likes_Aggregate;
   /** fetch data from the table: "post_likes" using primary key columns */
   post_likes_by_pk?: Maybe<Post_Likes>;
-  /** fetch data from the table: "post_reports" */
+  /** An array relationship */
   post_reports: Array<Post_Reports>;
-  /** fetch aggregated fields from the table: "post_reports" */
+  /** An aggregate relationship */
   post_reports_aggregate: Post_Reports_Aggregate;
   /** fetch data from the table: "post_reports" using primary key columns */
   post_reports_by_pk?: Maybe<Post_Reports>;
-  /** fetch data from the table: "posts" */
+  /** An array relationship */
   posts: Array<Posts>;
-  /** fetch aggregated fields from the table: "posts" */
+  /** An aggregate relationship */
   posts_aggregate: Posts_Aggregate;
   /** fetch data from the table: "posts" using primary key columns */
   posts_by_pk?: Maybe<Posts>;
   /** fetch data from the table: "auth.users" using primary key columns */
   user?: Maybe<Users>;
-  /** fetch data from the table: "user_blocks" */
+  /** An array relationship */
   user_blocks: Array<User_Blocks>;
-  /** fetch aggregated fields from the table: "user_blocks" */
+  /** An aggregate relationship */
   user_blocks_aggregate: User_Blocks_Aggregate;
   /** fetch data from the table: "user_blocks" using primary key columns */
   user_blocks_by_pk?: Maybe<User_Blocks>;
@@ -8848,17 +9225,17 @@ export type Subscription_Root = {
   blog_comment_helpful_by_pk?: Maybe<Blog_Comment_Helpful>;
   /** fetch data from the table in a streaming manner: "blog_comment_helpful" */
   blog_comment_helpful_stream: Array<Blog_Comment_Helpful>;
-  /** fetch data from the table: "blog_comment_reports" */
+  /** An array relationship */
   blog_comment_reports: Array<Blog_Comment_Reports>;
-  /** fetch aggregated fields from the table: "blog_comment_reports" */
+  /** An aggregate relationship */
   blog_comment_reports_aggregate: Blog_Comment_Reports_Aggregate;
   /** fetch data from the table: "blog_comment_reports" using primary key columns */
   blog_comment_reports_by_pk?: Maybe<Blog_Comment_Reports>;
   /** fetch data from the table in a streaming manner: "blog_comment_reports" */
   blog_comment_reports_stream: Array<Blog_Comment_Reports>;
-  /** fetch data from the table: "blog_comments" */
+  /** An array relationship */
   blog_comments: Array<Blog_Comments>;
-  /** fetch aggregated fields from the table: "blog_comments" */
+  /** An aggregate relationship */
   blog_comments_aggregate: Blog_Comments_Aggregate;
   /** fetch data from the table: "blog_comments" using primary key columns */
   blog_comments_by_pk?: Maybe<Blog_Comments>;
@@ -8896,9 +9273,9 @@ export type Subscription_Root = {
   contribution_likes_by_pk?: Maybe<Contribution_Likes>;
   /** fetch data from the table in a streaming manner: "contribution_likes" */
   contribution_likes_stream: Array<Contribution_Likes>;
-  /** fetch data from the table: "contribution_reports" */
+  /** An array relationship */
   contribution_reports: Array<Contribution_Reports>;
-  /** fetch aggregated fields from the table: "contribution_reports" */
+  /** An aggregate relationship */
   contribution_reports_aggregate: Contribution_Reports_Aggregate;
   /** fetch data from the table: "contribution_reports" using primary key columns */
   contribution_reports_by_pk?: Maybe<Contribution_Reports>;
@@ -8912,9 +9289,9 @@ export type Subscription_Root = {
   contribution_types_by_pk?: Maybe<Contribution_Types>;
   /** fetch data from the table in a streaming manner: "contribution_types" */
   contribution_types_stream: Array<Contribution_Types>;
-  /** fetch data from the table: "contributions" */
+  /** An array relationship */
   contributions: Array<Contributions>;
-  /** fetch aggregated fields from the table: "contributions" */
+  /** An aggregate relationship */
   contributions_aggregate: Contributions_Aggregate;
   /** fetch data from the table: "contributions" using primary key columns */
   contributions_by_pk?: Maybe<Contributions>;
@@ -8960,17 +9337,17 @@ export type Subscription_Root = {
   post_likes_by_pk?: Maybe<Post_Likes>;
   /** fetch data from the table in a streaming manner: "post_likes" */
   post_likes_stream: Array<Post_Likes>;
-  /** fetch data from the table: "post_reports" */
+  /** An array relationship */
   post_reports: Array<Post_Reports>;
-  /** fetch aggregated fields from the table: "post_reports" */
+  /** An aggregate relationship */
   post_reports_aggregate: Post_Reports_Aggregate;
   /** fetch data from the table: "post_reports" using primary key columns */
   post_reports_by_pk?: Maybe<Post_Reports>;
   /** fetch data from the table in a streaming manner: "post_reports" */
   post_reports_stream: Array<Post_Reports>;
-  /** fetch data from the table: "posts" */
+  /** An array relationship */
   posts: Array<Posts>;
-  /** fetch aggregated fields from the table: "posts" */
+  /** An aggregate relationship */
   posts_aggregate: Posts_Aggregate;
   /** fetch data from the table: "posts" using primary key columns */
   posts_by_pk?: Maybe<Posts>;
@@ -8978,9 +9355,9 @@ export type Subscription_Root = {
   posts_stream: Array<Posts>;
   /** fetch data from the table: "auth.users" using primary key columns */
   user?: Maybe<Users>;
-  /** fetch data from the table: "user_blocks" */
+  /** An array relationship */
   user_blocks: Array<User_Blocks>;
-  /** fetch aggregated fields from the table: "user_blocks" */
+  /** An aggregate relationship */
   user_blocks_aggregate: User_Blocks_Aggregate;
   /** fetch data from the table: "user_blocks" using primary key columns */
   user_blocks_by_pk?: Maybe<User_Blocks>;
@@ -10522,6 +10899,38 @@ export type Users = {
   blocks_outgoing: Array<User_Blocks>;
   /** An aggregate relationship */
   blocks_outgoing_aggregate: User_Blocks_Aggregate;
+  /** An array relationship */
+  blog_comment_helpfuls: Array<Blog_Comment_Helpful>;
+  /** An aggregate relationship */
+  blog_comment_helpfuls_aggregate: Blog_Comment_Helpful_Aggregate;
+  /** An array relationship */
+  blog_comment_reports: Array<Blog_Comment_Reports>;
+  /** An aggregate relationship */
+  blog_comment_reports_aggregate: Blog_Comment_Reports_Aggregate;
+  /** An array relationship */
+  blog_comments: Array<Blog_Comments>;
+  /** An aggregate relationship */
+  blog_comments_aggregate: Blog_Comments_Aggregate;
+  /** An array relationship */
+  comment_likes: Array<Comment_Likes>;
+  /** An aggregate relationship */
+  comment_likes_aggregate: Comment_Likes_Aggregate;
+  /** An array relationship */
+  contribution_bookmarks: Array<Contribution_Bookmarks>;
+  /** An aggregate relationship */
+  contribution_bookmarks_aggregate: Contribution_Bookmarks_Aggregate;
+  /** An array relationship */
+  contribution_likes: Array<Contribution_Likes>;
+  /** An aggregate relationship */
+  contribution_likes_aggregate: Contribution_Likes_Aggregate;
+  /** An array relationship */
+  contribution_reports: Array<Contribution_Reports>;
+  /** An aggregate relationship */
+  contribution_reports_aggregate: Contribution_Reports_Aggregate;
+  /** An array relationship */
+  contributions: Array<Contributions>;
+  /** An aggregate relationship */
+  contributions_aggregate: Contributions_Aggregate;
   createdAt: Scalars["timestamptz"]["output"];
   currentChallenge?: Maybe<Scalars["String"]["output"]>;
   defaultRole: Scalars["String"]["output"];
@@ -10535,6 +10944,14 @@ export type Users = {
   isAnonymous: Scalars["Boolean"]["output"];
   lastSeen?: Maybe<Scalars["timestamptz"]["output"]>;
   locale: Scalars["String"]["output"];
+  /** An array relationship */
+  messages_received: Array<Messages>;
+  /** An aggregate relationship */
+  messages_received_aggregate: Messages_Aggregate;
+  /** An array relationship */
+  messages_sent: Array<Messages>;
+  /** An aggregate relationship */
+  messages_sent_aggregate: Messages_Aggregate;
   metadata?: Maybe<Scalars["jsonb"]["output"]>;
   newEmail?: Maybe<Scalars["citext"]["output"]>;
   otpHash?: Maybe<Scalars["String"]["output"]>;
@@ -10543,6 +10960,26 @@ export type Users = {
   passwordHash?: Maybe<Scalars["String"]["output"]>;
   phoneNumber?: Maybe<Scalars["String"]["output"]>;
   phoneNumberVerified: Scalars["Boolean"]["output"];
+  /** An array relationship */
+  post_bookmarks: Array<Post_Bookmarks>;
+  /** An aggregate relationship */
+  post_bookmarks_aggregate: Post_Bookmarks_Aggregate;
+  /** An array relationship */
+  post_comments: Array<Post_Comments>;
+  /** An aggregate relationship */
+  post_comments_aggregate: Post_Comments_Aggregate;
+  /** An array relationship */
+  post_likes: Array<Post_Likes>;
+  /** An aggregate relationship */
+  post_likes_aggregate: Post_Likes_Aggregate;
+  /** An array relationship */
+  post_reports: Array<Post_Reports>;
+  /** An aggregate relationship */
+  post_reports_aggregate: Post_Reports_Aggregate;
+  /** An array relationship */
+  posts: Array<Posts>;
+  /** An aggregate relationship */
+  posts_aggregate: Posts_Aggregate;
   /** An array relationship */
   refreshTokens: Array<AuthRefreshTokens>;
   /** An aggregate relationship */
@@ -10563,6 +11000,10 @@ export type Users = {
   userProviders: Array<AuthUserProviders>;
   /** An aggregate relationship */
   userProviders_aggregate: AuthUserProviders_Aggregate;
+  /** An array relationship */
+  user_blocks: Array<User_Blocks>;
+  /** An aggregate relationship */
+  user_blocks_aggregate: User_Blocks_Aggregate;
   /** An array relationship */
   user_preferences: Array<User_Preferences>;
   /** An aggregate relationship */
@@ -10592,8 +11033,278 @@ export type UsersBlocks_Outgoing_AggregateArgs = {
 };
 
 /** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersBlog_Comment_HelpfulsArgs = {
+  distinct_on?: InputMaybe<Array<Blog_Comment_Helpful_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Blog_Comment_Helpful_Order_By>>;
+  where?: InputMaybe<Blog_Comment_Helpful_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersBlog_Comment_Helpfuls_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Blog_Comment_Helpful_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Blog_Comment_Helpful_Order_By>>;
+  where?: InputMaybe<Blog_Comment_Helpful_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersBlog_Comment_ReportsArgs = {
+  distinct_on?: InputMaybe<Array<Blog_Comment_Reports_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Blog_Comment_Reports_Order_By>>;
+  where?: InputMaybe<Blog_Comment_Reports_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersBlog_Comment_Reports_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Blog_Comment_Reports_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Blog_Comment_Reports_Order_By>>;
+  where?: InputMaybe<Blog_Comment_Reports_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersBlog_CommentsArgs = {
+  distinct_on?: InputMaybe<Array<Blog_Comments_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Blog_Comments_Order_By>>;
+  where?: InputMaybe<Blog_Comments_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersBlog_Comments_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Blog_Comments_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Blog_Comments_Order_By>>;
+  where?: InputMaybe<Blog_Comments_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersComment_LikesArgs = {
+  distinct_on?: InputMaybe<Array<Comment_Likes_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Comment_Likes_Order_By>>;
+  where?: InputMaybe<Comment_Likes_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersComment_Likes_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Comment_Likes_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Comment_Likes_Order_By>>;
+  where?: InputMaybe<Comment_Likes_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersContribution_BookmarksArgs = {
+  distinct_on?: InputMaybe<Array<Contribution_Bookmarks_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Contribution_Bookmarks_Order_By>>;
+  where?: InputMaybe<Contribution_Bookmarks_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersContribution_Bookmarks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Contribution_Bookmarks_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Contribution_Bookmarks_Order_By>>;
+  where?: InputMaybe<Contribution_Bookmarks_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersContribution_LikesArgs = {
+  distinct_on?: InputMaybe<Array<Contribution_Likes_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Contribution_Likes_Order_By>>;
+  where?: InputMaybe<Contribution_Likes_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersContribution_Likes_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Contribution_Likes_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Contribution_Likes_Order_By>>;
+  where?: InputMaybe<Contribution_Likes_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersContribution_ReportsArgs = {
+  distinct_on?: InputMaybe<Array<Contribution_Reports_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Contribution_Reports_Order_By>>;
+  where?: InputMaybe<Contribution_Reports_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersContribution_Reports_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Contribution_Reports_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Contribution_Reports_Order_By>>;
+  where?: InputMaybe<Contribution_Reports_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersContributionsArgs = {
+  distinct_on?: InputMaybe<Array<Contributions_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Contributions_Order_By>>;
+  where?: InputMaybe<Contributions_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersContributions_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Contributions_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Contributions_Order_By>>;
+  where?: InputMaybe<Contributions_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersMessages_ReceivedArgs = {
+  distinct_on?: InputMaybe<Array<Messages_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Messages_Order_By>>;
+  where?: InputMaybe<Messages_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersMessages_Received_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Messages_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Messages_Order_By>>;
+  where?: InputMaybe<Messages_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersMessages_SentArgs = {
+  distinct_on?: InputMaybe<Array<Messages_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Messages_Order_By>>;
+  where?: InputMaybe<Messages_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersMessages_Sent_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Messages_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Messages_Order_By>>;
+  where?: InputMaybe<Messages_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
 export type UsersMetadataArgs = {
   path?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersPost_BookmarksArgs = {
+  distinct_on?: InputMaybe<Array<Post_Bookmarks_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Post_Bookmarks_Order_By>>;
+  where?: InputMaybe<Post_Bookmarks_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersPost_Bookmarks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Post_Bookmarks_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Post_Bookmarks_Order_By>>;
+  where?: InputMaybe<Post_Bookmarks_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersPost_CommentsArgs = {
+  distinct_on?: InputMaybe<Array<Post_Comments_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Post_Comments_Order_By>>;
+  where?: InputMaybe<Post_Comments_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersPost_Comments_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Post_Comments_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Post_Comments_Order_By>>;
+  where?: InputMaybe<Post_Comments_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersPost_LikesArgs = {
+  distinct_on?: InputMaybe<Array<Post_Likes_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Post_Likes_Order_By>>;
+  where?: InputMaybe<Post_Likes_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersPost_Likes_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Post_Likes_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Post_Likes_Order_By>>;
+  where?: InputMaybe<Post_Likes_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersPost_ReportsArgs = {
+  distinct_on?: InputMaybe<Array<Post_Reports_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Post_Reports_Order_By>>;
+  where?: InputMaybe<Post_Reports_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersPost_Reports_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Post_Reports_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Post_Reports_Order_By>>;
+  where?: InputMaybe<Post_Reports_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersPostsArgs = {
+  distinct_on?: InputMaybe<Array<Posts_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Posts_Order_By>>;
+  where?: InputMaybe<Posts_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersPosts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Posts_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Posts_Order_By>>;
+  where?: InputMaybe<Posts_Bool_Exp>;
 };
 
 /** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
@@ -10666,6 +11377,24 @@ export type UsersUserProviders_AggregateArgs = {
   offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<AuthUserProviders_Order_By>>;
   where?: InputMaybe<AuthUserProviders_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersUser_BlocksArgs = {
+  distinct_on?: InputMaybe<Array<User_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<User_Blocks_Order_By>>;
+  where?: InputMaybe<User_Blocks_Bool_Exp>;
+};
+
+/** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
+export type UsersUser_Blocks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<User_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<User_Blocks_Order_By>>;
+  where?: InputMaybe<User_Blocks_Bool_Exp>;
 };
 
 /** User account information. Don't modify its structure as Hasura Auth relies on it to function properly. */
@@ -10780,6 +11509,22 @@ export type Users_Bool_Exp = {
   avatarUrl?: InputMaybe<String_Comparison_Exp>;
   blocks_outgoing?: InputMaybe<User_Blocks_Bool_Exp>;
   blocks_outgoing_aggregate?: InputMaybe<User_Blocks_Aggregate_Bool_Exp>;
+  blog_comment_helpfuls?: InputMaybe<Blog_Comment_Helpful_Bool_Exp>;
+  blog_comment_helpfuls_aggregate?: InputMaybe<Blog_Comment_Helpful_Aggregate_Bool_Exp>;
+  blog_comment_reports?: InputMaybe<Blog_Comment_Reports_Bool_Exp>;
+  blog_comment_reports_aggregate?: InputMaybe<Blog_Comment_Reports_Aggregate_Bool_Exp>;
+  blog_comments?: InputMaybe<Blog_Comments_Bool_Exp>;
+  blog_comments_aggregate?: InputMaybe<Blog_Comments_Aggregate_Bool_Exp>;
+  comment_likes?: InputMaybe<Comment_Likes_Bool_Exp>;
+  comment_likes_aggregate?: InputMaybe<Comment_Likes_Aggregate_Bool_Exp>;
+  contribution_bookmarks?: InputMaybe<Contribution_Bookmarks_Bool_Exp>;
+  contribution_bookmarks_aggregate?: InputMaybe<Contribution_Bookmarks_Aggregate_Bool_Exp>;
+  contribution_likes?: InputMaybe<Contribution_Likes_Bool_Exp>;
+  contribution_likes_aggregate?: InputMaybe<Contribution_Likes_Aggregate_Bool_Exp>;
+  contribution_reports?: InputMaybe<Contribution_Reports_Bool_Exp>;
+  contribution_reports_aggregate?: InputMaybe<Contribution_Reports_Aggregate_Bool_Exp>;
+  contributions?: InputMaybe<Contributions_Bool_Exp>;
+  contributions_aggregate?: InputMaybe<Contributions_Aggregate_Bool_Exp>;
   createdAt?: InputMaybe<Timestamptz_Comparison_Exp>;
   currentChallenge?: InputMaybe<String_Comparison_Exp>;
   defaultRole?: InputMaybe<String_Comparison_Exp>;
@@ -10792,6 +11537,10 @@ export type Users_Bool_Exp = {
   isAnonymous?: InputMaybe<Boolean_Comparison_Exp>;
   lastSeen?: InputMaybe<Timestamptz_Comparison_Exp>;
   locale?: InputMaybe<String_Comparison_Exp>;
+  messages_received?: InputMaybe<Messages_Bool_Exp>;
+  messages_received_aggregate?: InputMaybe<Messages_Aggregate_Bool_Exp>;
+  messages_sent?: InputMaybe<Messages_Bool_Exp>;
+  messages_sent_aggregate?: InputMaybe<Messages_Aggregate_Bool_Exp>;
   metadata?: InputMaybe<Jsonb_Comparison_Exp>;
   newEmail?: InputMaybe<Citext_Comparison_Exp>;
   otpHash?: InputMaybe<String_Comparison_Exp>;
@@ -10800,6 +11549,16 @@ export type Users_Bool_Exp = {
   passwordHash?: InputMaybe<String_Comparison_Exp>;
   phoneNumber?: InputMaybe<String_Comparison_Exp>;
   phoneNumberVerified?: InputMaybe<Boolean_Comparison_Exp>;
+  post_bookmarks?: InputMaybe<Post_Bookmarks_Bool_Exp>;
+  post_bookmarks_aggregate?: InputMaybe<Post_Bookmarks_Aggregate_Bool_Exp>;
+  post_comments?: InputMaybe<Post_Comments_Bool_Exp>;
+  post_comments_aggregate?: InputMaybe<Post_Comments_Aggregate_Bool_Exp>;
+  post_likes?: InputMaybe<Post_Likes_Bool_Exp>;
+  post_likes_aggregate?: InputMaybe<Post_Likes_Aggregate_Bool_Exp>;
+  post_reports?: InputMaybe<Post_Reports_Bool_Exp>;
+  post_reports_aggregate?: InputMaybe<Post_Reports_Aggregate_Bool_Exp>;
+  posts?: InputMaybe<Posts_Bool_Exp>;
+  posts_aggregate?: InputMaybe<Posts_Aggregate_Bool_Exp>;
   refreshTokens?: InputMaybe<AuthRefreshTokens_Bool_Exp>;
   refreshTokens_aggregate?: InputMaybe<AuthRefreshTokens_Aggregate_Bool_Exp>;
   roles?: InputMaybe<AuthUserRoles_Bool_Exp>;
@@ -10812,6 +11571,8 @@ export type Users_Bool_Exp = {
   updatedAt?: InputMaybe<Timestamptz_Comparison_Exp>;
   userProviders?: InputMaybe<AuthUserProviders_Bool_Exp>;
   userProviders_aggregate?: InputMaybe<AuthUserProviders_Aggregate_Bool_Exp>;
+  user_blocks?: InputMaybe<User_Blocks_Bool_Exp>;
+  user_blocks_aggregate?: InputMaybe<User_Blocks_Aggregate_Bool_Exp>;
   user_preferences?: InputMaybe<User_Preferences_Bool_Exp>;
   user_preferences_aggregate?: InputMaybe<User_Preferences_Aggregate_Bool_Exp>;
   user_profiles?: InputMaybe<User_Profiles_Bool_Exp>;
@@ -10848,6 +11609,14 @@ export type Users_Insert_Input = {
   activeMfaType?: InputMaybe<Scalars["String"]["input"]>;
   avatarUrl?: InputMaybe<Scalars["String"]["input"]>;
   blocks_outgoing?: InputMaybe<User_Blocks_Arr_Rel_Insert_Input>;
+  blog_comment_helpfuls?: InputMaybe<Blog_Comment_Helpful_Arr_Rel_Insert_Input>;
+  blog_comment_reports?: InputMaybe<Blog_Comment_Reports_Arr_Rel_Insert_Input>;
+  blog_comments?: InputMaybe<Blog_Comments_Arr_Rel_Insert_Input>;
+  comment_likes?: InputMaybe<Comment_Likes_Arr_Rel_Insert_Input>;
+  contribution_bookmarks?: InputMaybe<Contribution_Bookmarks_Arr_Rel_Insert_Input>;
+  contribution_likes?: InputMaybe<Contribution_Likes_Arr_Rel_Insert_Input>;
+  contribution_reports?: InputMaybe<Contribution_Reports_Arr_Rel_Insert_Input>;
+  contributions?: InputMaybe<Contributions_Arr_Rel_Insert_Input>;
   createdAt?: InputMaybe<Scalars["timestamptz"]["input"]>;
   currentChallenge?: InputMaybe<Scalars["String"]["input"]>;
   defaultRole?: InputMaybe<Scalars["String"]["input"]>;
@@ -10860,6 +11629,8 @@ export type Users_Insert_Input = {
   isAnonymous?: InputMaybe<Scalars["Boolean"]["input"]>;
   lastSeen?: InputMaybe<Scalars["timestamptz"]["input"]>;
   locale?: InputMaybe<Scalars["String"]["input"]>;
+  messages_received?: InputMaybe<Messages_Arr_Rel_Insert_Input>;
+  messages_sent?: InputMaybe<Messages_Arr_Rel_Insert_Input>;
   metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
   newEmail?: InputMaybe<Scalars["citext"]["input"]>;
   otpHash?: InputMaybe<Scalars["String"]["input"]>;
@@ -10868,6 +11639,11 @@ export type Users_Insert_Input = {
   passwordHash?: InputMaybe<Scalars["String"]["input"]>;
   phoneNumber?: InputMaybe<Scalars["String"]["input"]>;
   phoneNumberVerified?: InputMaybe<Scalars["Boolean"]["input"]>;
+  post_bookmarks?: InputMaybe<Post_Bookmarks_Arr_Rel_Insert_Input>;
+  post_comments?: InputMaybe<Post_Comments_Arr_Rel_Insert_Input>;
+  post_likes?: InputMaybe<Post_Likes_Arr_Rel_Insert_Input>;
+  post_reports?: InputMaybe<Post_Reports_Arr_Rel_Insert_Input>;
+  posts?: InputMaybe<Posts_Arr_Rel_Insert_Input>;
   refreshTokens?: InputMaybe<AuthRefreshTokens_Arr_Rel_Insert_Input>;
   roles?: InputMaybe<AuthUserRoles_Arr_Rel_Insert_Input>;
   securityKeys?: InputMaybe<AuthUserSecurityKeys_Arr_Rel_Insert_Input>;
@@ -10876,6 +11652,7 @@ export type Users_Insert_Input = {
   totpSecret?: InputMaybe<Scalars["String"]["input"]>;
   updatedAt?: InputMaybe<Scalars["timestamptz"]["input"]>;
   userProviders?: InputMaybe<AuthUserProviders_Arr_Rel_Insert_Input>;
+  user_blocks?: InputMaybe<User_Blocks_Arr_Rel_Insert_Input>;
   user_preferences?: InputMaybe<User_Preferences_Arr_Rel_Insert_Input>;
   user_profiles?: InputMaybe<User_Profiles_Arr_Rel_Insert_Input>;
 };
@@ -11006,6 +11783,14 @@ export type Users_Order_By = {
   activeMfaType?: InputMaybe<Order_By>;
   avatarUrl?: InputMaybe<Order_By>;
   blocks_outgoing_aggregate?: InputMaybe<User_Blocks_Aggregate_Order_By>;
+  blog_comment_helpfuls_aggregate?: InputMaybe<Blog_Comment_Helpful_Aggregate_Order_By>;
+  blog_comment_reports_aggregate?: InputMaybe<Blog_Comment_Reports_Aggregate_Order_By>;
+  blog_comments_aggregate?: InputMaybe<Blog_Comments_Aggregate_Order_By>;
+  comment_likes_aggregate?: InputMaybe<Comment_Likes_Aggregate_Order_By>;
+  contribution_bookmarks_aggregate?: InputMaybe<Contribution_Bookmarks_Aggregate_Order_By>;
+  contribution_likes_aggregate?: InputMaybe<Contribution_Likes_Aggregate_Order_By>;
+  contribution_reports_aggregate?: InputMaybe<Contribution_Reports_Aggregate_Order_By>;
+  contributions_aggregate?: InputMaybe<Contributions_Aggregate_Order_By>;
   createdAt?: InputMaybe<Order_By>;
   currentChallenge?: InputMaybe<Order_By>;
   defaultRole?: InputMaybe<Order_By>;
@@ -11018,6 +11803,8 @@ export type Users_Order_By = {
   isAnonymous?: InputMaybe<Order_By>;
   lastSeen?: InputMaybe<Order_By>;
   locale?: InputMaybe<Order_By>;
+  messages_received_aggregate?: InputMaybe<Messages_Aggregate_Order_By>;
+  messages_sent_aggregate?: InputMaybe<Messages_Aggregate_Order_By>;
   metadata?: InputMaybe<Order_By>;
   newEmail?: InputMaybe<Order_By>;
   otpHash?: InputMaybe<Order_By>;
@@ -11026,6 +11813,11 @@ export type Users_Order_By = {
   passwordHash?: InputMaybe<Order_By>;
   phoneNumber?: InputMaybe<Order_By>;
   phoneNumberVerified?: InputMaybe<Order_By>;
+  post_bookmarks_aggregate?: InputMaybe<Post_Bookmarks_Aggregate_Order_By>;
+  post_comments_aggregate?: InputMaybe<Post_Comments_Aggregate_Order_By>;
+  post_likes_aggregate?: InputMaybe<Post_Likes_Aggregate_Order_By>;
+  post_reports_aggregate?: InputMaybe<Post_Reports_Aggregate_Order_By>;
+  posts_aggregate?: InputMaybe<Posts_Aggregate_Order_By>;
   refreshTokens_aggregate?: InputMaybe<AuthRefreshTokens_Aggregate_Order_By>;
   roles_aggregate?: InputMaybe<AuthUserRoles_Aggregate_Order_By>;
   securityKeys_aggregate?: InputMaybe<AuthUserSecurityKeys_Aggregate_Order_By>;
@@ -11034,6 +11826,7 @@ export type Users_Order_By = {
   totpSecret?: InputMaybe<Order_By>;
   updatedAt?: InputMaybe<Order_By>;
   userProviders_aggregate?: InputMaybe<AuthUserProviders_Aggregate_Order_By>;
+  user_blocks_aggregate?: InputMaybe<User_Blocks_Aggregate_Order_By>;
   user_preferences_aggregate?: InputMaybe<User_Preferences_Aggregate_Order_By>;
   user_profiles_aggregate?: InputMaybe<User_Profiles_Aggregate_Order_By>;
 };
@@ -11597,6 +12390,357 @@ export type InsertBlogCommentMutation = {
   insert_blog_comments_one?: { __typename?: "blog_comments"; id: string } | null;
 };
 
+export type GetUserProfileQueryVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+}>;
+
+export type GetUserProfileQuery = {
+  __typename?: "query_root";
+  user_profiles: Array<{
+    __typename?: "user_profiles";
+    user_id: string;
+    bio?: string | null;
+    location?: string | null;
+    website?: string | null;
+    created_at: string;
+    updated_at: string;
+  }>;
+};
+
+export type UpsertUserProfileMutationVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+  updates: User_Profiles_Set_Input;
+}>;
+
+export type UpsertUserProfileMutation = {
+  __typename?: "mutation_root";
+  update_user_profiles?: {
+    __typename?: "user_profiles_mutation_response";
+    affected_rows: number;
+    returning: Array<{
+      __typename?: "user_profiles";
+      user_id: string;
+      bio?: string | null;
+      location?: string | null;
+      website?: string | null;
+      created_at: string;
+      updated_at: string;
+    }>;
+  } | null;
+};
+
+export type InsertUserProfileMutationVariables = Exact<{
+  object: User_Profiles_Insert_Input;
+}>;
+
+export type InsertUserProfileMutation = {
+  __typename?: "mutation_root";
+  insert_user_profiles_one?: {
+    __typename?: "user_profiles";
+    user_id: string;
+    bio?: string | null;
+    location?: string | null;
+    website?: string | null;
+    created_at: string;
+    updated_at: string;
+  } | null;
+};
+
+export type UpdateDisplayNameMutationVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+  displayName: Scalars["String"]["input"];
+}>;
+
+export type UpdateDisplayNameMutation = {
+  __typename?: "mutation_root";
+  updateUser?: { __typename?: "users"; id: string; displayName: string; avatarUrl: string } | null;
+};
+
+export type GetUserBasicQueryVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+}>;
+
+export type GetUserBasicQuery = {
+  __typename?: "query_root";
+  users: Array<{ __typename?: "users"; id: string; displayName: string; avatarUrl: string }>;
+};
+
+export type GetProfileStatsQueryVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+}>;
+
+export type GetProfileStatsQuery = {
+  __typename?: "query_root";
+  users: Array<{
+    __typename?: "users";
+    id: string;
+    posts_aggregate: {
+      __typename?: "posts_aggregate";
+      aggregate?: { __typename?: "posts_aggregate_fields"; count: number } | null;
+    };
+    blog_comments_aggregate: {
+      __typename?: "blog_comments_aggregate";
+      aggregate?: { __typename?: "blog_comments_aggregate_fields"; count: number } | null;
+    };
+    post_comments_aggregate: {
+      __typename?: "post_comments_aggregate";
+      aggregate?: { __typename?: "post_comments_aggregate_fields"; count: number } | null;
+    };
+    comment_likes_aggregate: {
+      __typename?: "comment_likes_aggregate";
+      aggregate?: { __typename?: "comment_likes_aggregate_fields"; count: number } | null;
+    };
+    post_likes_aggregate: {
+      __typename?: "post_likes_aggregate";
+      aggregate?: { __typename?: "post_likes_aggregate_fields"; count: number } | null;
+    };
+    contribution_likes_aggregate: {
+      __typename?: "contribution_likes_aggregate";
+      aggregate?: { __typename?: "contribution_likes_aggregate_fields"; count: number } | null;
+    };
+    contributions_aggregate: {
+      __typename?: "contributions_aggregate";
+      aggregate?: { __typename?: "contributions_aggregate_fields"; count: number } | null;
+    };
+    messages_sent_aggregate: {
+      __typename?: "messages_aggregate";
+      aggregate?: { __typename?: "messages_aggregate_fields"; count: number } | null;
+    };
+    messages_received_aggregate: {
+      __typename?: "messages_aggregate";
+      aggregate?: { __typename?: "messages_aggregate_fields"; count: number } | null;
+    };
+  }>;
+};
+
+export type GetUserRecentActivityQueryVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+  limit?: Scalars["Int"]["input"];
+}>;
+
+export type GetUserRecentActivityQuery = {
+  __typename?: "query_root";
+  posts: Array<{ __typename?: "posts"; id: string; created_at: string; content: string }>;
+  post_comments: Array<{
+    __typename?: "post_comments";
+    id: string;
+    created_at: string;
+    content: string;
+    post_id: string;
+  }>;
+  blog_comments: Array<{
+    __typename?: "blog_comments";
+    id: string;
+    created_at: string;
+    body: string;
+    blog_slug: string;
+  }>;
+};
+
+export type GetPostsByUserQueryVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+  limit?: Scalars["Int"]["input"];
+  offset?: Scalars["Int"]["input"];
+}>;
+
+export type GetPostsByUserQuery = {
+  __typename?: "query_root";
+  posts: Array<{ __typename?: "posts"; id: string; created_at: string; content: string }>;
+};
+
+export type GetPostCommentsByUserQueryVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+  limit?: Scalars["Int"]["input"];
+  offset?: Scalars["Int"]["input"];
+}>;
+
+export type GetPostCommentsByUserQuery = {
+  __typename?: "query_root";
+  post_comments: Array<{
+    __typename?: "post_comments";
+    id: string;
+    created_at: string;
+    content: string;
+    post_id: string;
+  }>;
+};
+
+export type GetBlogCommentsByUserQueryVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+  limit?: Scalars["Int"]["input"];
+  offset?: Scalars["Int"]["input"];
+}>;
+
+export type GetBlogCommentsByUserQuery = {
+  __typename?: "query_root";
+  blog_comments: Array<{
+    __typename?: "blog_comments";
+    id: string;
+    created_at: string;
+    body: string;
+    blog_slug: string;
+  }>;
+};
+
+export type GetMessagesInboxQueryVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+  limit?: Scalars["Int"]["input"];
+  offset?: Scalars["Int"]["input"];
+}>;
+
+export type GetMessagesInboxQuery = {
+  __typename?: "query_root";
+  messages: Array<{
+    __typename?: "messages";
+    id: number;
+    created_at: string;
+    body: string;
+    sender_id: string;
+    recipient_id: string;
+  }>;
+};
+
+export type GetMessagesSentQueryVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+  limit?: Scalars["Int"]["input"];
+  offset?: Scalars["Int"]["input"];
+}>;
+
+export type GetMessagesSentQuery = {
+  __typename?: "query_root";
+  messages: Array<{
+    __typename?: "messages";
+    id: number;
+    created_at: string;
+    body: string;
+    sender_id: string;
+    recipient_id: string;
+  }>;
+};
+
+export type GetRecentMessagesQueryVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+  limit?: Scalars["Int"]["input"];
+  offset?: Scalars["Int"]["input"];
+}>;
+
+export type GetRecentMessagesQuery = {
+  __typename?: "query_root";
+  messages: Array<{
+    __typename?: "messages";
+    id: number;
+    created_at: string;
+    body: string;
+    sender_id: string;
+    recipient_id: string;
+    sender: { __typename?: "users"; id: string; displayName: string; avatarUrl: string };
+    receiver: { __typename?: "users"; id: string; displayName: string; avatarUrl: string };
+  }>;
+};
+
+export type GetMessagesThreadQueryVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+  otherId: Scalars["uuid"]["input"];
+  limit?: Scalars["Int"]["input"];
+  offset?: Scalars["Int"]["input"];
+}>;
+
+export type GetMessagesThreadQuery = {
+  __typename?: "query_root";
+  messages: Array<{
+    __typename?: "messages";
+    id: number;
+    created_at: string;
+    body: string;
+    sender_id: string;
+    recipient_id: string;
+    sender: { __typename?: "users"; id: string; displayName: string; avatarUrl: string };
+    receiver: { __typename?: "users"; id: string; displayName: string; avatarUrl: string };
+  }>;
+};
+
+export type InsertMessageMutationVariables = Exact<{
+  body: Scalars["String"]["input"];
+  recipient_id: Scalars["uuid"]["input"];
+}>;
+
+export type InsertMessageMutation = {
+  __typename?: "mutation_root";
+  insert_messages_one?: { __typename?: "messages"; id: number; created_at: string } | null;
+};
+
+export type GetLikedCommentsByUserQueryVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+  limit?: Scalars["Int"]["input"];
+  offset?: Scalars["Int"]["input"];
+}>;
+
+export type GetLikedCommentsByUserQuery = {
+  __typename?: "query_root";
+  comment_likes: Array<{ __typename?: "comment_likes"; comment_id: string; created_at: string }>;
+};
+
+export type GetBookmarksByUserQueryVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+  limit?: Scalars["Int"]["input"];
+  offset?: Scalars["Int"]["input"];
+}>;
+
+export type GetBookmarksByUserQuery = {
+  __typename?: "query_root";
+  post_bookmarks: Array<{ __typename?: "post_bookmarks"; post_id: string; created_at: string }>;
+};
+
+export type GetMessageThreadQueryVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+  otherUserId: Scalars["uuid"]["input"];
+  limit?: Scalars["Int"]["input"];
+  offset?: Scalars["Int"]["input"];
+}>;
+
+export type GetMessageThreadQuery = {
+  __typename?: "query_root";
+  messages: Array<{
+    __typename?: "messages";
+    id: number;
+    created_at: string;
+    body: string;
+    sender_id: string;
+    recipient_id: string;
+    sender: { __typename?: "users"; id: string; displayName: string; avatarUrl: string };
+    receiver: { __typename?: "users"; id: string; displayName: string; avatarUrl: string };
+  }>;
+};
+
+export type SendMessageMutationVariables = Exact<{
+  senderId: Scalars["uuid"]["input"];
+  recipientId: Scalars["uuid"]["input"];
+  body: Scalars["String"]["input"];
+}>;
+
+export type SendMessageMutation = {
+  __typename?: "mutation_root";
+  insert_messages_one?: { __typename?: "messages"; id: number } | null;
+};
+
+export type GetMessagesForUserQueryVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+  limit?: Scalars["Int"]["input"];
+  offset?: Scalars["Int"]["input"];
+}>;
+
+export type GetMessagesForUserQuery = {
+  __typename?: "query_root";
+  messages: Array<{
+    __typename?: "messages";
+    id: number;
+    created_at: string;
+    body: string;
+    sender: { __typename?: "users"; id: string; displayName: string; avatarUrl: string };
+    receiver: { __typename?: "users"; id: string; displayName: string; avatarUrl: string };
+  }>;
+};
+
 export const GetLatestPostsDocument = `
     query GetLatestPosts($limit: Int! = 10, $offset: Int! = 0) {
   posts(order_by: {created_at: desc}, limit: $limit, offset: $offset) {
@@ -11769,3 +12913,791 @@ export const useInsertBlogCommentMutation = <TError = unknown, TContext = unknow
     ...options,
   });
 };
+
+export const GetUserProfileDocument = `
+    query GetUserProfile($userId: uuid!) {
+  user_profiles(where: {user_id: {_eq: $userId}}) {
+    user_id
+    bio
+    location
+    website
+    created_at
+    updated_at
+  }
+}
+    `;
+
+export const useGetUserProfileQuery = <TData = GetUserProfileQuery, TError = unknown>(
+  variables: GetUserProfileQueryVariables,
+  options?: Omit<UseQueryOptions<GetUserProfileQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetUserProfileQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetUserProfileQuery, TError, TData>({
+    queryKey: ["GetUserProfile", variables],
+    queryFn: useAuthenticatedFetcher<GetUserProfileQuery, GetUserProfileQueryVariables>(
+      GetUserProfileDocument,
+    ).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetUserProfileQuery.getKey = (variables: GetUserProfileQueryVariables) => [
+  "GetUserProfile",
+  variables,
+];
+
+export const UpsertUserProfileDocument = `
+    mutation UpsertUserProfile($userId: uuid!, $updates: user_profiles_set_input!) {
+  update_user_profiles(where: {user_id: {_eq: $userId}}, _set: $updates) {
+    affected_rows
+    returning {
+      user_id
+      bio
+      location
+      website
+      created_at
+      updated_at
+    }
+  }
+}
+    `;
+
+export const useUpsertUserProfileMutation = <TError = unknown, TContext = unknown>(
+  options?: UseMutationOptions<
+    UpsertUserProfileMutation,
+    TError,
+    UpsertUserProfileMutationVariables,
+    TContext
+  >,
+) => {
+  return useMutation<
+    UpsertUserProfileMutation,
+    TError,
+    UpsertUserProfileMutationVariables,
+    TContext
+  >({
+    mutationKey: ["UpsertUserProfile"],
+    mutationFn: useAuthenticatedFetcher<
+      UpsertUserProfileMutation,
+      UpsertUserProfileMutationVariables
+    >(UpsertUserProfileDocument),
+    ...options,
+  });
+};
+
+export const InsertUserProfileDocument = `
+    mutation InsertUserProfile($object: user_profiles_insert_input!) {
+  insert_user_profiles_one(object: $object) {
+    user_id
+    bio
+    location
+    website
+    created_at
+    updated_at
+  }
+}
+    `;
+
+export const useInsertUserProfileMutation = <TError = unknown, TContext = unknown>(
+  options?: UseMutationOptions<
+    InsertUserProfileMutation,
+    TError,
+    InsertUserProfileMutationVariables,
+    TContext
+  >,
+) => {
+  return useMutation<
+    InsertUserProfileMutation,
+    TError,
+    InsertUserProfileMutationVariables,
+    TContext
+  >({
+    mutationKey: ["InsertUserProfile"],
+    mutationFn: useAuthenticatedFetcher<
+      InsertUserProfileMutation,
+      InsertUserProfileMutationVariables
+    >(InsertUserProfileDocument),
+    ...options,
+  });
+};
+
+export const UpdateDisplayNameDocument = `
+    mutation UpdateDisplayName($userId: uuid!, $displayName: String!) {
+  updateUser(pk_columns: {id: $userId}, _set: {displayName: $displayName}) {
+    id
+    displayName
+    avatarUrl
+  }
+}
+    `;
+
+export const useUpdateDisplayNameMutation = <TError = unknown, TContext = unknown>(
+  options?: UseMutationOptions<
+    UpdateDisplayNameMutation,
+    TError,
+    UpdateDisplayNameMutationVariables,
+    TContext
+  >,
+) => {
+  return useMutation<
+    UpdateDisplayNameMutation,
+    TError,
+    UpdateDisplayNameMutationVariables,
+    TContext
+  >({
+    mutationKey: ["UpdateDisplayName"],
+    mutationFn: useAuthenticatedFetcher<
+      UpdateDisplayNameMutation,
+      UpdateDisplayNameMutationVariables
+    >(UpdateDisplayNameDocument),
+    ...options,
+  });
+};
+
+export const GetUserBasicDocument = `
+    query GetUserBasic($userId: uuid!) {
+  users(where: {id: {_eq: $userId}}) {
+    id
+    displayName
+    avatarUrl
+  }
+}
+    `;
+
+export const useGetUserBasicQuery = <TData = GetUserBasicQuery, TError = unknown>(
+  variables: GetUserBasicQueryVariables,
+  options?: Omit<UseQueryOptions<GetUserBasicQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetUserBasicQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetUserBasicQuery, TError, TData>({
+    queryKey: ["GetUserBasic", variables],
+    queryFn: useAuthenticatedFetcher<GetUserBasicQuery, GetUserBasicQueryVariables>(
+      GetUserBasicDocument,
+    ).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetUserBasicQuery.getKey = (variables: GetUserBasicQueryVariables) => [
+  "GetUserBasic",
+  variables,
+];
+
+export const GetProfileStatsDocument = `
+    query GetProfileStats($userId: uuid!) {
+  users(where: {id: {_eq: $userId}}) {
+    id
+    posts_aggregate {
+      aggregate {
+        count
+      }
+    }
+    blog_comments_aggregate {
+      aggregate {
+        count
+      }
+    }
+    post_comments_aggregate {
+      aggregate {
+        count
+      }
+    }
+    comment_likes_aggregate {
+      aggregate {
+        count
+      }
+    }
+    post_likes_aggregate {
+      aggregate {
+        count
+      }
+    }
+    contribution_likes_aggregate {
+      aggregate {
+        count
+      }
+    }
+    contributions_aggregate {
+      aggregate {
+        count
+      }
+    }
+    messages_sent_aggregate {
+      aggregate {
+        count
+      }
+    }
+    messages_received_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}
+    `;
+
+export const useGetProfileStatsQuery = <TData = GetProfileStatsQuery, TError = unknown>(
+  variables: GetProfileStatsQueryVariables,
+  options?: Omit<UseQueryOptions<GetProfileStatsQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetProfileStatsQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetProfileStatsQuery, TError, TData>({
+    queryKey: ["GetProfileStats", variables],
+    queryFn: useAuthenticatedFetcher<GetProfileStatsQuery, GetProfileStatsQueryVariables>(
+      GetProfileStatsDocument,
+    ).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetProfileStatsQuery.getKey = (variables: GetProfileStatsQueryVariables) => [
+  "GetProfileStats",
+  variables,
+];
+
+export const GetUserRecentActivityDocument = `
+    query GetUserRecentActivity($userId: uuid!, $limit: Int! = 5) {
+  posts(
+    where: {user_id: {_eq: $userId}}
+    order_by: {created_at: desc}
+    limit: $limit
+  ) {
+    id
+    created_at
+    content
+  }
+  post_comments(
+    where: {user_id: {_eq: $userId}}
+    order_by: {created_at: desc}
+    limit: $limit
+  ) {
+    id
+    created_at
+    content
+    post_id
+  }
+  blog_comments(
+    where: {user_id: {_eq: $userId}}
+    order_by: {created_at: desc}
+    limit: $limit
+  ) {
+    id
+    created_at
+    body
+    blog_slug
+  }
+}
+    `;
+
+export const useGetUserRecentActivityQuery = <TData = GetUserRecentActivityQuery, TError = unknown>(
+  variables: GetUserRecentActivityQueryVariables,
+  options?: Omit<UseQueryOptions<GetUserRecentActivityQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetUserRecentActivityQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetUserRecentActivityQuery, TError, TData>({
+    queryKey: ["GetUserRecentActivity", variables],
+    queryFn: useAuthenticatedFetcher<
+      GetUserRecentActivityQuery,
+      GetUserRecentActivityQueryVariables
+    >(GetUserRecentActivityDocument).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetUserRecentActivityQuery.getKey = (variables: GetUserRecentActivityQueryVariables) => [
+  "GetUserRecentActivity",
+  variables,
+];
+
+export const GetPostsByUserDocument = `
+    query GetPostsByUser($userId: uuid!, $limit: Int! = 10, $offset: Int! = 0) {
+  posts(
+    where: {user_id: {_eq: $userId}}
+    order_by: {created_at: desc}
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    created_at
+    content
+  }
+}
+    `;
+
+export const useGetPostsByUserQuery = <TData = GetPostsByUserQuery, TError = unknown>(
+  variables: GetPostsByUserQueryVariables,
+  options?: Omit<UseQueryOptions<GetPostsByUserQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetPostsByUserQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetPostsByUserQuery, TError, TData>({
+    queryKey: ["GetPostsByUser", variables],
+    queryFn: useAuthenticatedFetcher<GetPostsByUserQuery, GetPostsByUserQueryVariables>(
+      GetPostsByUserDocument,
+    ).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetPostsByUserQuery.getKey = (variables: GetPostsByUserQueryVariables) => [
+  "GetPostsByUser",
+  variables,
+];
+
+export const GetPostCommentsByUserDocument = `
+    query GetPostCommentsByUser($userId: uuid!, $limit: Int! = 10, $offset: Int! = 0) {
+  post_comments(
+    where: {user_id: {_eq: $userId}}
+    order_by: {created_at: desc}
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    created_at
+    content
+    post_id
+  }
+}
+    `;
+
+export const useGetPostCommentsByUserQuery = <TData = GetPostCommentsByUserQuery, TError = unknown>(
+  variables: GetPostCommentsByUserQueryVariables,
+  options?: Omit<UseQueryOptions<GetPostCommentsByUserQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetPostCommentsByUserQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetPostCommentsByUserQuery, TError, TData>({
+    queryKey: ["GetPostCommentsByUser", variables],
+    queryFn: useAuthenticatedFetcher<
+      GetPostCommentsByUserQuery,
+      GetPostCommentsByUserQueryVariables
+    >(GetPostCommentsByUserDocument).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetPostCommentsByUserQuery.getKey = (variables: GetPostCommentsByUserQueryVariables) => [
+  "GetPostCommentsByUser",
+  variables,
+];
+
+export const GetBlogCommentsByUserDocument = `
+    query GetBlogCommentsByUser($userId: uuid!, $limit: Int! = 10, $offset: Int! = 0) {
+  blog_comments(
+    where: {user_id: {_eq: $userId}}
+    order_by: {created_at: desc}
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    created_at
+    body
+    blog_slug
+  }
+}
+    `;
+
+export const useGetBlogCommentsByUserQuery = <TData = GetBlogCommentsByUserQuery, TError = unknown>(
+  variables: GetBlogCommentsByUserQueryVariables,
+  options?: Omit<UseQueryOptions<GetBlogCommentsByUserQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetBlogCommentsByUserQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetBlogCommentsByUserQuery, TError, TData>({
+    queryKey: ["GetBlogCommentsByUser", variables],
+    queryFn: useAuthenticatedFetcher<
+      GetBlogCommentsByUserQuery,
+      GetBlogCommentsByUserQueryVariables
+    >(GetBlogCommentsByUserDocument).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetBlogCommentsByUserQuery.getKey = (variables: GetBlogCommentsByUserQueryVariables) => [
+  "GetBlogCommentsByUser",
+  variables,
+];
+
+export const GetMessagesInboxDocument = `
+    query GetMessagesInbox($userId: uuid!, $limit: Int! = 10, $offset: Int! = 0) {
+  messages(
+    where: {recipient_id: {_eq: $userId}}
+    order_by: {created_at: desc}
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    created_at
+    body
+    sender_id
+    recipient_id
+  }
+}
+    `;
+
+export const useGetMessagesInboxQuery = <TData = GetMessagesInboxQuery, TError = unknown>(
+  variables: GetMessagesInboxQueryVariables,
+  options?: Omit<UseQueryOptions<GetMessagesInboxQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetMessagesInboxQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetMessagesInboxQuery, TError, TData>({
+    queryKey: ["GetMessagesInbox", variables],
+    queryFn: useAuthenticatedFetcher<GetMessagesInboxQuery, GetMessagesInboxQueryVariables>(
+      GetMessagesInboxDocument,
+    ).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetMessagesInboxQuery.getKey = (variables: GetMessagesInboxQueryVariables) => [
+  "GetMessagesInbox",
+  variables,
+];
+
+export const GetMessagesSentDocument = `
+    query GetMessagesSent($userId: uuid!, $limit: Int! = 10, $offset: Int! = 0) {
+  messages(
+    where: {sender_id: {_eq: $userId}}
+    order_by: {created_at: desc}
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    created_at
+    body
+    sender_id
+    recipient_id
+  }
+}
+    `;
+
+export const useGetMessagesSentQuery = <TData = GetMessagesSentQuery, TError = unknown>(
+  variables: GetMessagesSentQueryVariables,
+  options?: Omit<UseQueryOptions<GetMessagesSentQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetMessagesSentQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetMessagesSentQuery, TError, TData>({
+    queryKey: ["GetMessagesSent", variables],
+    queryFn: useAuthenticatedFetcher<GetMessagesSentQuery, GetMessagesSentQueryVariables>(
+      GetMessagesSentDocument,
+    ).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetMessagesSentQuery.getKey = (variables: GetMessagesSentQueryVariables) => [
+  "GetMessagesSent",
+  variables,
+];
+
+export const GetRecentMessagesDocument = `
+    query GetRecentMessages($userId: uuid!, $limit: Int! = 50, $offset: Int! = 0) {
+  messages(
+    where: {_or: [{sender_id: {_eq: $userId}}, {recipient_id: {_eq: $userId}}]}
+    order_by: {created_at: desc}
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    created_at
+    body
+    sender_id
+    recipient_id
+    sender {
+      id
+      displayName
+      avatarUrl
+    }
+    receiver {
+      id
+      displayName
+      avatarUrl
+    }
+  }
+}
+    `;
+
+export const useGetRecentMessagesQuery = <TData = GetRecentMessagesQuery, TError = unknown>(
+  variables: GetRecentMessagesQueryVariables,
+  options?: Omit<UseQueryOptions<GetRecentMessagesQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetRecentMessagesQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetRecentMessagesQuery, TError, TData>({
+    queryKey: ["GetRecentMessages", variables],
+    queryFn: useAuthenticatedFetcher<GetRecentMessagesQuery, GetRecentMessagesQueryVariables>(
+      GetRecentMessagesDocument,
+    ).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetRecentMessagesQuery.getKey = (variables: GetRecentMessagesQueryVariables) => [
+  "GetRecentMessages",
+  variables,
+];
+
+export const GetMessagesThreadDocument = `
+    query GetMessagesThread($userId: uuid!, $otherId: uuid!, $limit: Int! = 50, $offset: Int! = 0) {
+  messages(
+    where: {_or: [{sender_id: {_eq: $userId}, recipient_id: {_eq: $otherId}}, {sender_id: {_eq: $otherId}, recipient_id: {_eq: $userId}}]}
+    order_by: {created_at: asc}
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    created_at
+    body
+    sender_id
+    recipient_id
+    sender {
+      id
+      displayName
+      avatarUrl
+    }
+    receiver {
+      id
+      displayName
+      avatarUrl
+    }
+  }
+}
+    `;
+
+export const useGetMessagesThreadQuery = <TData = GetMessagesThreadQuery, TError = unknown>(
+  variables: GetMessagesThreadQueryVariables,
+  options?: Omit<UseQueryOptions<GetMessagesThreadQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetMessagesThreadQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetMessagesThreadQuery, TError, TData>({
+    queryKey: ["GetMessagesThread", variables],
+    queryFn: useAuthenticatedFetcher<GetMessagesThreadQuery, GetMessagesThreadQueryVariables>(
+      GetMessagesThreadDocument,
+    ).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetMessagesThreadQuery.getKey = (variables: GetMessagesThreadQueryVariables) => [
+  "GetMessagesThread",
+  variables,
+];
+
+export const InsertMessageDocument = `
+    mutation InsertMessage($body: String!, $recipient_id: uuid!) {
+  insert_messages_one(object: {body: $body, recipient_id: $recipient_id}) {
+    id
+    created_at
+  }
+}
+    `;
+
+export const useInsertMessageMutation = <TError = unknown, TContext = unknown>(
+  options?: UseMutationOptions<
+    InsertMessageMutation,
+    TError,
+    InsertMessageMutationVariables,
+    TContext
+  >,
+) => {
+  return useMutation<InsertMessageMutation, TError, InsertMessageMutationVariables, TContext>({
+    mutationKey: ["InsertMessage"],
+    mutationFn: useAuthenticatedFetcher<InsertMessageMutation, InsertMessageMutationVariables>(
+      InsertMessageDocument,
+    ),
+    ...options,
+  });
+};
+
+export const GetLikedCommentsByUserDocument = `
+    query GetLikedCommentsByUser($userId: uuid!, $limit: Int! = 10, $offset: Int! = 0) {
+  comment_likes(
+    where: {user_id: {_eq: $userId}}
+    order_by: {created_at: desc}
+    limit: $limit
+    offset: $offset
+  ) {
+    comment_id
+    created_at
+  }
+}
+    `;
+
+export const useGetLikedCommentsByUserQuery = <
+  TData = GetLikedCommentsByUserQuery,
+  TError = unknown,
+>(
+  variables: GetLikedCommentsByUserQueryVariables,
+  options?: Omit<UseQueryOptions<GetLikedCommentsByUserQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetLikedCommentsByUserQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetLikedCommentsByUserQuery, TError, TData>({
+    queryKey: ["GetLikedCommentsByUser", variables],
+    queryFn: useAuthenticatedFetcher<
+      GetLikedCommentsByUserQuery,
+      GetLikedCommentsByUserQueryVariables
+    >(GetLikedCommentsByUserDocument).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetLikedCommentsByUserQuery.getKey = (variables: GetLikedCommentsByUserQueryVariables) => [
+  "GetLikedCommentsByUser",
+  variables,
+];
+
+export const GetBookmarksByUserDocument = `
+    query GetBookmarksByUser($userId: uuid!, $limit: Int! = 10, $offset: Int! = 0) {
+  post_bookmarks(
+    where: {user_id: {_eq: $userId}}
+    order_by: {created_at: desc}
+    limit: $limit
+    offset: $offset
+  ) {
+    post_id
+    created_at
+  }
+}
+    `;
+
+export const useGetBookmarksByUserQuery = <TData = GetBookmarksByUserQuery, TError = unknown>(
+  variables: GetBookmarksByUserQueryVariables,
+  options?: Omit<UseQueryOptions<GetBookmarksByUserQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetBookmarksByUserQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetBookmarksByUserQuery, TError, TData>({
+    queryKey: ["GetBookmarksByUser", variables],
+    queryFn: useAuthenticatedFetcher<GetBookmarksByUserQuery, GetBookmarksByUserQueryVariables>(
+      GetBookmarksByUserDocument,
+    ).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetBookmarksByUserQuery.getKey = (variables: GetBookmarksByUserQueryVariables) => [
+  "GetBookmarksByUser",
+  variables,
+];
+
+export const GetMessageThreadDocument = `
+    query GetMessageThread($userId: uuid!, $otherUserId: uuid!, $limit: Int! = 50, $offset: Int! = 0) {
+  messages(
+    where: {_or: [{_and: [{sender_id: {_eq: $userId}}, {recipient_id: {_eq: $otherUserId}}]}, {_and: [{sender_id: {_eq: $otherUserId}}, {recipient_id: {_eq: $userId}}]}]}
+    order_by: {created_at: desc}
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    created_at
+    body
+    sender_id
+    recipient_id
+    sender {
+      id
+      displayName
+      avatarUrl
+    }
+    receiver {
+      id
+      displayName
+      avatarUrl
+    }
+  }
+}
+    `;
+
+export const useGetMessageThreadQuery = <TData = GetMessageThreadQuery, TError = unknown>(
+  variables: GetMessageThreadQueryVariables,
+  options?: Omit<UseQueryOptions<GetMessageThreadQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetMessageThreadQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetMessageThreadQuery, TError, TData>({
+    queryKey: ["GetMessageThread", variables],
+    queryFn: useAuthenticatedFetcher<GetMessageThreadQuery, GetMessageThreadQueryVariables>(
+      GetMessageThreadDocument,
+    ).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetMessageThreadQuery.getKey = (variables: GetMessageThreadQueryVariables) => [
+  "GetMessageThread",
+  variables,
+];
+
+export const SendMessageDocument = `
+    mutation SendMessage($senderId: uuid!, $recipientId: uuid!, $body: String!) {
+  insert_messages_one(
+    object: {sender_id: $senderId, recipient_id: $recipientId, body: $body}
+  ) {
+    id
+  }
+}
+    `;
+
+export const useSendMessageMutation = <TError = unknown, TContext = unknown>(
+  options?: UseMutationOptions<SendMessageMutation, TError, SendMessageMutationVariables, TContext>,
+) => {
+  return useMutation<SendMessageMutation, TError, SendMessageMutationVariables, TContext>({
+    mutationKey: ["SendMessage"],
+    mutationFn: useAuthenticatedFetcher<SendMessageMutation, SendMessageMutationVariables>(
+      SendMessageDocument,
+    ),
+    ...options,
+  });
+};
+
+export const GetMessagesForUserDocument = `
+    query GetMessagesForUser($userId: uuid!, $limit: Int! = 50, $offset: Int! = 0) {
+  messages(
+    where: {_or: [{sender_id: {_eq: $userId}}, {recipient_id: {_eq: $userId}}]}
+    order_by: {created_at: desc}
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    created_at
+    body
+    sender {
+      id
+      displayName
+      avatarUrl
+    }
+    receiver {
+      id
+      displayName
+      avatarUrl
+    }
+  }
+}
+    `;
+
+export const useGetMessagesForUserQuery = <TData = GetMessagesForUserQuery, TError = unknown>(
+  variables: GetMessagesForUserQueryVariables,
+  options?: Omit<UseQueryOptions<GetMessagesForUserQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetMessagesForUserQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetMessagesForUserQuery, TError, TData>({
+    queryKey: ["GetMessagesForUser", variables],
+    queryFn: useAuthenticatedFetcher<GetMessagesForUserQuery, GetMessagesForUserQueryVariables>(
+      GetMessagesForUserDocument,
+    ).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetMessagesForUserQuery.getKey = (variables: GetMessagesForUserQueryVariables) => [
+  "GetMessagesForUser",
+  variables,
+];

@@ -8,6 +8,8 @@ import type {
   MovieSearchResult,
   ContributionMovie,
 } from "@/lib/types/contributions";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 export default function ContributionFormMovie({
   onSubmitted,
@@ -103,27 +105,18 @@ export default function ContributionFormMovie({
           <label htmlFor="note" className="mb-2 block text-sm font-medium text-gray-700">
             Not ekle (isteğe bağlı)
           </label>
-          <textarea
+          <Textarea
             id="note"
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Bu film hakkında düşüncelerinizi paylaşın..."
-            className="w-full resize-none rounded-lg border border-gray-200 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
             rows={3}
           />
         </div>
 
-        <button
-          type="submit"
-          disabled={!selectedMovie || isSubmitting}
-          className={`w-full rounded-lg px-4 py-2 font-medium transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:outline-none ${
-            selectedMovie && !isSubmitting
-              ? "bg-blue-600 text-white hover:bg-blue-700"
-              : "cursor-not-allowed bg-gray-300 text-gray-500"
-          } `}
-        >
+        <Button type="submit" disabled={!selectedMovie || isSubmitting} className="w-full">
           {isSubmitting ? "Gönderiliyor..." : "Öneriyi Gönder"}
-        </button>
+        </Button>
       </form>
 
       {showSuccess && (

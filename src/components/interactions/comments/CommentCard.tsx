@@ -1,21 +1,16 @@
 import Image from "next/image";
 import { useMemo, useState } from "react";
-import { User, MessageSquare, MoreHorizontal, Flag } from "lucide-react";
+import { MoreHorizontal, Flag } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import HelpfulButton from "./HelpfulButton";
-import CommentComposer from "./CommentComposer";
 import type { BlogComment } from "@/lib/types/comments";
 
 interface CommentCardProps {
   comment: BlogComment;
   isReply?: boolean;
-  loggedIn?: boolean;
 }
 
-export default function CommentCard({
-  comment,
-  isReply = false,
-  loggedIn = false,
-}: CommentCardProps) {
+export default function CommentCard({ comment, isReply = false }: CommentCardProps) {
   const { id, body, author, createdAt, likeCount } = comment;
   const [useFallbackAvatar, setUseFallbackAvatar] = useState<boolean>(!author.avatarUrl);
   const avatarUrl = useMemo(() => author.avatarUrl || "", [author.avatarUrl]);
@@ -69,9 +64,9 @@ export default function CommentCard({
 
               {/* More options menu */}
               <div className="flex items-center gap-2">
-                <button className="rounded-full p-1 transition-colors hover:bg-gray-100">
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                   <MoreHorizontal size={16} className="text-gray-400" />
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -91,10 +86,10 @@ export default function CommentCard({
 
               {/* Reply feature removed */}
 
-              <button className="flex items-center gap-1 text-sm text-gray-500 transition-colors hover:text-red-600">
+              <Button variant="ghost" size="sm" className="gap-1 text-gray-500 hover:text-red-600">
                 <Flag size={14} />
                 <span>Raporla</span>
-              </button>
+              </Button>
             </div>
 
             {/* Replies disabled */}

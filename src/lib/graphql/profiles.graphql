@@ -1,0 +1,257 @@
+# User profile operations
+
+query GetUserProfile($userId: uuid!) {
+  user_profiles(where: { user_id: { _eq: $userId } }) {
+    user_id
+    bio
+    location
+    website
+    created_at
+    updated_at
+  }
+}
+
+mutation UpsertUserProfile($userId: uuid!, $updates: user_profiles_set_input!) {
+  update_user_profiles(where: { user_id: { _eq: $userId } }, _set: $updates) {
+    affected_rows
+    returning {
+      user_id
+      bio
+      location
+      website
+      created_at
+      updated_at
+    }
+  }
+}
+
+mutation InsertUserProfile($object: user_profiles_insert_input!) {
+  insert_user_profiles_one(object: $object) {
+    user_id
+    bio
+    location
+    website
+    created_at
+    updated_at
+  }
+}
+
+mutation UpdateDisplayName($userId: uuid!, $displayName: String!) {
+  updateUser(pk_columns: { id: $userId }, _set: { displayName: $displayName }) {
+    id
+    displayName
+    avatarUrl
+  }
+}
+
+query GetUserBasic($userId: uuid!) {
+  users(where: { id: { _eq: $userId } }) {
+    id
+    displayName
+    avatarUrl
+  }
+}
+
+query GetProfileStats($userId: uuid!) {
+  users(where: { id: { _eq: $userId } }) {
+    id
+    posts_aggregate { aggregate { count } }
+    blog_comments_aggregate { aggregate { count } }
+    post_comments_aggregate { aggregate { count } }
+    comment_likes_aggregate { aggregate { count } }
+    post_likes_aggregate { aggregate { count } }
+    contribution_likes_aggregate { aggregate { count } }
+    contributions_aggregate { aggregate { count } }
+    messages_sent_aggregate { aggregate { count } }
+    messages_received_aggregate { aggregate { count } }
+  }
+}
+
+query GetUserRecentActivity($userId: uuid!, $limit: Int! = 5) {
+  posts(where: { user_id: { _eq: $userId } }, order_by: { created_at: desc }, limit: $limit) {
+    id
+    created_at
+    content
+  }
+  post_comments(where: { user_id: { _eq: $userId } }, order_by: { created_at: desc }, limit: $limit) {
+    id
+    created_at
+    content
+    post_id
+  }
+  blog_comments(where: { user_id: { _eq: $userId } }, order_by: { created_at: desc }, limit: $limit) {
+    id
+    created_at
+    body
+    blog_slug
+  }
+}
+
+query GetPostsByUser($userId: uuid!, $limit: Int! = 10, $offset: Int! = 0) {
+  posts(where: { user_id: { _eq: $userId } }, order_by: { created_at: desc }, limit: $limit, offset: $offset) {
+    id
+    created_at
+    content
+  }
+}
+
+query GetPostCommentsByUser($userId: uuid!, $limit: Int! = 10, $offset: Int! = 0) {
+  post_comments(where: { user_id: { _eq: $userId } }, order_by: { created_at: desc }, limit: $limit, offset: $offset) {
+    id
+    created_at
+    content
+    post_id
+  }
+}
+
+query GetBlogCommentsByUser($userId: uuid!, $limit: Int! = 10, $offset: Int! = 0) {
+  blog_comments(where: { user_id: { _eq: $userId } }, order_by: { created_at: desc }, limit: $limit, offset: $offset) {
+    id
+    created_at
+    body
+    blog_slug
+  }
+}
+
+query GetMessagesInbox($userId: uuid!, $limit: Int! = 10, $offset: Int! = 0) {
+  messages(where: { recipient_id: { _eq: $userId } }, order_by: { created_at: desc }, limit: $limit, offset: $offset) {
+    id
+    created_at
+    body
+    sender_id
+    recipient_id
+  }
+}
+
+query GetMessagesSent($userId: uuid!, $limit: Int! = 10, $offset: Int! = 0) {
+  messages(where: { sender_id: { _eq: $userId } }, order_by: { created_at: desc }, limit: $limit, offset: $offset) {
+    id
+    created_at
+    body
+    sender_id
+    recipient_id
+  }
+}
+
+query GetRecentMessages($userId: uuid!, $limit: Int! = 50, $offset: Int! = 0) {
+  messages(
+    where: { _or: [{ sender_id: { _eq: $userId } }, { recipient_id: { _eq: $userId } }] }
+    order_by: { created_at: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    created_at
+    body
+    sender_id
+    recipient_id
+    sender {
+      id
+      displayName
+      avatarUrl
+    }
+    receiver {
+      id
+      displayName
+      avatarUrl
+    }
+  }
+}
+
+query GetMessagesThread($userId: uuid!, $otherId: uuid!, $limit: Int! = 50, $offset: Int! = 0) {
+  messages(
+    where: {
+      _or: [
+        { sender_id: { _eq: $userId }, recipient_id: { _eq: $otherId } }
+        { sender_id: { _eq: $otherId }, recipient_id: { _eq: $userId } }
+      ]
+    }
+    order_by: { created_at: asc }
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    created_at
+    body
+    sender_id
+    recipient_id
+    sender { id displayName avatarUrl }
+    receiver { id displayName avatarUrl }
+  }
+}
+
+mutation InsertMessage($body: String!, $recipient_id: uuid!) {
+  insert_messages_one(object: { body: $body, recipient_id: $recipient_id }) {
+    id
+    created_at
+  }
+}
+
+# Profile extras
+query GetLikedCommentsByUser($userId: uuid!, $limit: Int! = 10, $offset: Int! = 0) {
+  comment_likes(where: { user_id: { _eq: $userId } }, order_by: { created_at: desc }, limit: $limit, offset: $offset) {
+    comment_id
+    created_at
+  }
+}
+
+query GetBookmarksByUser($userId: uuid!, $limit: Int! = 10, $offset: Int! = 0) {
+  post_bookmarks(where: { user_id: { _eq: $userId } }, order_by: { created_at: desc }, limit: $limit, offset: $offset) {
+    post_id
+    created_at
+  }
+}
+
+# Thread: fetch last N messages between two users
+query GetMessageThread($userId: uuid!, $otherUserId: uuid!, $limit: Int! = 50, $offset: Int! = 0) {
+  messages(
+    where: {
+      _or: [
+        { _and: [{ sender_id: { _eq: $userId } }, { recipient_id: { _eq: $otherUserId } }] }
+        { _and: [{ sender_id: { _eq: $otherUserId } }, { recipient_id: { _eq: $userId } }] }
+      ]
+    }
+    order_by: { created_at: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    created_at
+    body
+    sender_id
+    recipient_id
+    sender { id displayName avatarUrl }
+    receiver { id displayName avatarUrl }
+  }
+}
+
+mutation SendMessage($senderId: uuid!, $recipientId: uuid!, $body: String!) {
+  insert_messages_one(object: { sender_id: $senderId, recipient_id: $recipientId, body: $body }) {
+    id
+  }
+}
+
+query GetMessagesForUser($userId: uuid!, $limit: Int! = 50, $offset: Int! = 0) {
+  messages(
+    where: { _or: [{ sender_id: { _eq: $userId } }, { recipient_id: { _eq: $userId } }] }
+    order_by: { created_at: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    created_at
+    body
+    sender {
+      id
+      displayName
+      avatarUrl
+    }
+    receiver {
+      id
+      displayName
+      avatarUrl
+    }
+  }
+}
+
+

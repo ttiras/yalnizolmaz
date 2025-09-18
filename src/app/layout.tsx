@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Lora, Inter } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 
 import { Navbar } from "@/components/Navbar";
@@ -71,7 +72,9 @@ export default function RootLayout({
             {children}
             <Footer />
             <AppToaster />
-            <VerifyModal />
+            <Suspense fallback={null}>
+              <VerifyModal />
+            </Suspense>
           </QueryProvider>
         </AuthProvider>
       </body>

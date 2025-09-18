@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 type ShareButtonsProps = {
   url: string;
@@ -69,12 +70,12 @@ export function ShareButtons({ url, title, className, size = "md" }: ShareButton
             Paylaş
           </span>
 
-          <button
+          <Button
             type="button"
             onClick={onWebShare}
             aria-label="Paylaş (cihaz)"
-            className={`group relative inline-flex items-center justify-center rounded-full ring-1 ring-white/40 transition-all hover:-translate-y-0.5 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 dark:ring-black/30 dark:focus-visible:ring-white/40 ${itemClass}`}
-            style={{ color: "var(--foreground)", backgroundColor: "var(--card)" }}
+            variant="outline"
+            className={`group relative rounded-full ${itemClass}`}
             title="Cihazda paylaş"
           >
             <svg
@@ -94,7 +95,7 @@ export function ShareButtons({ url, title, className, size = "md" }: ShareButton
             <span className="pointer-events-none absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full rounded-md bg-black/80 px-2 py-1 text-[10px] whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 dark:bg-white/90 dark:text-black">
               Cihazda paylaş
             </span>
-          </button>
+          </Button>
 
           <a
             href={links.twitter}
@@ -189,12 +190,12 @@ export function ShareButtons({ url, title, className, size = "md" }: ShareButton
             </span>
           </a>
 
-          <button
+          <Button
             type="button"
             onClick={onCopy}
             aria-label="Bağlantıyı kopyala"
-            className={`group relative inline-flex items-center justify-center rounded-full ring-1 ring-white/40 transition-all hover:-translate-y-0.5 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 dark:ring-black/30 dark:focus-visible:ring-white/40 ${itemClass}`}
-            style={{ color: "var(--foreground)", backgroundColor: "var(--card)" }}
+            variant="outline"
+            className={`group relative rounded-full ${itemClass}`}
             title={copied ? "Kopyalandı" : "Bağlantıyı kopyala"}
           >
             <svg
@@ -210,7 +211,7 @@ export function ShareButtons({ url, title, className, size = "md" }: ShareButton
             <span className="pointer-events-none absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full rounded-md bg-black/80 px-2 py-1 text-[10px] whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
               {copied ? "Kopyalandı" : "Kopyala"}
             </span>
-          </button>
+          </Button>
         </div>
       </div>
     </div>

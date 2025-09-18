@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import UserAvatar from "@/components/UserAvatar";
 import { ArrowLeft, Save, User } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/app/lib/nhost/AuthProvider";
 
 type UserProfile = {
   user_id: string;
@@ -36,6 +37,7 @@ type ProfileEditFormProps = {
 
 export default function ProfileEditForm({ user, profile }: ProfileEditFormProps) {
   const router = useRouter();
+  const { nhost } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     displayName: user.displayName || "",
@@ -56,25 +58,34 @@ export default function ProfileEditForm({ user, profile }: ProfileEditFormProps)
     setIsSubmitting(true);
 
     try {
+      let displayNameWarning: string | null = null;
       // Update display name if it changed
       if (formData.displayName !== user.displayName) {
-        const displayNameResponse = await fetch("/api/profil/gorunen-ad-guncelle", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ displayName: formData.displayName }),
-        });
+        try {
+          const displayNameResponse = await fetch("/api/profil/gorunen-ad-guncelle", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ displayName: formData.displayName }),
+          });
 
-        await displayNameResponse.json();
-
-        if (!displayNameResponse.ok) {
-          throw new Error("Display name güncellenirken bir hata oluştu");
+          if (!displayNameResponse.ok) {
+            let msg = "Görünen ad güncellenemedi";
+            try {
+              const err = await displayNameResponse.json();
+              msg = err?.message || msg;
+            } catch {}
+            displayNameWarning = msg;
+          }
+        } catch {
+          displayNameWarning = "Görünen ad güncellenemedi";
         }
       }
 
-      // Update profile data
-      const { displayName: _, ...profileData } = formData;
+      // Update profile data (exclude displayName)
+      const { bio, location, website } = formData;
+      const profileData = { bio, location, website };
       const response = await fetch("/api/profil/guncelle", {
         method: "POST",
         headers: {
@@ -83,13 +94,24 @@ export default function ProfileEditForm({ user, profile }: ProfileEditFormProps)
         body: JSON.stringify(profileData),
       });
 
-      const result = await response.json();
+      let result: { message?: string } | null = null;
+      try {
+        result = await response.json();
+      } catch {}
 
       if (!response.ok) {
-        throw new Error(result.message || "Profil güncellenirken bir hata oluştu");
+        throw new Error(result?.message || "Profil güncellenirken bir hata oluştu");
       }
 
+      // Ensure browser session reflects updated user fields immediately
+      try {
+        await nhost.refreshSession(0);
+      } catch {}
+
       toast.success("Profil başarıyla güncellendi");
+      if (displayNameWarning) {
+        toast.warning(displayNameWarning);
+      }
       router.push("/profil");
     } catch (error) {
       const message = error instanceof Error ? error.message : "Beklenmeyen bir hata oluştu";
