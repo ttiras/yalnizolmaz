@@ -172,7 +172,11 @@ export default async function ContributionsByBlogSlug({ params }: Params) {
             </p>
           </div>
 
-          <ContributionForm blogSlug={blogSlug} contributionType={contribType} />
+          <ContributionForm
+            blogSlug={blogSlug}
+            contributionType={contribType}
+            showAllTypes={false}
+          />
         </section>
 
         {/* Contributions Grid */}

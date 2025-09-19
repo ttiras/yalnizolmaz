@@ -14,12 +14,14 @@ interface ContributionFormProps {
   blogSlug: string;
   contributionType: "film" | "book" | "music" | "poem" | "quote";
   onSubmitted?: (contribution: { id: string; title: string; type: string }) => void;
+  showAllTypes?: boolean; // If true, show tabs for all types. If false, show only the specific type
 }
 
 export default function ContributionForm({
   blogSlug,
   contributionType,
   onSubmitted,
+  showAllTypes = true,
 }: ContributionFormProps) {
   const [activeTab, setActiveTab] = useState(contributionType);
 
@@ -73,6 +75,28 @@ export default function ContributionForm({
     }
   };
 
+  // If showAllTypes is false, render only the specific form without tabs
+  if (!showAllTypes) {
+    const currentType = contributionTypes.find((type) => type.value === contributionType);
+    const Icon = currentType?.icon || Film;
+
+    return (
+      <div className="mx-auto w-full max-w-4xl">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Icon className="h-5 w-5" />
+              {currentType?.label} Önerisi Paylaş
+            </CardTitle>
+            <CardDescription>{currentType?.description}</CardDescription>
+          </CardHeader>
+          <CardContent>{renderForm()}</CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // If showAllTypes is true, render the full tabs interface
   return (
     <div className="mx-auto w-full max-w-4xl">
       <Card>
