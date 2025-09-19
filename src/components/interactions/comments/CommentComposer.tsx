@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { MessageSquare, Send } from "lucide-react";
 import type { CommentComposerProps, BlogComment } from "@/lib/types/comments";
-import { useInsertBlogCommentMutation } from "@/lib/graphql/__generated__/graphql";
+import {
+  useInsertBlogCommentMutation,
+  useInsertContributionCommentMutation,
+} from "@/lib/graphql/__generated__/graphql";
 import { useAuth } from "@/app/lib/nhost/AuthProvider";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,25 +21,41 @@ export default function CommentComposer({ slug, parentId, onSubmitted, loggedIn 
   const [showSuccess, setShowSuccess] = useState(false);
   // CSRF token is not required for GraphQL mutations in this flow
 
-  const { mutateAsync: insertComment } = useInsertBlogCommentMutation();
+  const { mutateAsync: insertBlogComment } = useInsertBlogCommentMutation();
+  const { mutateAsync: insertContributionComment } = useInsertContributionCommentMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!body.trim() || !loggedIn || !isAuthenticated || !session) return;
+    if (!body.trim()) return;
+    if (!isAuthenticated || !session) return;
 
     setIsSubmitting(true);
 
     try {
-      const resp = await insertComment({
-        object: {
-          blog_slug: slug,
-          body: body.trim(),
-          ...(parentId ? { parent_id: parentId } : {}),
-        },
-      });
+      let createdId: string | null = null;
+      if (slug.startsWith("contrib:")) {
+        const [, , contributionIdOrExt] = slug.split(":");
+        // For contribution comments we store by contribution_id (uuid)
+        const resp = await insertContributionComment({
+          object: {
+            contribution_id: contributionIdOrExt as unknown as any,
+            body: body.trim(),
+          },
+        });
+        createdId = resp?.insert_contribution_comments_one?.id ?? null;
+      } else {
+        const resp = await insertBlogComment({
+          object: {
+            blog_slug: slug,
+            body: body.trim(),
+            ...(parentId ? { parent_id: parentId } : {}),
+          },
+        });
+        createdId = resp?.insert_blog_comments_one?.id ?? null;
+      }
 
-      const created = resp?.insert_blog_comments_one;
+      const created = createdId ? { id: createdId } : null;
       if (!created?.id) throw new Error("Yorum gönderilemedi");
 
       const userSafe = session?.user;

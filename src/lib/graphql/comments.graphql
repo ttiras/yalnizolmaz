@@ -28,3 +28,29 @@ mutation InsertBlogComment($object: blog_comments_insert_input!) {
     id
   }
 }
+
+# Contribution comments
+query GetContributionComments($contribution_id: uuid!, $limit: Int! = 5, $offset: Int! = 0) {
+  contribution_comments_aggregate(where: { contribution_id: { _eq: $contribution_id } }) {
+    aggregate { count }
+  }
+  contribution_comments(
+    where: { contribution_id: { _eq: $contribution_id } }
+    order_by: { created_at: desc }
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    body
+    created_at
+    user {
+      id
+      displayName
+      avatarUrl
+    }
+  }
+}
+
+mutation InsertContributionComment($object: contribution_comments_insert_input!) {
+  insert_contribution_comments_one(object: $object) { id }
+}

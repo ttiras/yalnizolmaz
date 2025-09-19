@@ -1,8 +1,21 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { contribTypeBySlug } from "@/lib/contribConfig";
-import ContributionForm from "@/components/contributions/ContributionForm";
+import { contribTypeBySlug, getContributionTypeLabel } from "@/lib/contribConfig";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { Button } from "@/components/ui/button";
+import { 
+  Heart, 
+  Calendar, 
+  User, 
+  ExternalLink, 
+  ArrowUpDown,
+  Filter,
+  MessageCircle,
+  Users
+} from "lucide-react";
+import Image from "next/image";
+import FloatingActionButton from "@/components/contributions/FloatingActionButton";
+import ExternalLinkButton from "@/components/ExternalLinkButton";
 
 type Params = { params: Promise<{ blogSlug: string }> };
 
@@ -36,12 +49,29 @@ export default async function ContributionsByBlogSlug({ params }: Params) {
     title: string;
     year?: number | null;
     note: string;
+    poster_url?: string | null;
+    source_url?: string | null;
     created_at: string;
     user?: {
       id: string;
       displayName?: string | null;
       avatarUrl?: string | null;
     } | null;
+    contribution_comments_aggregate: {
+      aggregate: {
+        count: number;
+      };
+    };
+    contribution_comments: Array<{
+      id: string;
+      body: string;
+      created_at: string;
+      user: {
+        id: string;
+        displayName?: string | null;
+        avatarUrl?: string | null;
+      };
+    }>;
   }> = [];
 
   if (graphqlUrl) {
@@ -60,11 +90,28 @@ export default async function ContributionsByBlogSlug({ params }: Params) {
               title
               year
               note
+              poster_url
+              source_url
               created_at
               user { 
                 id 
                 displayName 
                 avatarUrl 
+              }
+              contribution_comments_aggregate {
+                aggregate {
+                  count
+                }
+              }
+              contribution_comments(limit: 1, order_by: { created_at: desc }) {
+                id
+                body
+                created_at
+                user {
+                  id
+                  displayName
+                  avatarUrl
+                }
               }
             }
           }
@@ -101,19 +148,47 @@ export default async function ContributionsByBlogSlug({ params }: Params) {
       title: string;
       year?: number | null;
       note: string;
+      poster_url?: string | null;
+      source_url?: string | null;
       created_at: string;
       user?: {
         id: string;
         displayName?: string | null;
         avatarUrl?: string | null;
       } | null;
+      contribution_comments_aggregate: {
+        aggregate: {
+          count: number;
+        };
+      };
+      contribution_comments: Array<{
+        id: string;
+        body: string;
+        created_at: string;
+        user: {
+          id: string;
+          displayName?: string | null;
+          avatarUrl?: string | null;
+        };
+      }>;
     }) => ({
       id: c.id,
       slug: c.external_id || c.id,
       title: c.title,
       year: c.year ?? undefined,
       note: c.note,
+      posterUrl: c.poster_url ?? null,
+      sourceUrl: c.source_url ?? null,
       likeCount: 0, // We'll add this back when we fix the aggregate query
+      commentCount: c.contribution_comments_aggregate.aggregate.count,
+      lastComment: c.contribution_comments[0] ? {
+        body: c.contribution_comments[0].body,
+        createdAt: c.contribution_comments[0].created_at,
+        author: {
+          displayName: c.contribution_comments[0].user.displayName || "Anonim",
+          avatarUrl: c.contribution_comments[0].user.avatarUrl ?? null,
+        }
+      } : null,
       createdAt: c.created_at,
       submittedBy: {
         displayName: c.user?.displayName || "Anonim",
@@ -124,163 +199,345 @@ export default async function ContributionsByBlogSlug({ params }: Params) {
 
   return (
     <ErrorBoundary>
-      <main className="relative">
-        {/* Hero */}
-        <section
-          className="relative overflow-hidden border-b"
-          style={{
-            borderColor: "var(--border)",
-            background: "linear-gradient(to bottom, var(--background), var(--card))",
-          }}
-        >
-          <div className="relative mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20">
-            <div className="mb-4">
-              <Link
-                href={`/blog/${blogSlug}`}
-                className="text-sm font-medium transition-colors hover:opacity-80"
-                style={{ color: "var(--accent)" }}
-              >
-                ← Blog yazısına dön
-              </Link>
-            </div>
-            <h1
-              className="heading-serif mb-4 text-4xl font-bold tracking-tight md:text-5xl"
-              style={{ color: "var(--foreground)" }}
-            >
-              Sizden Gelenler
-            </h1>
-            <h2
-              className="mb-4 text-2xl font-semibold"
-              style={{ color: "var(--muted-foreground)" }}
-            >
-              {blogSlug}
-            </h2>
-            <p className="max-w-2xl text-lg" style={{ color: "var(--muted-foreground)" }}>
-              Topluluktan gelen öneriler ve deneyimler.
-            </p>
-          </div>
-        </section>
-
-        {/* Contribution Form */}
-        <section className="relative mx-auto max-w-6xl px-6 py-12 md:px-8">
-          <div className="mb-8 text-center">
-            <h2 className="mb-4 text-2xl font-bold" style={{ color: "var(--foreground)" }}>
-              Katkıda Bulun
-            </h2>
-            <p className="text-lg" style={{ color: "var(--muted-foreground)" }}>
-              Bu konuda düşüncelerinizi paylaşın ve topluluğa katkıda bulunun.
-            </p>
-          </div>
-
-          <ContributionForm
-            blogSlug={blogSlug}
-            contributionType={contribType}
-            showAllTypes={false}
-          />
-        </section>
-
-        {/* Contributions Grid */}
-        <section className="relative mx-auto max-w-6xl px-6 py-12 md:px-8">
-          <div className="mb-8">
-            <h2 className="mb-4 text-2xl font-bold" style={{ color: "var(--foreground)" }}>
-              Topluluk Katkıları
-            </h2>
-            <p className="text-lg" style={{ color: "var(--muted-foreground)" }}>
-              Diğer okuyucuların paylaştığı öneriler ve deneyimler.
-            </p>
-          </div>
-
-          {mappedContributions.length > 0 ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {mappedContributions.map(
-                (contribution: {
-                  id: string;
-                  slug: string;
-                  title: string;
-                  year?: number;
-                  note: string;
-                  likeCount: number;
-                  createdAt: string;
-                  submittedBy: {
-                    displayName: string;
-                    avatarUrl: string | null;
-                  };
-                }) => (
-                  <Link
-                    key={contribution.id}
-                    href={`/sizden-gelenler/${blogSlug}/${contribution.slug}`}
-                    className="group overflow-hidden rounded-2xl border transition-all hover:shadow-xl"
-                    style={{ borderColor: "var(--border)", backgroundColor: "var(--card)" }}
-                  >
-                    <div className="p-6">
-                      <div className="mb-3 flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-400"></div>
-                        <span
-                          className="text-sm font-medium"
-                          style={{ color: "var(--foreground)" }}
-                        >
-                          {contribution.submittedBy?.displayName || "Anonim"}
-                        </span>
-                        <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>
-                          {formatDate(contribution.createdAt)}
-                        </span>
-                      </div>
-                      <h3
-                        className="mb-2 text-lg font-semibold"
-                        style={{ color: "var(--foreground)" }}
-                      >
-                        {contribution.title}
-                        {contribution.year && ` (${contribution.year})`}
-                      </h3>
-                      <p
-                        className="mb-3 line-clamp-2 text-sm"
-                        style={{ color: "var(--muted-foreground)" }}
-                      >
-                        {contribution.note}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>
-                          {contribution.likeCount} beğeni
-                        </span>
-                        <span className="text-xs" style={{ color: "var(--accent)" }}>
-                          Detayları gör →
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                ),
-              )}
-            </div>
-          ) : (
-            <div className="py-12 text-center">
-              <div className="mb-4 text-gray-400">
-                <svg
-                  className="mx-auto h-12 w-12"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+      <main className="relative min-h-screen">
+        {/* Empathetic Community Header */}
+        <section className="relative border-b bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-blue-950/30 dark:to-purple-950/30 overflow-hidden">
+          {/* Gentle wave pattern */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxwYXR0ZXJuIGlkPSJ3YXZlIiB4PSIwIiB5PSIwIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgogICAgICA8cGF0aCBkPSJNMzAgNDVjLTguMjg0IDAtMTUtNi43MTYtMTUtMTVzNi43MTYtMTUgMTUtMTUgMTUgNi43MTYgMTUgMTUtNi43MTYgMTUtMTUgMTV6IiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoNTksMTMwLDI0NiwwLjEpIiBzdHJva2Utd2lkdGg9IjEiLz4KICAgIDwvcGF0dGVybj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCN3YXZlKSIvPgo8L3N2Zz4=')] opacity-30" />
+          
+          <div className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 md:px-8">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+                <Link
+                  href={`/blog/${blogSlug}`}
+                  className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium text-gray-600 transition-all duration-300 hover:bg-white/60 hover:text-gray-900 hover:shadow-md backdrop-blur-sm dark:text-gray-300 dark:hover:bg-slate-800/60 dark:hover:text-white w-fit"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1}
-                    d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.29-1.009-5.824-2.709M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Blog yazısına dön
+                </Link>
+                <div className="hidden sm:block h-8 w-px bg-gradient-to-b from-transparent via-gray-300 to-transparent dark:via-gray-600" />
+                <div className="flex items-center gap-4 sm:gap-6">
+                  <div className="relative flex-shrink-0">
+                    <div className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 text-2xl sm:text-3xl shadow-xl">
+                      {getTypeIcon(contribType)}
+                    </div>
+                    {/* Gentle glow effect */}
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-400/20 to-purple-400/20 blur-xl" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
+                      Sizlerden Gelen {getContributionTypeLabel(contribType)} Önerileri
+                    </h1>
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-1">
+                      {mappedContributions.length} kişi paylaştı • Son öneri: {formatDate(mappedContributions[0]?.createdAt || new Date().toISOString())}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <h3 className="mb-2 text-lg font-medium" style={{ color: "var(--foreground)" }}>
-                Henüz katkı yok
-              </h3>
-              <p style={{ color: "var(--muted-foreground)" }}>
-                Bu konuda henüz topluluk katkısı bulunmuyor. İlk katkıyı siz yapın!
-              </p>
+              
+
             </div>
-          )}
+          </div>
         </section>
+
+        {/* Contributions Section */}
+        <section className="bg-white dark:bg-slate-900">
+          <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:px-8">
+            {/* Community Controls */}
+            {mappedContributions.length > 0 && (
+              <div className="mb-10 flex flex-col gap-4 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 p-4 shadow-lg dark:from-slate-800/50 dark:to-blue-950/30 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+                  <Button variant="outline" size="sm" className="gap-2 border-blue-200 bg-white/80 text-blue-700 backdrop-blur-sm transition-all duration-300 hover:bg-blue-100 hover:border-blue-300 dark:border-blue-600 dark:bg-slate-700/80 dark:text-blue-300 dark:hover:bg-blue-900/30 dark:hover:border-blue-500">
+                    <Filter className="h-4 w-4" />
+                    <span className="hidden sm:inline">Filtrele</span>
+                  </Button>
+                  <Button variant="outline" size="sm" className="gap-2 border-purple-200 bg-white/80 text-purple-700 backdrop-blur-sm transition-all duration-300 hover:bg-purple-100 hover:border-purple-300 dark:border-purple-600 dark:bg-slate-700/80 dark:text-purple-300 dark:hover:bg-purple-900/30 dark:hover:border-purple-500">
+                    <ArrowUpDown className="h-4 w-4" />
+                    <span className="hidden sm:inline">Sırala</span>
+                  </Button>
+                  <Button variant="outline" size="sm" className="gap-2 border-indigo-200 bg-white/80 text-indigo-700 backdrop-blur-sm transition-all duration-300 hover:bg-indigo-100 hover:border-indigo-300 dark:border-indigo-600 dark:bg-slate-700/80 dark:text-indigo-300 dark:hover:bg-indigo-900/30 dark:hover:border-indigo-500">
+                    <Users className="h-4 w-4" />
+                    <span className="hidden sm:inline">Topluluk</span>
+                  </Button>
+                </div>
+                <div className="flex items-center justify-between gap-3 text-sm font-semibold text-gray-700 dark:text-gray-300 sm:justify-end">
+                  <div className="flex items-center gap-2">
+                    <div className="h-3 w-3 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 shadow-md"></div>
+                    <span className="text-gray-600 dark:text-gray-400">Topluluk</span>
+                  </div>
+                  <div className="rounded-full bg-gradient-to-r from-blue-500 to-purple-500 px-3 py-1 text-white font-bold shadow-md text-xs sm:px-4 sm:text-sm">
+                    {mappedContributions.length} Öneri
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Contributions List - Ekşi Sözlük Style */}
+            {mappedContributions.length > 0 ? (
+              <div className="bg-white rounded-lg border border-gray-200 dark:bg-slate-800 dark:border-gray-700 overflow-hidden">
+                {mappedContributions.map((contribution) => (
+                  <HorizontalContributionCard
+                    key={contribution.id}
+                    contribution={contribution}
+                    blogSlug={blogSlug}
+                    contribType={contribType}
+                  />
+                ))}
+                
+
+
+                {/* Öner Button - Right Below Load More */}
+                <div className="mt-6 text-center">
+                  <FloatingActionButton 
+                    blogSlug={blogSlug} 
+                    contribType={contribType as "film" | "book" | "music" | "poem" | "quote"} 
+                  />
+                </div>
+              </div>
+            ) : (
+              <EmptyState contribType={contribType} />
+            )}
+          </div>
+        </section>
+
       </main>
     </ErrorBoundary>
   );
 }
+
+// Helper functions for type icons and colors
+function getTypeIcon(type: string) {
+  switch (type) {
+    case 'film': return '🎬';
+    case 'book': return '📚';
+    case 'music': return '🎵';
+    case 'poem': return '📝';
+    case 'quote': return '💭';
+    default: return '✨';
+  }
+}
+
+
+// Horizontal Contribution Card Component
+function HorizontalContributionCard({ 
+  contribution, 
+  blogSlug, 
+  contribType 
+}: { 
+  contribution: {
+    id: string;
+    slug: string;
+    title: string;
+    year?: number;
+    note: string;
+    posterUrl: string | null;
+    sourceUrl: string | null;
+    likeCount: number;
+    commentCount: number;
+    lastComment: {
+      body: string;
+      createdAt: string;
+      author: {
+        displayName: string;
+        avatarUrl: string | null;
+      };
+    } | null;
+    createdAt: string;
+    submittedBy: {
+      displayName: string;
+      avatarUrl: string | null;
+    };
+  };
+  blogSlug: string;
+  contribType: string;
+}) {
+
+  return (
+    <Link
+      href={`/sizden-gelenler/${blogSlug}/${contribution.slug}`}
+      className="group block cursor-pointer"
+    >
+      <article className="w-full overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-slate-800">
+        <div className="flex gap-6 p-6">
+          {/* Poster */}
+          <div className="flex-shrink-0">
+            {contribution.posterUrl ? (
+              <Image
+                src={contribution.posterUrl}
+                alt={`${contribution.title} afişi`}
+                width={100}
+                height={150}
+                className="rounded-lg object-cover"
+                sizes="(max-width: 640px) 100px, 100px"
+              />
+            ) : (
+              <div className="flex h-37 w-25 items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700">
+                <div className="text-2xl opacity-60">
+                  {getTypeIcon(contribType)}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Content */}
+          <div className="min-w-0 flex-1">
+            {/* Header with User Info */}
+            <div className="mb-4 flex items-start justify-between">
+              <div className="flex-1">
+                {/* Title and Year */}
+                <div className="mb-2">
+                  <h3 className="mb-1 text-xl font-semibold text-gray-900 dark:text-white">{contribution.title}</h3>
+                  {contribution.year && (
+                    <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+                      <Calendar size={14} />
+                      <span>{contribution.year}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Source Link */}
+                {contribution.sourceUrl && (
+                  <div className="mb-3">
+                    <ExternalLinkButton href={contribution.sourceUrl}>
+                      <ExternalLink size={14} />
+                      <span>IMDb&apos;de Görüntüle</span>
+                    </ExternalLinkButton>
+                  </div>
+                )}
+              </div>
+
+              {/* User Avatar and Info */}
+              <div className="ml-4 flex items-center gap-3">
+                {contribution.submittedBy.avatarUrl ? (
+                  <Image
+                    src={contribution.submittedBy.avatarUrl}
+                    alt={`${contribution.submittedBy.displayName} avatar`}
+                    width={40}
+                    height={40}
+                    className="rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-purple-500">
+                    <User size={20} className="text-white" />
+                  </div>
+                )}
+                <div className="text-right">
+                  {contribution.submittedBy.displayName && (
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">{contribution.submittedBy.displayName}</div>
+                  )}
+                  <time dateTime={contribution.createdAt} className="text-xs text-gray-400">
+                    {new Date(contribution.createdAt).toLocaleDateString("tr-TR")}
+                  </time>
+                </div>
+              </div>
+            </div>
+
+            {/* User's Note */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed" style={{
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden'
+              }}>
+                {contribution.note}
+              </p>
+            </div>
+
+            {/* Interaction Icons */}
+            <div className="flex items-center justify-end gap-4">
+              <button className="flex items-center gap-1 text-gray-400 hover:text-red-500 transition-colors duration-200">
+                <Heart className="h-5 w-5" />
+                <span className="text-xs">{contribution.likeCount}</span>
+              </button>
+              <button className="flex items-center gap-1 text-gray-400 hover:text-gray-600 transition-colors duration-200">
+                <MessageCircle className="h-5 w-5" />
+                <span className="text-xs">{contribution.commentCount}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+    </Link>
+  );
+}
+
+
+// Empty State Component
+function EmptyState({ contribType }: { contribType: string }) {
+  const getEmptyStateContent = (type: string) => {
+    switch (type) {
+      case 'film':
+        return {
+          icon: '🎬',
+          title: 'Henüz film önerisi yok',
+          description: 'Bu konuda henüz film önerisi bulunmuyor. İlk öneriyi siz yapın ve topluluğa katkıda bulunun!',
+          action: 'İlk film önerisini yap'
+        };
+      case 'book':
+        return {
+          icon: '📚',
+          title: 'Henüz kitap önerisi yok',
+          description: 'Bu konuda henüz kitap önerisi bulunmuyor. Favori kitabınızı paylaşın!',
+          action: 'İlk kitap önerisini yap'
+        };
+      case 'music':
+        return {
+          icon: '🎵',
+          title: 'Henüz müzik önerisi yok',
+          description: 'Bu konuda henüz müzik önerisi bulunmuyor. En sevdiğiniz şarkıyı paylaşın!',
+          action: 'İlk müzik önerisini yap'
+        };
+      case 'poem':
+        return {
+          icon: '📝',
+          title: 'Henüz şiir paylaşımı yok',
+          description: 'Bu konuda henüz şiir paylaşımı bulunmuyor. En sevdiğiniz şiiri paylaşın!',
+          action: 'İlk şiiri paylaş'
+        };
+      case 'quote':
+        return {
+          icon: '💭',
+          title: 'Henüz söz paylaşımı yok',
+          description: 'Bu konuda henüz söz paylaşımı bulunmuyor. Anlamlı bir söz paylaşın!',
+          action: 'İlk sözü paylaş'
+        };
+      default:
+        return {
+          icon: '✨',
+          title: 'Henüz katkı yok',
+          description: 'Bu konuda henüz topluluk katkısı bulunmuyor. İlk katkıyı siz yapın!',
+          action: 'İlk katkıyı yap'
+        };
+    }
+  };
+
+  const content = getEmptyStateContent(contribType);
+
+  return (
+    <div className="py-24 text-center">
+      <div className="mx-auto mb-10 flex h-40 w-40 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-500 text-8xl shadow-2xl dark:from-blue-500 dark:via-indigo-600 dark:to-purple-600">
+        {content.icon}
+      </div>
+      <h3 className="mb-8 text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
+        {content.title}
+      </h3>
+      <p className="mx-auto max-w-2xl text-xl leading-relaxed text-gray-600 dark:text-gray-300 mb-12">
+        {content.description}
+      </p>
+      <Button 
+        size="lg" 
+        className="gap-3 bg-gradient-to-r from-blue-500 to-purple-500 px-12 py-4 text-white font-semibold shadow-xl transition-all duration-500 hover:from-blue-600 hover:to-purple-600 hover:shadow-2xl hover:scale-105"
+      >
+        <Heart className="h-6 w-6" />
+        {content.action}
+      </Button>
+    </div>
+  );
+}
+
 
 // Helper functions
 function formatDate(dateString: string): string {

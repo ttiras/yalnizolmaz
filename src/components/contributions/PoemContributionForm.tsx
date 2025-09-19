@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/nhost/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ interface PoemContributionFormProps {
 }
 
 export default function PoemContributionForm({ blogSlug, onSubmitted }: PoemContributionFormProps) {
+  const router = useRouter();
   const { isAuthenticated } = useAuth();
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
@@ -22,6 +24,26 @@ export default function PoemContributionForm({ blogSlug, onSubmitted }: PoemCont
   const [note, setNote] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [csrfToken, setCsrfToken] = useState("");
+  const [conflict, setConflict] = useState<{ id: string; external_id?: string | null } | null>(
+    null,
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/guvenlik/belirteci", { cache: "no-store" });
+        if (!cancelled && res.ok) {
+          const data = (await res.json()) as { token?: string };
+          setCsrfToken(data.token || "");
+        }
+      } catch {}
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,12 +67,17 @@ export default function PoemContributionForm({ blogSlug, onSubmitted }: PoemCont
           title: title.trim(),
           note: note.trim() || `Yazar: ${author.trim() || "Bilinmeyen"}\n\n${poem.trim()}`,
           blogSlug,
+          _csrf: csrfToken,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
+        if (response.status === 409 && data?.error === "already_exists" && data?.existing) {
+          setConflict(data.existing);
+          throw new Error("Bu içerik zaten eklenmiş");
+        }
         throw new Error(data.error || "Katkı eklenirken hata oluştu");
       }
 
@@ -60,8 +87,10 @@ export default function PoemContributionForm({ blogSlug, onSubmitted }: PoemCont
       setPoem("");
       setNote("");
       setError(null);
+      setConflict(null);
 
       onSubmitted?.(data.contribution);
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Katkı eklenirken hata oluştu");
     } finally {
@@ -153,10 +182,24 @@ export default function PoemContributionForm({ blogSlug, onSubmitted }: PoemCont
             </div>
           )}
 
+          {conflict && (
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-900/20">
+              Bu içerik zaten paylaşılmış. 
+              <a
+                className="underline"
+                href={`/sizden-gelenler/${blogSlug}/${conflict.external_id || conflict.id}`}
+              >
+                mevcut katkıyı görüntüleyin
+              </a>
+              
+              veya başka bir şiir paylaşın.
+            </div>
+          )}
+
           {/* Submit Button */}
           <Button
             type="submit"
-            disabled={!title.trim() || !poem.trim() || isSubmitting}
+            disabled={!title.trim() || !poem.trim() || !csrfToken || isSubmitting}
             className="w-full"
           >
             {isSubmitting ? (

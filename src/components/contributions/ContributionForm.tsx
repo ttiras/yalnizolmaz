@@ -77,68 +77,42 @@ export default function ContributionForm({
 
   // If showAllTypes is false, render only the specific form without tabs
   if (!showAllTypes) {
-    const currentType = contributionTypes.find((type) => type.value === contributionType);
-    const Icon = currentType?.icon || Film;
-
-    return (
-      <div className="mx-auto w-full max-w-4xl">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Icon className="h-5 w-5" />
-              {currentType?.label} Önerisi Paylaş
-            </CardTitle>
-            <CardDescription>{currentType?.description}</CardDescription>
-          </CardHeader>
-          <CardContent>{renderForm()}</CardContent>
-        </Card>
-      </div>
-    );
+    // Render only the specific form without outer card/border/duplicate headers
+    return <div className="mx-auto w-full max-w-4xl">{renderForm()}</div>;
   }
 
   // If showAllTypes is true, render the full tabs interface
   return (
     <div className="mx-auto w-full max-w-4xl">
-      <Card>
-        <CardHeader>
-          <CardTitle>Katkıda Bulun</CardTitle>
-          <CardDescription>
-            Yalnızlık teması etrafında topluluğa katkıda bulunun. Beğendiğiniz içerikleri paylaşın
-            ve düşüncelerinizi yazın.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Tabs
-            value={activeTab}
-            onValueChange={(value) =>
-              setActiveTab(value as "film" | "book" | "music" | "poem" | "quote")
-            }
-            className="w-full"
-          >
-            <TabsList className="grid w-full grid-cols-5">
-              {contributionTypes.map((type) => {
-                const Icon = type.icon;
-                return (
-                  <TabsTrigger
-                    key={type.value}
-                    value={type.value}
-                    className="flex items-center gap-2"
-                  >
-                    <Icon className="h-4 w-4" />
-                    <span className="hidden sm:inline">{type.label}</span>
-                  </TabsTrigger>
-                );
-              })}
-            </TabsList>
+      <Tabs
+        value={activeTab}
+        onValueChange={(value) =>
+          setActiveTab(value as "film" | "book" | "music" | "poem" | "quote")
+        }
+        className="w-full"
+      >
+        <TabsList className="grid w-full grid-cols-5">
+          {contributionTypes.map((type) => {
+            const Icon = type.icon;
+            return (
+              <TabsTrigger
+                key={type.value}
+                value={type.value}
+                className="flex items-center gap-2"
+              >
+                <Icon className="h-4 w-4" />
+                <span className="hidden sm:inline">{type.label}</span>
+              </TabsTrigger>
+            );
+          })}
+        </TabsList>
 
-            {contributionTypes.map((type) => (
-              <TabsContent key={type.value} value={type.value} className="mt-6">
-                {renderForm()}
-              </TabsContent>
-            ))}
-          </Tabs>
-        </CardContent>
-      </Card>
+        {contributionTypes.map((type) => (
+          <TabsContent key={type.value} value={type.value} className="mt-6">
+            {renderForm()}
+          </TabsContent>
+        ))}
+      </Tabs>
     </div>
   );
 }

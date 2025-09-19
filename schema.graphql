@@ -3888,6 +3888,413 @@ input contribution_bookmarks_updates {
 }
 
 """
+columns and relationships of "contribution_comments"
+"""
+type contribution_comments {
+  body: String!
+  """An object relationship"""
+  contribution: contributions!
+  contribution_id: uuid!
+  created_at: timestamptz!
+  id: uuid!
+  is_helpful: Int!
+  slug: String!
+  updated_at: timestamptz!
+  """An object relationship"""
+  user: users!
+  user_id: uuid!
+}
+
+"""
+aggregated selection of "contribution_comments"
+"""
+type contribution_comments_aggregate {
+  aggregate: contribution_comments_aggregate_fields
+  nodes: [contribution_comments!]!
+}
+
+input contribution_comments_aggregate_bool_exp {
+  count: contribution_comments_aggregate_bool_exp_count
+}
+
+input contribution_comments_aggregate_bool_exp_count {
+  arguments: [contribution_comments_select_column!]
+  distinct: Boolean
+  filter: contribution_comments_bool_exp
+  predicate: Int_comparison_exp!
+}
+
+"""
+aggregate fields of "contribution_comments"
+"""
+type contribution_comments_aggregate_fields {
+  avg: contribution_comments_avg_fields
+  count(columns: [contribution_comments_select_column!], distinct: Boolean): Int!
+  max: contribution_comments_max_fields
+  min: contribution_comments_min_fields
+  stddev: contribution_comments_stddev_fields
+  stddev_pop: contribution_comments_stddev_pop_fields
+  stddev_samp: contribution_comments_stddev_samp_fields
+  sum: contribution_comments_sum_fields
+  var_pop: contribution_comments_var_pop_fields
+  var_samp: contribution_comments_var_samp_fields
+  variance: contribution_comments_variance_fields
+}
+
+"""
+order by aggregate values of table "contribution_comments"
+"""
+input contribution_comments_aggregate_order_by {
+  avg: contribution_comments_avg_order_by
+  count: order_by
+  max: contribution_comments_max_order_by
+  min: contribution_comments_min_order_by
+  stddev: contribution_comments_stddev_order_by
+  stddev_pop: contribution_comments_stddev_pop_order_by
+  stddev_samp: contribution_comments_stddev_samp_order_by
+  sum: contribution_comments_sum_order_by
+  var_pop: contribution_comments_var_pop_order_by
+  var_samp: contribution_comments_var_samp_order_by
+  variance: contribution_comments_variance_order_by
+}
+
+"""
+input type for inserting array relation for remote table "contribution_comments"
+"""
+input contribution_comments_arr_rel_insert_input {
+  data: [contribution_comments_insert_input!]!
+  """upsert condition"""
+  on_conflict: contribution_comments_on_conflict
+}
+
+"""aggregate avg on columns"""
+type contribution_comments_avg_fields {
+  is_helpful: Float
+}
+
+"""
+order by avg() on columns of table "contribution_comments"
+"""
+input contribution_comments_avg_order_by {
+  is_helpful: order_by
+}
+
+"""
+Boolean expression to filter rows from the table "contribution_comments". All fields are combined with a logical 'AND'.
+"""
+input contribution_comments_bool_exp {
+  _and: [contribution_comments_bool_exp!]
+  _not: contribution_comments_bool_exp
+  _or: [contribution_comments_bool_exp!]
+  body: String_comparison_exp
+  contribution: contributions_bool_exp
+  contribution_id: uuid_comparison_exp
+  created_at: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  is_helpful: Int_comparison_exp
+  slug: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  user: users_bool_exp
+  user_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "contribution_comments"
+"""
+enum contribution_comments_constraint {
+  """
+  unique or primary key constraint on columns "id"
+  """
+  contribution_comments_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "contribution_comments"
+"""
+input contribution_comments_inc_input {
+  is_helpful: Int
+}
+
+"""
+input type for inserting data into table "contribution_comments"
+"""
+input contribution_comments_insert_input {
+  body: String
+  contribution: contributions_obj_rel_insert_input
+  contribution_id: uuid
+  created_at: timestamptz
+  id: uuid
+  is_helpful: Int
+  slug: String
+  updated_at: timestamptz
+  user: users_obj_rel_insert_input
+  user_id: uuid
+}
+
+"""aggregate max on columns"""
+type contribution_comments_max_fields {
+  body: String
+  contribution_id: uuid
+  created_at: timestamptz
+  id: uuid
+  is_helpful: Int
+  slug: String
+  updated_at: timestamptz
+  user_id: uuid
+}
+
+"""
+order by max() on columns of table "contribution_comments"
+"""
+input contribution_comments_max_order_by {
+  body: order_by
+  contribution_id: order_by
+  created_at: order_by
+  id: order_by
+  is_helpful: order_by
+  slug: order_by
+  updated_at: order_by
+  user_id: order_by
+}
+
+"""aggregate min on columns"""
+type contribution_comments_min_fields {
+  body: String
+  contribution_id: uuid
+  created_at: timestamptz
+  id: uuid
+  is_helpful: Int
+  slug: String
+  updated_at: timestamptz
+  user_id: uuid
+}
+
+"""
+order by min() on columns of table "contribution_comments"
+"""
+input contribution_comments_min_order_by {
+  body: order_by
+  contribution_id: order_by
+  created_at: order_by
+  id: order_by
+  is_helpful: order_by
+  slug: order_by
+  updated_at: order_by
+  user_id: order_by
+}
+
+"""
+response of any mutation on the table "contribution_comments"
+"""
+type contribution_comments_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+  """data from the rows affected by the mutation"""
+  returning: [contribution_comments!]!
+}
+
+"""
+on_conflict condition type for table "contribution_comments"
+"""
+input contribution_comments_on_conflict {
+  constraint: contribution_comments_constraint!
+  update_columns: [contribution_comments_update_column!]! = []
+  where: contribution_comments_bool_exp
+}
+
+"""Ordering options when selecting data from "contribution_comments"."""
+input contribution_comments_order_by {
+  body: order_by
+  contribution: contributions_order_by
+  contribution_id: order_by
+  created_at: order_by
+  id: order_by
+  is_helpful: order_by
+  slug: order_by
+  updated_at: order_by
+  user: users_order_by
+  user_id: order_by
+}
+
+"""primary key columns input for table: contribution_comments"""
+input contribution_comments_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "contribution_comments"
+"""
+enum contribution_comments_select_column {
+  """column name"""
+  body
+  """column name"""
+  contribution_id
+  """column name"""
+  created_at
+  """column name"""
+  id
+  """column name"""
+  is_helpful
+  """column name"""
+  slug
+  """column name"""
+  updated_at
+  """column name"""
+  user_id
+}
+
+"""
+input type for updating data in table "contribution_comments"
+"""
+input contribution_comments_set_input {
+  body: String
+  contribution_id: uuid
+  created_at: timestamptz
+  id: uuid
+  is_helpful: Int
+  slug: String
+  updated_at: timestamptz
+  user_id: uuid
+}
+
+"""aggregate stddev on columns"""
+type contribution_comments_stddev_fields {
+  is_helpful: Float
+}
+
+"""
+order by stddev() on columns of table "contribution_comments"
+"""
+input contribution_comments_stddev_order_by {
+  is_helpful: order_by
+}
+
+"""aggregate stddev_pop on columns"""
+type contribution_comments_stddev_pop_fields {
+  is_helpful: Float
+}
+
+"""
+order by stddev_pop() on columns of table "contribution_comments"
+"""
+input contribution_comments_stddev_pop_order_by {
+  is_helpful: order_by
+}
+
+"""aggregate stddev_samp on columns"""
+type contribution_comments_stddev_samp_fields {
+  is_helpful: Float
+}
+
+"""
+order by stddev_samp() on columns of table "contribution_comments"
+"""
+input contribution_comments_stddev_samp_order_by {
+  is_helpful: order_by
+}
+
+"""
+Streaming cursor of the table "contribution_comments"
+"""
+input contribution_comments_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: contribution_comments_stream_cursor_value_input!
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input contribution_comments_stream_cursor_value_input {
+  body: String
+  contribution_id: uuid
+  created_at: timestamptz
+  id: uuid
+  is_helpful: Int
+  slug: String
+  updated_at: timestamptz
+  user_id: uuid
+}
+
+"""aggregate sum on columns"""
+type contribution_comments_sum_fields {
+  is_helpful: Int
+}
+
+"""
+order by sum() on columns of table "contribution_comments"
+"""
+input contribution_comments_sum_order_by {
+  is_helpful: order_by
+}
+
+"""
+update columns of table "contribution_comments"
+"""
+enum contribution_comments_update_column {
+  """column name"""
+  body
+  """column name"""
+  contribution_id
+  """column name"""
+  created_at
+  """column name"""
+  id
+  """column name"""
+  is_helpful
+  """column name"""
+  slug
+  """column name"""
+  updated_at
+  """column name"""
+  user_id
+}
+
+input contribution_comments_updates {
+  """increments the numeric columns with given value of the filtered values"""
+  _inc: contribution_comments_inc_input
+  """sets the columns of the filtered rows to the given values"""
+  _set: contribution_comments_set_input
+  """filter the rows which have to be updated"""
+  where: contribution_comments_bool_exp!
+}
+
+"""aggregate var_pop on columns"""
+type contribution_comments_var_pop_fields {
+  is_helpful: Float
+}
+
+"""
+order by var_pop() on columns of table "contribution_comments"
+"""
+input contribution_comments_var_pop_order_by {
+  is_helpful: order_by
+}
+
+"""aggregate var_samp on columns"""
+type contribution_comments_var_samp_fields {
+  is_helpful: Float
+}
+
+"""
+order by var_samp() on columns of table "contribution_comments"
+"""
+input contribution_comments_var_samp_order_by {
+  is_helpful: order_by
+}
+
+"""aggregate variance on columns"""
+type contribution_comments_variance_fields {
+  is_helpful: Float
+}
+
+"""
+order by variance() on columns of table "contribution_comments"
+"""
+input contribution_comments_variance_order_by {
+  is_helpful: order_by
+}
+
+"""
 columns and relationships of "contribution_likes"
 """
 type contribution_likes {
@@ -4566,6 +4973,32 @@ type contributions {
     where: contribution_bookmarks_bool_exp
   ): contribution_bookmarks_aggregate!
   """An array relationship"""
+  contribution_comments(
+    """distinct select on columns"""
+    distinct_on: [contribution_comments_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [contribution_comments_order_by!]
+    """filter the rows returned"""
+    where: contribution_comments_bool_exp
+  ): [contribution_comments!]!
+  """An aggregate relationship"""
+  contribution_comments_aggregate(
+    """distinct select on columns"""
+    distinct_on: [contribution_comments_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [contribution_comments_order_by!]
+    """filter the rows returned"""
+    where: contribution_comments_bool_exp
+  ): contribution_comments_aggregate!
+  """An array relationship"""
   contribution_likes(
     """distinct select on columns"""
     distinct_on: [contribution_likes_select_column!]
@@ -4691,6 +5124,8 @@ input contributions_bool_exp {
   blog_slug: String_comparison_exp
   contribution_bookmarks: contribution_bookmarks_bool_exp
   contribution_bookmarks_aggregate: contribution_bookmarks_aggregate_bool_exp
+  contribution_comments: contribution_comments_bool_exp
+  contribution_comments_aggregate: contribution_comments_aggregate_bool_exp
   contribution_likes: contribution_likes_bool_exp
   contribution_likes_aggregate: contribution_likes_aggregate_bool_exp
   created_at: timestamptz_comparison_exp
@@ -4713,6 +5148,10 @@ unique or primary key constraints on table "contributions"
 """
 enum contributions_constraint {
   """
+  unique or primary key constraint on columns "external_id"
+  """
+  contributions_external_id_key
+  """
   unique or primary key constraint on columns "id"
   """
   contributions_pkey
@@ -4731,6 +5170,7 @@ input type for inserting data into table "contributions"
 input contributions_insert_input {
   blog_slug: String
   contribution_bookmarks: contribution_bookmarks_arr_rel_insert_input
+  contribution_comments: contribution_comments_arr_rel_insert_input
   contribution_likes: contribution_likes_arr_rel_insert_input
   created_at: timestamptz
   external_id: String
@@ -4847,6 +5287,7 @@ input contributions_on_conflict {
 input contributions_order_by {
   blog_slug: order_by
   contribution_bookmarks_aggregate: contribution_bookmarks_aggregate_order_by
+  contribution_comments_aggregate: contribution_comments_aggregate_order_by
   contribution_likes_aggregate: contribution_likes_aggregate_order_by
   created_at: order_by
   external_id: order_by
@@ -6207,6 +6648,17 @@ type mutation_root {
   """
   delete_contribution_bookmarks_by_pk(contribution_id: uuid!, user_id: uuid!): contribution_bookmarks
   """
+  delete data from the table: "contribution_comments"
+  """
+  delete_contribution_comments(
+    """filter the rows which have to be deleted"""
+    where: contribution_comments_bool_exp!
+  ): contribution_comments_mutation_response
+  """
+  delete single row from the table: "contribution_comments"
+  """
+  delete_contribution_comments_by_pk(id: uuid!): contribution_comments
+  """
   delete data from the table: "contribution_likes"
   """
   delete_contribution_likes(
@@ -6655,6 +7107,24 @@ type mutation_root {
     """upsert condition"""
     on_conflict: contribution_bookmarks_on_conflict
   ): contribution_bookmarks
+  """
+  insert data into the table: "contribution_comments"
+  """
+  insert_contribution_comments(
+    """the rows to be inserted"""
+    objects: [contribution_comments_insert_input!]!
+    """upsert condition"""
+    on_conflict: contribution_comments_on_conflict
+  ): contribution_comments_mutation_response
+  """
+  insert a single row into the table: "contribution_comments"
+  """
+  insert_contribution_comments_one(
+    """the row to be inserted"""
+    object: contribution_comments_insert_input!
+    """upsert condition"""
+    on_conflict: contribution_comments_on_conflict
+  ): contribution_comments
   """
   insert data into the table: "contribution_likes"
   """
@@ -7452,6 +7922,34 @@ type mutation_root {
     """updates to execute, in order"""
     updates: [contribution_bookmarks_updates!]!
   ): [contribution_bookmarks_mutation_response]
+  """
+  update data of the table: "contribution_comments"
+  """
+  update_contribution_comments(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: contribution_comments_inc_input
+    """sets the columns of the filtered rows to the given values"""
+    _set: contribution_comments_set_input
+    """filter the rows which have to be updated"""
+    where: contribution_comments_bool_exp!
+  ): contribution_comments_mutation_response
+  """
+  update single row of the table: "contribution_comments"
+  """
+  update_contribution_comments_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: contribution_comments_inc_input
+    """sets the columns of the filtered rows to the given values"""
+    _set: contribution_comments_set_input
+    pk_columns: contribution_comments_pk_columns_input!
+  ): contribution_comments
+  """
+  update multiples rows of table: "contribution_comments"
+  """
+  update_contribution_comments_many(
+    """updates to execute, in order"""
+    updates: [contribution_comments_updates!]!
+  ): [contribution_comments_mutation_response]
   """
   update data of the table: "contribution_likes"
   """
@@ -9610,6 +10108,36 @@ type query_root {
   """
   contribution_bookmarks_by_pk(contribution_id: uuid!, user_id: uuid!): contribution_bookmarks
   """An array relationship"""
+  contribution_comments(
+    """distinct select on columns"""
+    distinct_on: [contribution_comments_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [contribution_comments_order_by!]
+    """filter the rows returned"""
+    where: contribution_comments_bool_exp
+  ): [contribution_comments!]!
+  """An aggregate relationship"""
+  contribution_comments_aggregate(
+    """distinct select on columns"""
+    distinct_on: [contribution_comments_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [contribution_comments_order_by!]
+    """filter the rows returned"""
+    where: contribution_comments_bool_exp
+  ): contribution_comments_aggregate!
+  """
+  fetch data from the table: "contribution_comments" using primary key columns
+  """
+  contribution_comments_by_pk(id: uuid!): contribution_comments
+  """An array relationship"""
   contribution_likes(
     """distinct select on columns"""
     distinct_on: [contribution_likes_select_column!]
@@ -10688,6 +11216,47 @@ type subscription_root {
     """filter the rows returned"""
     where: contribution_bookmarks_bool_exp
   ): [contribution_bookmarks!]!
+  """An array relationship"""
+  contribution_comments(
+    """distinct select on columns"""
+    distinct_on: [contribution_comments_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [contribution_comments_order_by!]
+    """filter the rows returned"""
+    where: contribution_comments_bool_exp
+  ): [contribution_comments!]!
+  """An aggregate relationship"""
+  contribution_comments_aggregate(
+    """distinct select on columns"""
+    distinct_on: [contribution_comments_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [contribution_comments_order_by!]
+    """filter the rows returned"""
+    where: contribution_comments_bool_exp
+  ): contribution_comments_aggregate!
+  """
+  fetch data from the table: "contribution_comments" using primary key columns
+  """
+  contribution_comments_by_pk(id: uuid!): contribution_comments
+  """
+  fetch data from the table in a streaming manner: "contribution_comments"
+  """
+  contribution_comments_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+    """cursor to stream the results returned by the query"""
+    cursor: [contribution_comments_stream_cursor_input]!
+    """filter the rows returned"""
+    where: contribution_comments_bool_exp
+  ): [contribution_comments!]!
   """An array relationship"""
   contribution_likes(
     """distinct select on columns"""
@@ -12285,6 +12854,32 @@ type users {
     where: contribution_bookmarks_bool_exp
   ): contribution_bookmarks_aggregate!
   """An array relationship"""
+  contribution_comments(
+    """distinct select on columns"""
+    distinct_on: [contribution_comments_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [contribution_comments_order_by!]
+    """filter the rows returned"""
+    where: contribution_comments_bool_exp
+  ): [contribution_comments!]!
+  """An aggregate relationship"""
+  contribution_comments_aggregate(
+    """distinct select on columns"""
+    distinct_on: [contribution_comments_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [contribution_comments_order_by!]
+    """filter the rows returned"""
+    where: contribution_comments_bool_exp
+  ): contribution_comments_aggregate!
+  """An array relationship"""
   contribution_likes(
     """distinct select on columns"""
     distinct_on: [contribution_likes_select_column!]
@@ -12844,6 +13439,8 @@ input users_bool_exp {
   comment_likes_aggregate: comment_likes_aggregate_bool_exp
   contribution_bookmarks: contribution_bookmarks_bool_exp
   contribution_bookmarks_aggregate: contribution_bookmarks_aggregate_bool_exp
+  contribution_comments: contribution_comments_bool_exp
+  contribution_comments_aggregate: contribution_comments_aggregate_bool_exp
   contribution_likes: contribution_likes_bool_exp
   contribution_likes_aggregate: contribution_likes_aggregate_bool_exp
   contribution_reports: contribution_reports_bool_exp
@@ -12955,6 +13552,7 @@ input users_insert_input {
   blog_comments: blog_comments_arr_rel_insert_input
   comment_likes: comment_likes_arr_rel_insert_input
   contribution_bookmarks: contribution_bookmarks_arr_rel_insert_input
+  contribution_comments: contribution_comments_arr_rel_insert_input
   contribution_likes: contribution_likes_arr_rel_insert_input
   contribution_reports: contribution_reports_arr_rel_insert_input
   contributions: contributions_arr_rel_insert_input
@@ -13136,6 +13734,7 @@ input users_order_by {
   blog_comments_aggregate: blog_comments_aggregate_order_by
   comment_likes_aggregate: comment_likes_aggregate_order_by
   contribution_bookmarks_aggregate: contribution_bookmarks_aggregate_order_by
+  contribution_comments_aggregate: contribution_comments_aggregate_order_by
   contribution_likes_aggregate: contribution_likes_aggregate_order_by
   contribution_reports_aggregate: contribution_reports_aggregate_order_by
   contributions_aggregate: contributions_aggregate_order_by

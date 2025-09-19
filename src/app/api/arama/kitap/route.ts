@@ -50,6 +50,22 @@ export async function GET(request: NextRequest) {
           };
         }) => {
           const volumeInfo = item.volumeInfo;
+          // Prefer highest quality image we can construct. Try Google Books content/publisher and books.googleusercontent.com
+          const id = item.id;
+          const gbsThumb = volumeInfo.imageLinks?.thumbnail || null;
+          const gbsSmall = volumeInfo.imageLinks?.smallThumbnail || null;
+          const gbsBase = `https://books.google.com/books/content?id=${encodeURIComponent(id)}&printsec=frontcover&img=1`;
+          const publisherBase = `https://books.google.com/books/publisher/content?id=${encodeURIComponent(id)}&img=1`;
+          // Prefer official imageLinks first (more reliable), then constructed URLs
+          const preferredOrder: Array<string | null> = [
+            gbsThumb,
+            gbsSmall,
+            `${gbsBase}&zoom=2&edge=curl`,
+            `${publisherBase}&zoom=2&w=800`,
+          ];
+          const firstUrl = preferredOrder.find(Boolean) as string | null;
+          let imageUrl = firstUrl ? firstUrl.replace(/^http:\/\//, "https://") : null;
+
           return {
             id: item.id,
             title: volumeInfo.title,
@@ -64,17 +80,22 @@ export async function GET(request: NextRequest) {
             categories: volumeInfo.categories || [],
             averageRating: volumeInfo.averageRating,
             ratingsCount: volumeInfo.ratingsCount,
-            imageUrl:
-              volumeInfo.imageLinks?.thumbnail || volumeInfo.imageLinks?.smallThumbnail || null,
+            imageUrl,
             previewUrl: volumeInfo.previewLink,
             infoUrl: volumeInfo.infoLink,
-            isbn:
-              volumeInfo.industryIdentifiers?.find(
+            isbn: (() => {
+              const i13 = volumeInfo.industryIdentifiers?.find(
                 (id: { type: string; identifier: string }) => id.type === "ISBN_13",
-              )?.identifier ||
-              volumeInfo.industryIdentifiers?.find(
+              )?.identifier;
+              const i10 = volumeInfo.industryIdentifiers?.find(
                 (id: { type: string; identifier: string }) => id.type === "ISBN_10",
-              )?.identifier,
+              )?.identifier;
+              // Fallback cover via Open Library if we still don't have a working image
+              if (!imageUrl && (i13 || i10)) {
+                imageUrl = `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(i13 || i10!)}-L.jpg`;
+              }
+              return i13 || i10;
+            })(),
             language: volumeInfo.language,
           };
         },

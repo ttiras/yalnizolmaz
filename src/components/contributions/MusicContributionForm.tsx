@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/nhost/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,15 +44,21 @@ export default function MusicContributionForm({
   blogSlug,
   onSubmitted,
 }: MusicContributionFormProps) {
+  const router = useRouter();
   const { isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchType, setSearchType] = useState<"track" | "album" | "artist">("track");
+  const [searchType] = useState<"track">("track");
   const [searchResults, setSearchResults] = useState<MusicSearchResult[]>([]);
   const [selectedMusic, setSelectedMusic] = useState<MusicSearchResult | null>(null);
   const [note, setNote] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [csrfToken, setCsrfToken] = useState("");
+  const [conflict, setConflict] = useState<{ id: string; external_id?: string | null } | null>(
+    null,
+  );
+  const [showResults, setShowResults] = useState(false);
 
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
@@ -81,14 +88,31 @@ export default function MusicContributionForm({
     }
   }, []);
 
+  // Load CSRF token
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/guvenlik/belirteci", { cache: "no-store" });
+        if (!cancelled && res.ok) {
+          const data = (await res.json()) as { token?: string };
+          setCsrfToken(data.token || "");
+        }
+      } catch {}
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   // Trigger search when debounced query changes
-  useState(() => {
+  useEffect(() => {
     if (debouncedSearchQuery) {
       searchMusic(debouncedSearchQuery, searchType);
     } else {
       setSearchResults([]);
     }
-  });
+  }, [debouncedSearchQuery, searchType, searchMusic]);
 
   const handleMusicSelect = (music: MusicSearchResult) => {
     setSelectedMusic(music);
@@ -124,12 +148,17 @@ export default function MusicContributionForm({
           posterUrl: selectedMusic.album?.images?.[0]?.url || null,
           sourceUrl: selectedMusic.externalUrls.spotify,
           blogSlug,
+          _csrf: csrfToken,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
+        if (response.status === 409 && data?.error === "already_exists" && data?.existing) {
+          setConflict(data.existing);
+          throw new Error("Bu içerik zaten eklenmiş");
+        }
         throw new Error(data.error || "Katkı eklenirken hata oluştu");
       }
 
@@ -138,8 +167,10 @@ export default function MusicContributionForm({
       setSearchQuery("");
       setNote("");
       setSearchResults([]);
+      setConflict(null);
 
       onSubmitted?.(data.contribution);
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Katkı eklenirken hata oluştu");
     } finally {
@@ -160,27 +191,11 @@ export default function MusicContributionForm({
           <Music className="h-5 w-5" />
           Müzik Önerisi Ekle
         </CardTitle>
-        <CardDescription>
-          Beğendiğiniz bir şarkı, albüm veya sanatçıyı arayın ve neden önerdiğinizi açıklayın.
-        </CardDescription>
+        <CardDescription>Beğendiğiniz bir şarkıyı arayın ve neden önerdiğinizi açıklayın.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Search Type Selector */}
-          <div className="space-y-2">
-            <label htmlFor="search-type" className="text-sm font-medium">
-              Arama Türü
-            </label>
-            <Select
-              value={searchType}
-              onChange={(e) => setSearchType(e.target.value as "track" | "album" | "artist")}
-              placeholder="Arama türü seçin"
-            >
-              <option value="track">Şarkı</option>
-              <option value="album">Albüm</option>
-              <option value="artist">Sanatçı</option>
-            </Select>
-          </div>
+          {/* Search Type forced to tracks; selector removed */}
 
           {/* Music Search */}
           <div className="space-y-2">
@@ -194,7 +209,14 @@ export default function MusicContributionForm({
                 type="text"
                 placeholder="Şarkı, albüm veya sanatçı adını yazın..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowResults(true);
+                }}
+                onFocus={() => setShowResults(Boolean(searchResults.length))}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setShowResults(false);
+                }}
                 className="pl-10"
               />
               {isSearching && (
@@ -203,13 +225,16 @@ export default function MusicContributionForm({
             </div>
 
             {/* Search Results */}
-            {searchResults.length > 0 && (
+            {showResults && searchResults.length > 0 && (
               <div className="max-h-60 overflow-y-auto rounded-lg border bg-white dark:bg-gray-800">
                 {searchResults.map((music) => (
                   <button
                     key={music.id}
                     type="button"
-                    onClick={() => handleMusicSelect(music)}
+                    onClick={() => {
+                      handleMusicSelect(music);
+                      setShowResults(false);
+                    }}
                     className="w-full border-b p-3 text-left last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
                     <div className="flex gap-3">
@@ -372,10 +397,23 @@ export default function MusicContributionForm({
             </div>
           )}
 
+          {conflict && (
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-900/20">
+              Bu içerik zaten önerilmiş. 
+              <a
+                href={`/sizden-gelenler/${blogSlug}/${conflict.external_id || conflict.id}`}
+              >
+                <span className="underline"> Mevcut katkıyı görüntüleyin</span>
+              </a>
+              
+               <span> veya başka bir arama yapın.</span>
+            </div>
+          )}
+
           {/* Submit Button */}
           <Button
             type="submit"
-            disabled={!selectedMusic || !note.trim() || isSubmitting}
+            disabled={!selectedMusic || !note.trim() || !csrfToken || isSubmitting}
             className="w-full"
           >
             {isSubmitting ? (

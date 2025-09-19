@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/nhost/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,11 +19,32 @@ export default function QuoteContributionForm({
   blogSlug,
   onSubmitted,
 }: QuoteContributionFormProps) {
+  const router = useRouter();
   const { isAuthenticated } = useAuth();
   const [quote, setQuote] = useState("");
   const [author, setAuthor] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [conflict, setConflict] = useState<{ id: string; external_id?: string | null } | null>(
+    null,
+  );
+  const [csrfToken, setCsrfToken] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/guvenlik/belirteci", { cache: "no-store" });
+        if (!cancelled && res.ok) {
+          const data = (await res.json()) as { token?: string };
+          setCsrfToken(data.token || "");
+        }
+      } catch {}
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,12 +71,17 @@ export default function QuoteContributionForm({
           title,
           note,
           blogSlug,
+          _csrf: csrfToken,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
+        if (response.status === 409 && data?.error === "already_exists" && data?.existing) {
+          setConflict(data.existing);
+          throw new Error("Bu içerik zaten eklenmiş");
+        }
         throw new Error(data.error || "Katkı eklenirken hata oluştu");
       }
 
@@ -62,8 +89,10 @@ export default function QuoteContributionForm({
       setQuote("");
       setAuthor("");
       setError(null);
+      setConflict(null);
 
       onSubmitted?.(data.contribution);
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Katkı eklenirken hata oluştu");
     } finally {
@@ -137,8 +166,22 @@ export default function QuoteContributionForm({
             </div>
           )}
 
+          {conflict && (
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-900/20">
+              Bu söz zaten paylaşılmış. 
+              <a
+                className="underline"
+                href={`/sizden-gelenler/${blogSlug}/${conflict.external_id || conflict.id}`}
+              >
+                mevcut katkıyı görüntüleyin
+              </a>
+              
+              veya başka bir söz paylaşın.
+            </div>
+          )}
+
           {/* Submit Button */}
-          <Button type="submit" disabled={!quote.trim() || isSubmitting} className="w-full">
+          <Button type="submit" disabled={!quote.trim() || !csrfToken || isSubmitting} className="w-full">
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

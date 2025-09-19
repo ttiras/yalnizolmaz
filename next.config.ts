@@ -27,6 +27,34 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/avatar/**",
       },
+      {
+        protocol: "https",
+        hostname: "image.tmdb.org",
+        port: "",
+        pathname: "/t/p/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.scdn.co",
+        port: "",
+        pathname: "/image/**",
+      },
+      // Google Books covers/thumbnails (allow both content and publisher endpoints; match any under /books)
+      { protocol: "https", hostname: "books.google.com", port: "", pathname: "/books/**" },
+      { protocol: "https", hostname: "books.google.com.tr", port: "", pathname: "/books/**" },
+      { protocol: "https", hostname: "books.googleusercontent.com", port: "", pathname: "/books/**" },
+      {
+        protocol: "http",
+        hostname: "books.google.com",
+        port: "",
+        pathname: "/books/content/**",
+      },
+      {
+        protocol: "https",
+        hostname: "books.google.com",
+        port: "",
+        pathname: "/books/content/**",
+      }
     ],
   },
   turbopack: {

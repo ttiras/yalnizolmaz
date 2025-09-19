@@ -6,7 +6,10 @@ import CommentComposer from "./CommentComposer";
 import { AuthGate } from "@/components/AuthGate";
 import LoadMoreButton from "./LoadMoreButton";
 import type { CommentsSectionProps, BlogComment } from "@/lib/types/comments";
-import { useGetCommentsBySlugQuery } from "@/lib/graphql/__generated__/graphql";
+import {
+  useGetCommentsBySlugQuery,
+  useGetContributionCommentsQuery,
+} from "@/lib/graphql/__generated__/graphql";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function CommentsClient({
@@ -19,20 +22,27 @@ export default function CommentsClient({
   const [loadedIds, setLoadedIds] = useState(initialComments.map((c) => c.id));
 
   // Client-side refresh of comments from GraphQL (anonymous/user select allowed)
+  const isContrib = slug.startsWith("contrib:");
+  const contribId = isContrib ? slug.split(":")[2] : null;
   const variables = useMemo(
     () => ({ slug, limit: Math.max(initialComments.length, 5), offset: 0 }),
     [slug, initialComments.length],
   );
-  const { data } = useGetCommentsBySlugQuery(variables, { staleTime: 10_000 });
+  const contribVars = useMemo(
+    () => ({ contribution_id: (contribId || "") as unknown as string, limit: Math.max(initialComments.length, 5), offset: 0 }),
+    [contribId, initialComments.length],
+  );
+  const { data: blogData } = useGetCommentsBySlugQuery(variables, { staleTime: 10_000, enabled: !isContrib });
+  const { data: contribData } = useGetContributionCommentsQuery(contribVars, { staleTime: 10_000, enabled: isContrib });
   useEffect(() => {
-    const list = data?.blog_comments ?? [];
+    const list = isContrib ? contribData?.contribution_comments ?? [] : blogData?.blog_comments ?? [];
     if (!list.length) return;
     const mapped: BlogComment[] = list.map((c) => ({
       id: String(c.id),
-      slug: String(c.blog_slug),
+      slug,
       body: String(c.body),
       createdAt: String(c.created_at),
-      parentId: c.parent_id ? String(c.parent_id) : null,
+      parentId: 'parent_id' in c && c.parent_id ? String((c as any).parent_id) : null,
       author: {
         id: String(c.user?.id ?? ""),
         displayName: String(c.user?.displayName ?? ""),
@@ -42,7 +52,7 @@ export default function CommentsClient({
     }));
     setComments(mapped);
     setLoadedIds(mapped.map((m) => m.id));
-  }, [data]);
+  }, [blogData, contribData, isContrib, slug]);
 
   const handleNewComment = (newComment: BlogComment) => {
     setComments((prev) => [newComment, ...prev]);
@@ -99,7 +109,7 @@ export default function CommentsClient({
             <CommentComposer slug={slug} onSubmitted={handleNewComment} loggedIn={true} />
           ) : (
             <AuthGate mode="inline">
-              <CommentComposer slug={slug} onSubmitted={handleNewComment} />
+              <CommentComposer slug={slug} onSubmitted={handleNewComment} loggedIn={true} />
             </AuthGate>
           )}
         </CardContent>

@@ -43,8 +43,8 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  // Run on all HTML navigations; exclude Next assets and API routes for efficiency
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/).*)"],
+  // Run on all routes except Next assets; include API routes so session refresh happens before mutations
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
 
 function hasValidSession(request: NextRequest): boolean {

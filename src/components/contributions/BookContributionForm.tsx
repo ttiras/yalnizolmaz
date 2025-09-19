@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/nhost/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,6 +38,7 @@ interface BookContributionFormProps {
 }
 
 export default function BookContributionForm({ blogSlug, onSubmitted }: BookContributionFormProps) {
+  const router = useRouter();
   const { isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<BookSearchResult[]>([]);
@@ -45,6 +47,11 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
   const [isSearching, setIsSearching] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [csrfToken, setCsrfToken] = useState("");
+  const [conflict, setConflict] = useState<{ id: string; external_id?: string | null } | null>(
+    null,
+  );
+  const [showResults, setShowResults] = useState(false);
 
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
@@ -74,14 +81,31 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
     }
   }, []);
 
+  // Load CSRF token
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/guvenlik/belirteci", { cache: "no-store" });
+        if (!cancelled && res.ok) {
+          const data = (await res.json()) as { token?: string };
+          setCsrfToken(data.token || "");
+        }
+      } catch {}
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   // Trigger search when debounced query changes
-  useState(() => {
+  useEffect(() => {
     if (debouncedSearchQuery) {
       searchBooks(debouncedSearchQuery);
     } else {
       setSearchResults([]);
     }
-  });
+  }, [debouncedSearchQuery, searchBooks]);
 
   const handleBookSelect = (book: BookSearchResult) => {
     setSelectedBook(book);
@@ -115,12 +139,17 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
           posterUrl: selectedBook.imageUrl,
           sourceUrl: selectedBook.infoUrl,
           blogSlug,
+          _csrf: csrfToken,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
+        if (response.status === 409 && data?.error === "already_exists" && data?.existing) {
+          setConflict(data.existing);
+          throw new Error("Bu içerik zaten eklenmiş");
+        }
         throw new Error(data.error || "Katkı eklenirken hata oluştu");
       }
 
@@ -129,8 +158,10 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
       setSearchQuery("");
       setNote("");
       setSearchResults([]);
+      setConflict(null);
 
       onSubmitted?.(data.contribution);
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Katkı eklenirken hata oluştu");
     } finally {
@@ -163,7 +194,14 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
                 type="text"
                 placeholder="Kitap adını veya yazarını yazın..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowResults(true);
+                }}
+                onFocus={() => setShowResults(Boolean(searchResults.length))}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setShowResults(false);
+                }}
                 className="pl-10"
               />
               {isSearching && (
@@ -172,13 +210,16 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
             </div>
 
             {/* Search Results */}
-            {searchResults.length > 0 && (
+            {showResults && searchResults.length > 0 && (
               <div className="max-h-60 overflow-y-auto rounded-lg border bg-white dark:bg-gray-800">
                 {searchResults.map((book) => (
                   <button
                     key={book.id}
                     type="button"
-                    onClick={() => handleBookSelect(book)}
+                    onClick={() => {
+                      handleBookSelect(book);
+                      setShowResults(false);
+                    }}
                     className="w-full border-b p-3 text-left last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
                     <div className="flex gap-3">
@@ -318,10 +359,24 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
             </div>
           )}
 
+          {conflict && (
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-900/20">
+              Bu içerik zaten önerilmiş. 
+              <a
+                className="underline"
+                href={`/sizden-gelenler/${blogSlug}/${conflict.external_id || conflict.id}`}
+              >
+                mevcut katkıyı görüntüleyin
+              </a>
+              
+              veya başka bir kitap seçin.
+            </div>
+          )}
+
           {/* Submit Button */}
           <Button
             type="submit"
-            disabled={!selectedBook || !note.trim() || isSubmitting}
+            disabled={!selectedBook || !note.trim() || !csrfToken || isSubmitting}
             className="w-full"
           >
             {isSubmitting ? (

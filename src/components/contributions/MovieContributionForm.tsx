@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/lib/nhost/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +36,7 @@ export default function MovieContributionForm({
   blogSlug,
   onSubmitted,
 }: MovieContributionFormProps) {
+  const router = useRouter();
   const { isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<MovieSearchResult[]>([]);
@@ -43,6 +45,11 @@ export default function MovieContributionForm({
   const [isSearching, setIsSearching] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [csrfToken, setCsrfToken] = useState("");
+  const [conflict, setConflict] = useState<{ id: string; external_id?: string | null } | null>(
+    null,
+  );
+  const [showResults, setShowResults] = useState(false);
 
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
@@ -72,14 +79,30 @@ export default function MovieContributionForm({
     }
   }, []);
 
-  // Trigger search when debounced query changes
-  useState(() => {
+  // Load CSRF token and trigger search when query changes
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/guvenlik/belirteci", { cache: "no-store" });
+        if (!cancelled && res.ok) {
+          const data = (await res.json()) as { token?: string };
+          setCsrfToken(data.token || "");
+        }
+      } catch {}
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
     if (debouncedSearchQuery) {
       searchMovies(debouncedSearchQuery);
     } else {
       setSearchResults([]);
     }
-  });
+  }, [debouncedSearchQuery, searchMovies]);
 
   const handleMovieSelect = (movie: MovieSearchResult) => {
     setSelectedMovie(movie);
@@ -113,12 +136,17 @@ export default function MovieContributionForm({
           posterUrl: selectedMovie.posterUrl,
           sourceUrl: selectedMovie.sourceUrl,
           blogSlug,
+          _csrf: csrfToken,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
+        if (response.status === 409 && data?.error === "already_exists" && data?.existing) {
+          setConflict(data.existing);
+          throw new Error("Bu içerik zaten eklenmiş");
+        }
         throw new Error(data.error || "Katkı eklenirken hata oluştu");
       }
 
@@ -127,8 +155,11 @@ export default function MovieContributionForm({
       setSearchQuery("");
       setNote("");
       setSearchResults([]);
+      setConflict(null);
 
       onSubmitted?.(data.contribution);
+      // Refresh the RSC page so the new contribution appears immediately
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Katkı eklenirken hata oluştu");
     } finally {
@@ -161,7 +192,14 @@ export default function MovieContributionForm({
                 type="text"
                 placeholder="Film adını yazın..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowResults(true);
+                }}
+                onFocus={() => setShowResults(Boolean(searchResults.length))}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setShowResults(false);
+                }}
                 className="pl-10"
               />
               {isSearching && (
@@ -170,13 +208,16 @@ export default function MovieContributionForm({
             </div>
 
             {/* Search Results */}
-            {searchResults.length > 0 && (
+            {showResults && searchResults.length > 0 && (
               <div className="max-h-60 overflow-y-auto rounded-lg border bg-white dark:bg-gray-800">
                 {searchResults.map((movie) => (
                   <button
                     key={movie.id}
                     type="button"
-                    onClick={() => handleMovieSelect(movie)}
+                    onClick={() => {
+                      handleMovieSelect(movie);
+                      setShowResults(false);
+                    }}
                     className="w-full border-b p-3 text-left last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
                     <div className="flex gap-3">
@@ -291,10 +332,24 @@ export default function MovieContributionForm({
             </div>
           )}
 
+          {conflict && (
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-900/20">
+              Bu film zaten önerilmiş. 
+              <a
+                className="underline"
+                href={`/sizden-gelenler/${blogSlug}/${conflict.external_id || conflict.id}`}
+              >
+                mevcut katkıyı görüntüleyin
+              </a>
+              
+              veya başka bir film seçin.
+            </div>
+          )}
+
           {/* Submit Button */}
           <Button
             type="submit"
-            disabled={!selectedMovie || !note.trim() || isSubmitting}
+            disabled={!selectedMovie || !note.trim() || !csrfToken || isSubmitting}
             className="w-full"
           >
             {isSubmitting ? (

@@ -74,7 +74,7 @@ export default function CommentCard({ comment, isReply = false }: CommentCardPro
             <div className="mb-3 text-sm leading-relaxed text-gray-800">{body}</div>
 
             {/* Actions */}
-            <div className="flex items-center gap-6">
+            <div className="flex items-center">
               <HelpfulButton
                 initialLiked={false}
                 initialCount={likeCount}
@@ -86,7 +86,7 @@ export default function CommentCard({ comment, isReply = false }: CommentCardPro
 
               {/* Reply feature removed */}
 
-              <Button variant="ghost" size="sm" className="gap-1 text-gray-500 hover:text-red-600">
+              <Button variant="ghost" size="sm" className="gap-1 text-gray-500 hover:text-red-600 ml-2">
                 <Flag size={14} />
                 <span>Raporla</span>
               </Button>
