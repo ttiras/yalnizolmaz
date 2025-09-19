@@ -29,20 +29,33 @@ export default function CommentsClient({
     [slug, initialComments.length],
   );
   const contribVars = useMemo(
-    () => ({ contribution_id: (contribId || "") as unknown as string, limit: Math.max(initialComments.length, 5), offset: 0 }),
+    () => ({
+      contribution_id: (contribId || "") as unknown as string,
+      limit: Math.max(initialComments.length, 5),
+      offset: 0,
+    }),
     [contribId, initialComments.length],
   );
-  const { data: blogData } = useGetCommentsBySlugQuery(variables, { staleTime: 10_000, enabled: !isContrib });
-  const { data: contribData } = useGetContributionCommentsQuery(contribVars, { staleTime: 10_000, enabled: isContrib });
+  const { data: blogData } = useGetCommentsBySlugQuery(variables, {
+    staleTime: 10_000,
+    enabled: !isContrib,
+  });
+  const { data: contribData } = useGetContributionCommentsQuery(contribVars, {
+    staleTime: 10_000,
+    enabled: isContrib,
+  });
   useEffect(() => {
-    const list = isContrib ? contribData?.contribution_comments ?? [] : blogData?.blog_comments ?? [];
+    const list = isContrib
+      ? (contribData?.contribution_comments ?? [])
+      : (blogData?.blog_comments ?? []);
     if (!list.length) return;
     const mapped: BlogComment[] = list.map((c) => ({
       id: String(c.id),
       slug,
       body: String(c.body),
       createdAt: String(c.created_at),
-      parentId: 'parent_id' in c && c.parent_id ? String((c as any).parent_id) : null,
+      parentId:
+        "parent_id" in c && c.parent_id ? String((c as { parent_id: unknown }).parent_id) : null,
       author: {
         id: String(c.user?.id ?? ""),
         displayName: String(c.user?.displayName ?? ""),

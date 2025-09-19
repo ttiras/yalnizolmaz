@@ -39,7 +39,7 @@ export default function CommentComposer({ slug, parentId, onSubmitted, loggedIn 
         // For contribution comments we store by contribution_id (uuid)
         const resp = await insertContributionComment({
           object: {
-            contribution_id: contributionIdOrExt as unknown as any,
+            contribution_id: contributionIdOrExt as string,
             body: body.trim(),
           },
         });

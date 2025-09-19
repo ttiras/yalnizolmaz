@@ -27,7 +27,9 @@ export async function POST(request: NextRequest) {
       return applyRateLimitHeaders(resp, rl);
     }
 
-    const body = (Object.keys(preBody).length ? preBody : ((await request.json()) as Record<string, unknown>)) as {
+    const body = (
+      Object.keys(preBody).length ? preBody : ((await request.json()) as Record<string, unknown>)
+    ) as {
       type?: string;
       title?: string;
       note?: string;
@@ -119,7 +121,12 @@ export async function POST(request: NextRequest) {
       errors?: unknown;
     };
     if (!gqlResp.ok || gqlJson.errors) {
-      const err = Array.isArray((gqlJson as any).errors) ? (gqlJson as any).errors[0] : null;
+      const err = Array.isArray((gqlJson as { errors?: unknown[] }).errors)
+        ? ((gqlJson as { errors: unknown[] }).errors[0] as {
+            extensions?: { code?: string };
+            message?: string;
+          })
+        : null;
       const code = err?.extensions?.code as string | undefined;
       const message = (err?.message as string | undefined) || String(gqlResp.statusText);
 
@@ -176,7 +183,10 @@ export async function POST(request: NextRequest) {
       revalidatePath(`/sizden-gelenler/${blogSlug}`);
     } catch {}
 
-    return NextResponse.json({ success: true, contribution: gqlJson.data.insert_contributions_one });
+    return NextResponse.json({
+      success: true,
+      contribution: gqlJson.data.insert_contributions_one,
+    });
   } catch (error) {
     console.error("Contribution creation error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

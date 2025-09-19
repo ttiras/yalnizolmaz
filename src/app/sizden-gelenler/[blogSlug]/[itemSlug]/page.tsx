@@ -3,7 +3,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { contribTypeBySlug, getContributionTypeLabel } from "@/lib/contribConfig";
 import CommentsClient from "@/components/interactions/comments/CommentsClient";
-import { Heart, MessageCircle, Calendar, User, ExternalLink, ArrowLeft, Share2, Bookmark } from "lucide-react";
+import {
+  Heart,
+  MessageCircle,
+  Calendar,
+  User,
+  ExternalLink,
+  ArrowLeft,
+  Share2,
+  Bookmark,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Params = { params: Promise<{ blogSlug: string; itemSlug: string }> };
@@ -42,7 +51,10 @@ export default async function ContributionDetailPage({ params }: Params) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query: byExternalQuery, variables: { ext: itemSlug, type } }),
   });
-  const j1 = (await resp1.json()) as { data?: { contributions?: Array<ContributionGql> }; errors?: unknown };
+  const j1 = (await resp1.json()) as {
+    data?: { contributions?: Array<ContributionGql> };
+    errors?: unknown;
+  };
   if (!resp1.ok || j1.errors) notFound();
   let c = j1.data?.contributions?.[0] || null;
 
@@ -60,7 +72,10 @@ export default async function ContributionDetailPage({ params }: Params) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query: byIdQuery, variables: { id: itemSlug, type } }),
     });
-    const j2 = (await resp2.json()) as { data?: { contributions?: Array<ContributionGql> }; errors?: unknown };
+    const j2 = (await resp2.json()) as {
+      data?: { contributions?: Array<ContributionGql> };
+      errors?: unknown;
+    };
     if (!resp2.ok || j2.errors) notFound();
     c = j2.data?.contributions?.[0] || null;
   }
@@ -87,13 +102,16 @@ export default async function ContributionDetailPage({ params }: Params) {
         {/* Elegant overlays */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/70" />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-        
+
         {/* Subtle pattern overlay */}
         <div className="pointer-events-none absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 1px, transparent 0)`,
-            backgroundSize: '20px 20px'
-          }} />
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 1px, transparent 0)`,
+              backgroundSize: "20px 20px",
+            }}
+          />
         </div>
 
         <div className="relative mx-auto max-w-6xl px-6 py-8 md:px-8 md:py-12">
@@ -101,7 +119,7 @@ export default async function ContributionDetailPage({ params }: Params) {
           <div className="mb-4">
             <Link
               href={`/sizden-gelenler/${blogSlug}`}
-              className="inline-flex items-center gap-2 text-sm font-medium text-white/90 hover:text-white transition-colors group"
+              className="group inline-flex items-center gap-2 text-sm font-medium text-white/90 transition-colors hover:text-white"
             >
               <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
               {getContributionTypeLabel(type)} listesine dön
@@ -113,11 +131,7 @@ export default async function ContributionDetailPage({ params }: Params) {
             {/* Poster/Image */}
             {c.poster_url && (
               <div className="relative h-[240px] w-[180px] overflow-hidden rounded-2xl shadow-2xl ring-2 ring-white/20 lg:sticky lg:top-8">
-                <img
-                  src={c.poster_url}
-                  alt={c.title}
-                  className="h-full w-full object-cover"
-                />
+                <img src={c.poster_url} alt={c.title} className="h-full w-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               </div>
             )}
@@ -150,11 +164,11 @@ export default async function ContributionDetailPage({ params }: Params) {
                     {submittedBy}
                   </span>
                   {c.source_url && (
-                    <a 
-                      href={c.source_url} 
-                      target="_blank" 
-                      rel="noreferrer" 
-                      className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1.5 text-sm font-medium text-white backdrop-blur-sm hover:bg-white/30 transition-colors"
+                    <a
+                      href={c.source_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1.5 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/30"
                     >
                       <ExternalLink className="h-3 w-3" />
                       Kaynağa git
@@ -165,29 +179,36 @@ export default async function ContributionDetailPage({ params }: Params) {
 
               {/* Action Buttons */}
               <div className="flex items-center gap-2">
-                <Button variant="secondary" size="sm" className="bg-white/20 text-white hover:bg-white/30 border-white/30">
-                  <Share2 className="h-3 w-3 mr-1" />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-white/30 bg-white/20 text-white hover:bg-white/30"
+                >
+                  <Share2 className="mr-1 h-3 w-3" />
                   Paylaş
                 </Button>
-                <Button variant="secondary" size="sm" className="bg-white/20 text-white hover:bg-white/30 border-white/30">
-                  <Bookmark className="h-3 w-3 mr-1" />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-white/30 bg-white/20 text-white hover:bg-white/30"
+                >
+                  <Bookmark className="mr-1 h-3 w-3" />
                   Kaydet
                 </Button>
               </div>
-
             </div>
           </div>
         </div>
       </section>
 
       {/* Floating User Message Card - Extended Header Background */}
-      <section className="relative -mt-6 z-10">
+      <section className="relative z-10 -mt-6">
         <div className="mx-auto max-w-4xl px-4">
           {/* Beautiful Floating Message Card with Extended Header Background */}
           <div className="relative">
             {/* Extended Header Background */}
-            <div 
-              className="absolute inset-0 rounded-2xl overflow-hidden"
+            <div
+              className="absolute inset-0 overflow-hidden rounded-2xl"
               style={{
                 background: heroBg || "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                 backgroundSize: heroBg ? "cover" : undefined,
@@ -198,26 +219,28 @@ export default async function ContributionDetailPage({ params }: Params) {
               <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/70"></div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
             </div>
-            
+
             {/* Main Message Card - Transparent with Extended Background */}
-            <div className="relative bg-transparent backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
+            <div className="relative overflow-hidden rounded-2xl bg-transparent shadow-lg backdrop-blur-sm">
               {/* Message Content */}
-              <div className="relative px-6 py-6 z-10">
+              <div className="relative z-10 px-6 py-6">
                 <div className="flex items-start gap-4">
-                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center ring-2 ring-white/30 flex-shrink-0">
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-500 ring-2 ring-white/30">
                     <User className="h-4 w-4 text-white" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-sm font-semibold text-white">
-                        {submittedBy}
-                      </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="mb-2 flex items-center gap-2">
+                      <span className="text-sm font-semibold text-white">{submittedBy}</span>
                       <span className="text-xs text-white/70">
-                        {new Date(c.created_at).toLocaleDateString("tr-TR")} {new Date(c.created_at).toLocaleTimeString("tr-TR", { hour: '2-digit', minute: '2-digit' })}
+                        {new Date(c.created_at).toLocaleDateString("tr-TR")}{" "}
+                        {new Date(c.created_at).toLocaleTimeString("tr-TR", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </span>
                     </div>
                     <div className="prose prose-slate dark:prose-invert max-w-none">
-                      <p className="text-white/90 whitespace-pre-wrap leading-relaxed text-sm font-medium">
+                      <p className="text-sm leading-relaxed font-medium whitespace-pre-wrap text-white/90">
                         {c.note}
                       </p>
                     </div>
@@ -227,14 +250,14 @@ export default async function ContributionDetailPage({ params }: Params) {
 
               {/* Poem Content - Elegant Display */}
               {type === "poem" && (
-                <div className="relative px-6 py-6 z-10 border-t border-white/20">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                    <div className="text-center mb-4">
-                      <h3 className="text-lg font-semibold text-white mb-2">Şiir</h3>
-                      <div className="w-16 h-px bg-white/40 mx-auto"></div>
+                <div className="relative z-10 border-t border-white/20 px-6 py-6">
+                  <div className="rounded-xl border border-white/20 bg-white/10 p-6 backdrop-blur-sm">
+                    <div className="mb-4 text-center">
+                      <h3 className="mb-2 text-lg font-semibold text-white">Şiir</h3>
+                      <div className="mx-auto h-px w-16 bg-white/40"></div>
                     </div>
                     <div className="prose prose-slate dark:prose-invert max-w-none">
-                      <div className="text-white/95 text-center leading-relaxed text-base font-medium whitespace-pre-wrap italic">
+                      <div className="text-center text-base leading-relaxed font-medium whitespace-pre-wrap text-white/95 italic">
                         {c.title}
                       </div>
                     </div>
@@ -243,19 +266,19 @@ export default async function ContributionDetailPage({ params }: Params) {
               )}
 
               {/* Interaction Footer */}
-              <div className="relative border-t border-white/20 px-6 py-4 z-10">
+              <div className="relative z-10 border-t border-white/20 px-6 py-4">
                 <div className="flex items-center justify-between">
                   {/* Interaction Icons */}
                   <div className="flex items-center gap-6">
-                    <button className="flex items-center gap-2 text-white/70 hover:text-red-400 transition-colors group">
-                      <div className="p-1.5 rounded-full group-hover:bg-red-500/20 backdrop-blur-sm">
+                    <button className="group flex items-center gap-2 text-white/70 transition-colors hover:text-red-400">
+                      <div className="rounded-full p-1.5 backdrop-blur-sm group-hover:bg-red-500/20">
                         <Heart className="h-4 w-4" />
                       </div>
                       <span className="text-sm font-medium">0</span>
                     </button>
-                    <div className="w-px h-6 bg-white/30"></div>
-                    <button className="flex items-center gap-2 text-white/70 hover:text-blue-400 transition-colors group">
-                      <div className="p-1.5 rounded-full group-hover:bg-blue-500/20 backdrop-blur-sm">
+                    <div className="h-6 w-px bg-white/30"></div>
+                    <button className="group flex items-center gap-2 text-white/70 transition-colors hover:text-blue-400">
+                      <div className="rounded-full p-1.5 backdrop-blur-sm group-hover:bg-blue-500/20">
                         <MessageCircle className="h-4 w-4" />
                       </div>
                       <span className="text-sm font-medium">0</span>
@@ -264,10 +287,10 @@ export default async function ContributionDetailPage({ params }: Params) {
 
                   {/* Action Buttons */}
                   <div className="flex items-center gap-3">
-                    <button className="p-2 text-white/50 hover:text-white/80 hover:bg-white/10 rounded-full transition-all backdrop-blur-sm">
+                    <button className="rounded-full p-2 text-white/50 backdrop-blur-sm transition-all hover:bg-white/10 hover:text-white/80">
                       <Share2 className="h-4 w-4" />
                     </button>
-                    <button className="p-2 text-white/50 hover:text-white/80 hover:bg-white/10 rounded-full transition-all backdrop-blur-sm">
+                    <button className="rounded-full p-2 text-white/50 backdrop-blur-sm transition-all hover:bg-white/10 hover:text-white/80">
                       <Bookmark className="h-4 w-4" />
                     </button>
                   </div>
@@ -282,15 +305,17 @@ export default async function ContributionDetailPage({ params }: Params) {
       <section className="mx-auto max-w-4xl px-4 py-8">
         {/* Comments Header */}
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Yorumlar
-          </h2>
-          <div className="w-full h-px bg-gray-200 dark:bg-slate-700"></div>
+          <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">Yorumlar</h2>
+          <div className="h-px w-full bg-gray-200 dark:bg-slate-700"></div>
         </div>
 
         {/* Comments Content - Ekşi Sözlük Style */}
         <div className="space-y-0">
-          <CommentsClient slug={`contrib:${blogSlug}:${c.id}`} totalCount={0} initialComments={[]} />
+          <CommentsClient
+            slug={`contrib:${blogSlug}:${c.id}`}
+            totalCount={0}
+            initialComments={[]}
+          />
         </div>
       </section>
     </main>

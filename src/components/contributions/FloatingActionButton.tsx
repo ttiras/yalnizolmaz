@@ -8,11 +8,8 @@ interface FloatingActionButtonProps {
   contribType: "film" | "book" | "music" | "poem" | "quote";
 }
 
-export default function FloatingActionButton({ 
-  blogSlug, 
-  contribType 
-}: FloatingActionButtonProps) {
-  const handleSubmitted = (_contribution: { id: string; title: string; type: string }) => {
+export default function FloatingActionButton({ blogSlug, contribType }: FloatingActionButtonProps) {
+  const handleSubmitted = () => {
     // Optionally refresh the page or update the list
     window.location.reload();
   };
@@ -21,14 +18,14 @@ export default function FloatingActionButton({
     <div className="space-y-4">
       {/* Visual Header - No Functionality */}
       <div className="flex items-center justify-center">
-        <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-300 bg-white/80 text-gray-600 cursor-pointer">
+        <div className="flex cursor-pointer items-center gap-2 rounded-full border border-gray-300 bg-white/80 px-4 py-2 text-gray-600">
           <Heart className="h-4 w-4 text-red-500" />
           <span className="text-sm font-medium">Sen de Öneride Bulun</span>
         </div>
       </div>
 
       {/* Always Visible Form */}
-      <div className="bg-gray-50 rounded-lg p-6 dark:bg-slate-800/50">
+      <div className="rounded-lg bg-gray-50 p-6 dark:bg-slate-800/50">
         <ContributionForm
           blogSlug={blogSlug}
           contributionType={contribType}
