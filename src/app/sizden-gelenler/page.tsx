@@ -13,13 +13,14 @@ export const metadata = {
 };
 
 export default async function ContributionsPage() {
-  const posts = getAllPosts();
+  let contribPosts: Array<{ slug: string }> = [];
 
-  // Filter posts that have contributions enabled
-  const contribPosts = posts.filter((post) => {
-    const contribType = contribTypeBySlug(post.slug);
-    return contribType !== "none";
-  });
+  try {
+    contribPosts = getAllPosts("sizden-gelenler");
+  } catch (error) {
+    console.error("Error loading posts:", error);
+    // Continue with empty array
+  }
 
   // Group posts by contribution type
   const postsByType = contribPosts.reduce(
