@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Search, BookOpen, Calendar, Star, ExternalLink, Loader2, User } from "lucide-react";
+import Image from "next/image";
 import { AuthGate } from "@/components/AuthGate";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 
@@ -182,9 +183,11 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
                   >
                     <div className="flex gap-3">
                       {book.imageUrl && (
-                        <img
+                        <Image
                           src={book.imageUrl}
                           alt={book.title}
+                          width={48}
+                          height={64}
                           className="h-16 w-12 rounded object-cover"
                         />
                       )}
@@ -237,9 +240,11 @@ export default function BookContributionForm({ blogSlug, onSubmitted }: BookCont
             <div className="rounded-lg border bg-gray-50 p-4 dark:bg-gray-800">
               <div className="flex gap-3">
                 {selectedBook.imageUrl && (
-                  <img
+                  <Image
                     src={selectedBook.imageUrl}
                     alt={selectedBook.title}
+                    width={64}
+                    height={80}
                     className="h-20 w-16 rounded object-cover"
                   />
                 )}

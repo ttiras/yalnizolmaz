@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Search, Film, Calendar, Star, ExternalLink, Loader2 } from "lucide-react";
+import Image from "next/image";
 import { AuthGate } from "@/components/AuthGate";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 
@@ -180,9 +181,11 @@ export default function MovieContributionForm({
                   >
                     <div className="flex gap-3">
                       {movie.posterUrl && (
-                        <img
+                        <Image
                           src={movie.posterUrl}
                           alt={movie.title}
+                          width={48}
+                          height={64}
                           className="h-16 w-12 rounded object-cover"
                         />
                       )}
@@ -218,9 +221,11 @@ export default function MovieContributionForm({
             <div className="rounded-lg border bg-gray-50 p-4 dark:bg-gray-800">
               <div className="flex gap-3">
                 {selectedMovie.posterUrl && (
-                  <img
+                  <Image
                     src={selectedMovie.posterUrl}
                     alt={selectedMovie.title}
+                    width={64}
+                    height={80}
                     className="h-20 w-16 rounded object-cover"
                   />
                 )}
