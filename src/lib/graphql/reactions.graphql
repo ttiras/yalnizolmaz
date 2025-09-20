@@ -1,0 +1,26 @@
+# Reactions for contributions
+
+query GetContributionReactions($id: uuid!) {
+  contribution_reactions(where: { contribution_id: { _eq: $id } }) {
+    user_id
+    type
+  }
+}
+
+mutation AddContributionReaction($id: uuid!, $type: reaction_types_enum!) {
+  insert_contribution_reactions_one(object: { contribution_id: $id, type: $type }) {
+    contribution_id
+    user_id
+    type
+  }
+}
+
+mutation RemoveContributionReaction($id: uuid!, $userId: uuid!, $type: reaction_types_enum!) {
+  delete_contribution_reactions_by_pk(contribution_id: $id, user_id: $userId, type: $type) {
+    contribution_id
+    user_id
+    type
+  }
+}
+
+

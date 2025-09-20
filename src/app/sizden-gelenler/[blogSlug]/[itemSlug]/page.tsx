@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { contribTypeBySlug, getContributionTypeLabel } from "@/lib/contribConfig";
 import CommentsClient from "@/components/interactions/comments/CommentsClient";
+import ReactionBar from "@/components/interactions/sizden-gelenler/ReactionBar";
 import {
   Heart,
   MessageCircle,
@@ -270,12 +270,14 @@ export default async function ContributionDetailPage({ params }: Params) {
                 <div className="flex items-center justify-between">
                   {/* Interaction Icons */}
                   <div className="flex items-center gap-6">
-                    <button className="group flex items-center gap-2 text-white/70 transition-colors hover:text-red-400">
-                      <div className="rounded-full p-1.5 backdrop-blur-sm group-hover:bg-red-500/20">
-                        <Heart className="h-4 w-4" />
-                      </div>
-                      <span className="text-sm font-medium">0</span>
-                    </button>
+                    <div className="[&_*]:text-white">
+                      <ReactionBar
+                        targetId={c.id}
+                        initialCounts={{ heart: 0, hug: 0, metoo: 0, hope: 0, thanks: 0 }}
+                        initialUserReactions={[]}
+                        size="sm"
+                      />
+                    </div>
                     <div className="h-6 w-px bg-white/30"></div>
                     <button className="group flex items-center gap-2 text-white/70 transition-colors hover:text-blue-400">
                       <div className="rounded-full p-1.5 backdrop-blur-sm group-hover:bg-blue-500/20">

@@ -3898,7 +3898,6 @@ type contribution_comments {
   created_at: timestamptz!
   id: uuid!
   is_helpful: Int!
-  slug: String!
   updated_at: timestamptz!
   """An object relationship"""
   user: users!
@@ -3992,7 +3991,6 @@ input contribution_comments_bool_exp {
   created_at: timestamptz_comparison_exp
   id: uuid_comparison_exp
   is_helpful: Int_comparison_exp
-  slug: String_comparison_exp
   updated_at: timestamptz_comparison_exp
   user: users_bool_exp
   user_id: uuid_comparison_exp
@@ -4025,7 +4023,6 @@ input contribution_comments_insert_input {
   created_at: timestamptz
   id: uuid
   is_helpful: Int
-  slug: String
   updated_at: timestamptz
   user: users_obj_rel_insert_input
   user_id: uuid
@@ -4038,7 +4035,6 @@ type contribution_comments_max_fields {
   created_at: timestamptz
   id: uuid
   is_helpful: Int
-  slug: String
   updated_at: timestamptz
   user_id: uuid
 }
@@ -4052,7 +4048,6 @@ input contribution_comments_max_order_by {
   created_at: order_by
   id: order_by
   is_helpful: order_by
-  slug: order_by
   updated_at: order_by
   user_id: order_by
 }
@@ -4064,7 +4059,6 @@ type contribution_comments_min_fields {
   created_at: timestamptz
   id: uuid
   is_helpful: Int
-  slug: String
   updated_at: timestamptz
   user_id: uuid
 }
@@ -4078,7 +4072,6 @@ input contribution_comments_min_order_by {
   created_at: order_by
   id: order_by
   is_helpful: order_by
-  slug: order_by
   updated_at: order_by
   user_id: order_by
 }
@@ -4110,7 +4103,6 @@ input contribution_comments_order_by {
   created_at: order_by
   id: order_by
   is_helpful: order_by
-  slug: order_by
   updated_at: order_by
   user: users_order_by
   user_id: order_by
@@ -4136,8 +4128,6 @@ enum contribution_comments_select_column {
   """column name"""
   is_helpful
   """column name"""
-  slug
-  """column name"""
   updated_at
   """column name"""
   user_id
@@ -4152,7 +4142,6 @@ input contribution_comments_set_input {
   created_at: timestamptz
   id: uuid
   is_helpful: Int
-  slug: String
   updated_at: timestamptz
   user_id: uuid
 }
@@ -4210,7 +4199,6 @@ input contribution_comments_stream_cursor_value_input {
   created_at: timestamptz
   id: uuid
   is_helpful: Int
-  slug: String
   updated_at: timestamptz
   user_id: uuid
 }
@@ -4241,8 +4229,6 @@ enum contribution_comments_update_column {
   id
   """column name"""
   is_helpful
-  """column name"""
-  slug
   """column name"""
   updated_at
   """column name"""
@@ -4509,6 +4495,262 @@ input contribution_likes_updates {
   _set: contribution_likes_set_input
   """filter the rows which have to be updated"""
   where: contribution_likes_bool_exp!
+}
+
+"""
+columns and relationships of "contribution_reactions"
+"""
+type contribution_reactions {
+  """An object relationship"""
+  contribution: contributions!
+  contribution_id: uuid!
+  created_at: timestamptz!
+  id: uuid!
+  type: reaction_types_enum!
+  updated_at: timestamptz!
+  """An object relationship"""
+  user: users!
+  user_id: uuid!
+}
+
+"""
+aggregated selection of "contribution_reactions"
+"""
+type contribution_reactions_aggregate {
+  aggregate: contribution_reactions_aggregate_fields
+  nodes: [contribution_reactions!]!
+}
+
+input contribution_reactions_aggregate_bool_exp {
+  count: contribution_reactions_aggregate_bool_exp_count
+}
+
+input contribution_reactions_aggregate_bool_exp_count {
+  arguments: [contribution_reactions_select_column!]
+  distinct: Boolean
+  filter: contribution_reactions_bool_exp
+  predicate: Int_comparison_exp!
+}
+
+"""
+aggregate fields of "contribution_reactions"
+"""
+type contribution_reactions_aggregate_fields {
+  count(columns: [contribution_reactions_select_column!], distinct: Boolean): Int!
+  max: contribution_reactions_max_fields
+  min: contribution_reactions_min_fields
+}
+
+"""
+order by aggregate values of table "contribution_reactions"
+"""
+input contribution_reactions_aggregate_order_by {
+  count: order_by
+  max: contribution_reactions_max_order_by
+  min: contribution_reactions_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "contribution_reactions"
+"""
+input contribution_reactions_arr_rel_insert_input {
+  data: [contribution_reactions_insert_input!]!
+  """upsert condition"""
+  on_conflict: contribution_reactions_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "contribution_reactions". All fields are combined with a logical 'AND'.
+"""
+input contribution_reactions_bool_exp {
+  _and: [contribution_reactions_bool_exp!]
+  _not: contribution_reactions_bool_exp
+  _or: [contribution_reactions_bool_exp!]
+  contribution: contributions_bool_exp
+  contribution_id: uuid_comparison_exp
+  created_at: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  type: reaction_types_enum_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  user: users_bool_exp
+  user_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "contribution_reactions"
+"""
+enum contribution_reactions_constraint {
+  """
+  unique or primary key constraint on columns "user_id", "type", "contribution_id"
+  """
+  contribution_reactions_pkey
+}
+
+"""
+input type for inserting data into table "contribution_reactions"
+"""
+input contribution_reactions_insert_input {
+  contribution: contributions_obj_rel_insert_input
+  contribution_id: uuid
+  created_at: timestamptz
+  id: uuid
+  type: reaction_types_enum
+  updated_at: timestamptz
+  user: users_obj_rel_insert_input
+  user_id: uuid
+}
+
+"""aggregate max on columns"""
+type contribution_reactions_max_fields {
+  contribution_id: uuid
+  created_at: timestamptz
+  id: uuid
+  updated_at: timestamptz
+  user_id: uuid
+}
+
+"""
+order by max() on columns of table "contribution_reactions"
+"""
+input contribution_reactions_max_order_by {
+  contribution_id: order_by
+  created_at: order_by
+  id: order_by
+  updated_at: order_by
+  user_id: order_by
+}
+
+"""aggregate min on columns"""
+type contribution_reactions_min_fields {
+  contribution_id: uuid
+  created_at: timestamptz
+  id: uuid
+  updated_at: timestamptz
+  user_id: uuid
+}
+
+"""
+order by min() on columns of table "contribution_reactions"
+"""
+input contribution_reactions_min_order_by {
+  contribution_id: order_by
+  created_at: order_by
+  id: order_by
+  updated_at: order_by
+  user_id: order_by
+}
+
+"""
+response of any mutation on the table "contribution_reactions"
+"""
+type contribution_reactions_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+  """data from the rows affected by the mutation"""
+  returning: [contribution_reactions!]!
+}
+
+"""
+on_conflict condition type for table "contribution_reactions"
+"""
+input contribution_reactions_on_conflict {
+  constraint: contribution_reactions_constraint!
+  update_columns: [contribution_reactions_update_column!]! = []
+  where: contribution_reactions_bool_exp
+}
+
+"""Ordering options when selecting data from "contribution_reactions"."""
+input contribution_reactions_order_by {
+  contribution: contributions_order_by
+  contribution_id: order_by
+  created_at: order_by
+  id: order_by
+  type: order_by
+  updated_at: order_by
+  user: users_order_by
+  user_id: order_by
+}
+
+"""primary key columns input for table: contribution_reactions"""
+input contribution_reactions_pk_columns_input {
+  contribution_id: uuid!
+  type: reaction_types_enum!
+  user_id: uuid!
+}
+
+"""
+select columns of table "contribution_reactions"
+"""
+enum contribution_reactions_select_column {
+  """column name"""
+  contribution_id
+  """column name"""
+  created_at
+  """column name"""
+  id
+  """column name"""
+  type
+  """column name"""
+  updated_at
+  """column name"""
+  user_id
+}
+
+"""
+input type for updating data in table "contribution_reactions"
+"""
+input contribution_reactions_set_input {
+  contribution_id: uuid
+  created_at: timestamptz
+  id: uuid
+  type: reaction_types_enum
+  updated_at: timestamptz
+  user_id: uuid
+}
+
+"""
+Streaming cursor of the table "contribution_reactions"
+"""
+input contribution_reactions_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: contribution_reactions_stream_cursor_value_input!
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input contribution_reactions_stream_cursor_value_input {
+  contribution_id: uuid
+  created_at: timestamptz
+  id: uuid
+  type: reaction_types_enum
+  updated_at: timestamptz
+  user_id: uuid
+}
+
+"""
+update columns of table "contribution_reactions"
+"""
+enum contribution_reactions_update_column {
+  """column name"""
+  contribution_id
+  """column name"""
+  created_at
+  """column name"""
+  id
+  """column name"""
+  type
+  """column name"""
+  updated_at
+  """column name"""
+  user_id
+}
+
+input contribution_reactions_updates {
+  """sets the columns of the filtered rows to the given values"""
+  _set: contribution_reactions_set_input
+  """filter the rows which have to be updated"""
+  where: contribution_reactions_bool_exp!
 }
 
 """
@@ -5024,6 +5266,32 @@ type contributions {
     """filter the rows returned"""
     where: contribution_likes_bool_exp
   ): contribution_likes_aggregate!
+  """An array relationship"""
+  contribution_reactions(
+    """distinct select on columns"""
+    distinct_on: [contribution_reactions_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [contribution_reactions_order_by!]
+    """filter the rows returned"""
+    where: contribution_reactions_bool_exp
+  ): [contribution_reactions!]!
+  """An aggregate relationship"""
+  contribution_reactions_aggregate(
+    """distinct select on columns"""
+    distinct_on: [contribution_reactions_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [contribution_reactions_order_by!]
+    """filter the rows returned"""
+    where: contribution_reactions_bool_exp
+  ): contribution_reactions_aggregate!
   created_at: timestamptz!
   external_id: String
   id: uuid!
@@ -5128,6 +5396,8 @@ input contributions_bool_exp {
   contribution_comments_aggregate: contribution_comments_aggregate_bool_exp
   contribution_likes: contribution_likes_bool_exp
   contribution_likes_aggregate: contribution_likes_aggregate_bool_exp
+  contribution_reactions: contribution_reactions_bool_exp
+  contribution_reactions_aggregate: contribution_reactions_aggregate_bool_exp
   created_at: timestamptz_comparison_exp
   external_id: String_comparison_exp
   id: uuid_comparison_exp
@@ -5172,6 +5442,7 @@ input contributions_insert_input {
   contribution_bookmarks: contribution_bookmarks_arr_rel_insert_input
   contribution_comments: contribution_comments_arr_rel_insert_input
   contribution_likes: contribution_likes_arr_rel_insert_input
+  contribution_reactions: contribution_reactions_arr_rel_insert_input
   created_at: timestamptz
   external_id: String
   id: uuid
@@ -5289,6 +5560,7 @@ input contributions_order_by {
   contribution_bookmarks_aggregate: contribution_bookmarks_aggregate_order_by
   contribution_comments_aggregate: contribution_comments_aggregate_order_by
   contribution_likes_aggregate: contribution_likes_aggregate_order_by
+  contribution_reactions_aggregate: contribution_reactions_aggregate_order_by
   created_at: order_by
   external_id: order_by
   id: order_by
@@ -6670,6 +6942,17 @@ type mutation_root {
   """
   delete_contribution_likes_by_pk(contribution_id: uuid!, user_id: uuid!): contribution_likes
   """
+  delete data from the table: "contribution_reactions"
+  """
+  delete_contribution_reactions(
+    """filter the rows which have to be deleted"""
+    where: contribution_reactions_bool_exp!
+  ): contribution_reactions_mutation_response
+  """
+  delete single row from the table: "contribution_reactions"
+  """
+  delete_contribution_reactions_by_pk(contribution_id: uuid!, type: reaction_types_enum!, user_id: uuid!): contribution_reactions
+  """
   delete data from the table: "contribution_reports"
   """
   delete_contribution_reports(
@@ -6768,6 +7051,17 @@ type mutation_root {
   delete single row from the table: "posts"
   """
   delete_posts_by_pk(id: uuid!): posts
+  """
+  delete data from the table: "reaction_types"
+  """
+  delete_reaction_types(
+    """filter the rows which have to be deleted"""
+    where: reaction_types_bool_exp!
+  ): reaction_types_mutation_response
+  """
+  delete single row from the table: "reaction_types"
+  """
+  delete_reaction_types_by_pk(type: String!): reaction_types
   """
   delete data from the table: "user_blocks"
   """
@@ -7144,6 +7438,24 @@ type mutation_root {
     on_conflict: contribution_likes_on_conflict
   ): contribution_likes
   """
+  insert data into the table: "contribution_reactions"
+  """
+  insert_contribution_reactions(
+    """the rows to be inserted"""
+    objects: [contribution_reactions_insert_input!]!
+    """upsert condition"""
+    on_conflict: contribution_reactions_on_conflict
+  ): contribution_reactions_mutation_response
+  """
+  insert a single row into the table: "contribution_reactions"
+  """
+  insert_contribution_reactions_one(
+    """the row to be inserted"""
+    object: contribution_reactions_insert_input!
+    """upsert condition"""
+    on_conflict: contribution_reactions_on_conflict
+  ): contribution_reactions
+  """
   insert data into the table: "contribution_reports"
   """
   insert_contribution_reports(
@@ -7305,6 +7617,24 @@ type mutation_root {
     """upsert condition"""
     on_conflict: posts_on_conflict
   ): posts
+  """
+  insert data into the table: "reaction_types"
+  """
+  insert_reaction_types(
+    """the rows to be inserted"""
+    objects: [reaction_types_insert_input!]!
+    """upsert condition"""
+    on_conflict: reaction_types_on_conflict
+  ): reaction_types_mutation_response
+  """
+  insert a single row into the table: "reaction_types"
+  """
+  insert_reaction_types_one(
+    """the row to be inserted"""
+    object: reaction_types_insert_input!
+    """upsert condition"""
+    on_conflict: reaction_types_on_conflict
+  ): reaction_types
   """
   insert data into the table: "user_blocks"
   """
@@ -7975,6 +8305,30 @@ type mutation_root {
     updates: [contribution_likes_updates!]!
   ): [contribution_likes_mutation_response]
   """
+  update data of the table: "contribution_reactions"
+  """
+  update_contribution_reactions(
+    """sets the columns of the filtered rows to the given values"""
+    _set: contribution_reactions_set_input
+    """filter the rows which have to be updated"""
+    where: contribution_reactions_bool_exp!
+  ): contribution_reactions_mutation_response
+  """
+  update single row of the table: "contribution_reactions"
+  """
+  update_contribution_reactions_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: contribution_reactions_set_input
+    pk_columns: contribution_reactions_pk_columns_input!
+  ): contribution_reactions
+  """
+  update multiples rows of table: "contribution_reactions"
+  """
+  update_contribution_reactions_many(
+    """updates to execute, in order"""
+    updates: [contribution_reactions_updates!]!
+  ): [contribution_reactions_mutation_response]
+  """
   update data of the table: "contribution_reports"
   """
   update_contribution_reports(
@@ -8205,6 +8559,30 @@ type mutation_root {
     """updates to execute, in order"""
     updates: [posts_updates!]!
   ): [posts_mutation_response]
+  """
+  update data of the table: "reaction_types"
+  """
+  update_reaction_types(
+    """sets the columns of the filtered rows to the given values"""
+    _set: reaction_types_set_input
+    """filter the rows which have to be updated"""
+    where: reaction_types_bool_exp!
+  ): reaction_types_mutation_response
+  """
+  update single row of the table: "reaction_types"
+  """
+  update_reaction_types_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: reaction_types_set_input
+    pk_columns: reaction_types_pk_columns_input!
+  ): reaction_types
+  """
+  update multiples rows of table: "reaction_types"
+  """
+  update_reaction_types_many(
+    """updates to execute, in order"""
+    updates: [reaction_types_updates!]!
+  ): [reaction_types_mutation_response]
   """
   update data of the table: "user_blocks"
   """
@@ -10168,6 +10546,36 @@ type query_root {
   """
   contribution_likes_by_pk(contribution_id: uuid!, user_id: uuid!): contribution_likes
   """An array relationship"""
+  contribution_reactions(
+    """distinct select on columns"""
+    distinct_on: [contribution_reactions_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [contribution_reactions_order_by!]
+    """filter the rows returned"""
+    where: contribution_reactions_bool_exp
+  ): [contribution_reactions!]!
+  """An aggregate relationship"""
+  contribution_reactions_aggregate(
+    """distinct select on columns"""
+    distinct_on: [contribution_reactions_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [contribution_reactions_order_by!]
+    """filter the rows returned"""
+    where: contribution_reactions_bool_exp
+  ): contribution_reactions_aggregate!
+  """
+  fetch data from the table: "contribution_reactions" using primary key columns
+  """
+  contribution_reactions_by_pk(contribution_id: uuid!, type: reaction_types_enum!, user_id: uuid!): contribution_reactions
+  """An array relationship"""
   contribution_reports(
     """distinct select on columns"""
     distinct_on: [contribution_reports_select_column!]
@@ -10461,6 +10869,38 @@ type query_root {
   ): posts_aggregate!
   """fetch data from the table: "posts" using primary key columns"""
   posts_by_pk(id: uuid!): posts
+  """
+  fetch data from the table: "reaction_types"
+  """
+  reaction_types(
+    """distinct select on columns"""
+    distinct_on: [reaction_types_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [reaction_types_order_by!]
+    """filter the rows returned"""
+    where: reaction_types_bool_exp
+  ): [reaction_types!]!
+  """
+  fetch aggregated fields from the table: "reaction_types"
+  """
+  reaction_types_aggregate(
+    """distinct select on columns"""
+    distinct_on: [reaction_types_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [reaction_types_order_by!]
+    """filter the rows returned"""
+    where: reaction_types_bool_exp
+  ): reaction_types_aggregate!
+  """fetch data from the table: "reaction_types" using primary key columns"""
+  reaction_types_by_pk(type: String!): reaction_types
   """fetch data from the table: "auth.users" using primary key columns"""
   user(id: uuid!): users
   """An array relationship"""
@@ -10611,6 +11051,160 @@ type query_root {
     """filter the rows returned"""
     where: virus_bool_exp
   ): virus_aggregate!
+}
+
+"""
+columns and relationships of "reaction_types"
+"""
+type reaction_types {
+  type: String!
+}
+
+"""
+aggregated selection of "reaction_types"
+"""
+type reaction_types_aggregate {
+  aggregate: reaction_types_aggregate_fields
+  nodes: [reaction_types!]!
+}
+
+"""
+aggregate fields of "reaction_types"
+"""
+type reaction_types_aggregate_fields {
+  count(columns: [reaction_types_select_column!], distinct: Boolean): Int!
+  max: reaction_types_max_fields
+  min: reaction_types_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "reaction_types". All fields are combined with a logical 'AND'.
+"""
+input reaction_types_bool_exp {
+  _and: [reaction_types_bool_exp!]
+  _not: reaction_types_bool_exp
+  _or: [reaction_types_bool_exp!]
+  type: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "reaction_types"
+"""
+enum reaction_types_constraint {
+  """
+  unique or primary key constraint on columns "type"
+  """
+  reaction_types_pkey
+}
+
+enum reaction_types_enum {
+  heart
+  hope
+  hug
+  metoo
+  thanks
+}
+
+"""
+Boolean expression to compare columns of type "reaction_types_enum". All fields are combined with logical 'AND'.
+"""
+input reaction_types_enum_comparison_exp {
+  _eq: reaction_types_enum
+  _in: [reaction_types_enum!]
+  _is_null: Boolean
+  _neq: reaction_types_enum
+  _nin: [reaction_types_enum!]
+}
+
+"""
+input type for inserting data into table "reaction_types"
+"""
+input reaction_types_insert_input {
+  type: String
+}
+
+"""aggregate max on columns"""
+type reaction_types_max_fields {
+  type: String
+}
+
+"""aggregate min on columns"""
+type reaction_types_min_fields {
+  type: String
+}
+
+"""
+response of any mutation on the table "reaction_types"
+"""
+type reaction_types_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+  """data from the rows affected by the mutation"""
+  returning: [reaction_types!]!
+}
+
+"""
+on_conflict condition type for table "reaction_types"
+"""
+input reaction_types_on_conflict {
+  constraint: reaction_types_constraint!
+  update_columns: [reaction_types_update_column!]! = []
+  where: reaction_types_bool_exp
+}
+
+"""Ordering options when selecting data from "reaction_types"."""
+input reaction_types_order_by {
+  type: order_by
+}
+
+"""primary key columns input for table: reaction_types"""
+input reaction_types_pk_columns_input {
+  type: String!
+}
+
+"""
+select columns of table "reaction_types"
+"""
+enum reaction_types_select_column {
+  """column name"""
+  type
+}
+
+"""
+input type for updating data in table "reaction_types"
+"""
+input reaction_types_set_input {
+  type: String
+}
+
+"""
+Streaming cursor of the table "reaction_types"
+"""
+input reaction_types_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: reaction_types_stream_cursor_value_input!
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input reaction_types_stream_cursor_value_input {
+  type: String
+}
+
+"""
+update columns of table "reaction_types"
+"""
+enum reaction_types_update_column {
+  """column name"""
+  type
+}
+
+input reaction_types_updates {
+  """sets the columns of the filtered rows to the given values"""
+  _set: reaction_types_set_input
+  """filter the rows which have to be updated"""
+  where: reaction_types_bool_exp!
 }
 
 type subscription_root {
@@ -11299,6 +11893,47 @@ type subscription_root {
     where: contribution_likes_bool_exp
   ): [contribution_likes!]!
   """An array relationship"""
+  contribution_reactions(
+    """distinct select on columns"""
+    distinct_on: [contribution_reactions_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [contribution_reactions_order_by!]
+    """filter the rows returned"""
+    where: contribution_reactions_bool_exp
+  ): [contribution_reactions!]!
+  """An aggregate relationship"""
+  contribution_reactions_aggregate(
+    """distinct select on columns"""
+    distinct_on: [contribution_reactions_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [contribution_reactions_order_by!]
+    """filter the rows returned"""
+    where: contribution_reactions_bool_exp
+  ): contribution_reactions_aggregate!
+  """
+  fetch data from the table: "contribution_reactions" using primary key columns
+  """
+  contribution_reactions_by_pk(contribution_id: uuid!, type: reaction_types_enum!, user_id: uuid!): contribution_reactions
+  """
+  fetch data from the table in a streaming manner: "contribution_reactions"
+  """
+  contribution_reactions_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+    """cursor to stream the results returned by the query"""
+    cursor: [contribution_reactions_stream_cursor_input]!
+    """filter the rows returned"""
+    where: contribution_reactions_bool_exp
+  ): [contribution_reactions!]!
+  """An array relationship"""
   contribution_reports(
     """distinct select on columns"""
     distinct_on: [contribution_reports_select_column!]
@@ -11702,6 +12337,49 @@ type subscription_root {
     """filter the rows returned"""
     where: posts_bool_exp
   ): [posts!]!
+  """
+  fetch data from the table: "reaction_types"
+  """
+  reaction_types(
+    """distinct select on columns"""
+    distinct_on: [reaction_types_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [reaction_types_order_by!]
+    """filter the rows returned"""
+    where: reaction_types_bool_exp
+  ): [reaction_types!]!
+  """
+  fetch aggregated fields from the table: "reaction_types"
+  """
+  reaction_types_aggregate(
+    """distinct select on columns"""
+    distinct_on: [reaction_types_select_column!]
+    """limit the number of rows returned"""
+    limit: Int
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+    """sort the rows by one or more columns"""
+    order_by: [reaction_types_order_by!]
+    """filter the rows returned"""
+    where: reaction_types_bool_exp
+  ): reaction_types_aggregate!
+  """fetch data from the table: "reaction_types" using primary key columns"""
+  reaction_types_by_pk(type: String!): reaction_types
+  """
+  fetch data from the table in a streaming manner: "reaction_types"
+  """
+  reaction_types_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+    """cursor to stream the results returned by the query"""
+    cursor: [reaction_types_stream_cursor_input]!
+    """filter the rows returned"""
+    where: reaction_types_bool_exp
+  ): [reaction_types!]!
   """fetch data from the table: "auth.users" using primary key columns"""
   user(id: uuid!): users
   """An array relationship"""

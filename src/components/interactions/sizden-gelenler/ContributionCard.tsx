@@ -1,5 +1,14 @@
 import Image from "next/image";
-import { ExternalLink, Calendar, User } from "lucide-react";
+import {
+  ExternalLink,
+  Calendar,
+  User,
+  Heart,
+  Handshake,
+  ThumbsUp,
+  Sparkles,
+  HandHeart,
+} from "lucide-react";
 import LikeButton from "./LikeButton";
 import type { ContributionMovie } from "@/lib/types/contributions";
 
@@ -89,17 +98,28 @@ export default function ContributionCard({ contribution }: ContributionCardProps
             </div>
           </div>
 
-          {/* Like Button */}
-          <div className="flex items-center justify-end">
-            <LikeButton
-              contributionId={contribution.id}
-              initialLiked={false}
-              initialCount={likeCount}
-              onToggle={(nextLiked) => {
-                // Placeholder for future backend integration
-                console.log(`Like toggled for ${contribution.id}:`, nextLiked);
-              }}
-            />
+          {/* Reactions summary (SSR aggregated) */}
+          <div className="flex items-center justify-end gap-3 text-sm text-gray-600">
+            <div className="flex items-center gap-1">
+              <Heart className="h-4 w-4 text-red-500" />
+              <span>{contribution.reactions?.heart ?? 0}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Handshake className="h-4 w-4 text-amber-600" />
+              <span>{contribution.reactions?.hug ?? 0}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <ThumbsUp className="h-4 w-4 text-sky-600" />
+              <span>{contribution.reactions?.metoo ?? 0}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Sparkles className="h-4 w-4 text-emerald-600" />
+              <span>{contribution.reactions?.hope ?? 0}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <HandHeart className="h-4 w-4 text-pink-600" />
+              <span>{contribution.reactions?.thanks ?? 0}</span>
+            </div>
           </div>
         </div>
       </div>

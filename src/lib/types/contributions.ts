@@ -7,6 +7,13 @@ export type Contribution = {
   posterUrl?: string | null;
   sourceUrl?: string | null;
   likeCount: number;
+  reactions?: {
+    heart?: number;
+    hug?: number;
+    metoo?: number;
+    hope?: number;
+    thanks?: number;
+  };
   createdAt: string;
   submittedBy: {
     displayName: string;
