@@ -5763,6 +5763,187 @@ export type Jsonb_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars["jsonb"]["input"]>>;
 };
 
+/** columns and relationships of "message_typing" */
+export type Message_Typing = {
+  __typename?: "message_typing";
+  created_at: Scalars["timestamptz"]["output"];
+  id: Scalars["uuid"]["output"];
+  is_typing: Scalars["Boolean"]["output"];
+  recipient_id: Scalars["uuid"]["output"];
+  sender_id: Scalars["uuid"]["output"];
+  updated_at: Scalars["timestamptz"]["output"];
+};
+
+/** aggregated selection of "message_typing" */
+export type Message_Typing_Aggregate = {
+  __typename?: "message_typing_aggregate";
+  aggregate?: Maybe<Message_Typing_Aggregate_Fields>;
+  nodes: Array<Message_Typing>;
+};
+
+/** aggregate fields of "message_typing" */
+export type Message_Typing_Aggregate_Fields = {
+  __typename?: "message_typing_aggregate_fields";
+  count: Scalars["Int"]["output"];
+  max?: Maybe<Message_Typing_Max_Fields>;
+  min?: Maybe<Message_Typing_Min_Fields>;
+};
+
+/** aggregate fields of "message_typing" */
+export type Message_Typing_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Message_Typing_Select_Column>>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+};
+
+/** Boolean expression to filter rows from the table "message_typing". All fields are combined with a logical 'AND'. */
+export type Message_Typing_Bool_Exp = {
+  _and?: InputMaybe<Array<Message_Typing_Bool_Exp>>;
+  _not?: InputMaybe<Message_Typing_Bool_Exp>;
+  _or?: InputMaybe<Array<Message_Typing_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  is_typing?: InputMaybe<Boolean_Comparison_Exp>;
+  recipient_id?: InputMaybe<Uuid_Comparison_Exp>;
+  sender_id?: InputMaybe<Uuid_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "message_typing" */
+export enum Message_Typing_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  MessageTypingPkey = "message_typing_pkey",
+  /** unique or primary key constraint on columns "sender_id", "recipient_id" */
+  MessageTypingSenderIdRecipientIdKey = "message_typing_sender_id_recipient_id_key",
+}
+
+/** input type for inserting data into table "message_typing" */
+export type Message_Typing_Insert_Input = {
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  is_typing?: InputMaybe<Scalars["Boolean"]["input"]>;
+  recipient_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  sender_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+};
+
+/** aggregate max on columns */
+export type Message_Typing_Max_Fields = {
+  __typename?: "message_typing_max_fields";
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  recipient_id?: Maybe<Scalars["uuid"]["output"]>;
+  sender_id?: Maybe<Scalars["uuid"]["output"]>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
+};
+
+/** aggregate min on columns */
+export type Message_Typing_Min_Fields = {
+  __typename?: "message_typing_min_fields";
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  recipient_id?: Maybe<Scalars["uuid"]["output"]>;
+  sender_id?: Maybe<Scalars["uuid"]["output"]>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
+};
+
+/** response of any mutation on the table "message_typing" */
+export type Message_Typing_Mutation_Response = {
+  __typename?: "message_typing_mutation_response";
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars["Int"]["output"];
+  /** data from the rows affected by the mutation */
+  returning: Array<Message_Typing>;
+};
+
+/** on_conflict condition type for table "message_typing" */
+export type Message_Typing_On_Conflict = {
+  constraint: Message_Typing_Constraint;
+  update_columns?: Array<Message_Typing_Update_Column>;
+  where?: InputMaybe<Message_Typing_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "message_typing". */
+export type Message_Typing_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  is_typing?: InputMaybe<Order_By>;
+  recipient_id?: InputMaybe<Order_By>;
+  sender_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: message_typing */
+export type Message_Typing_Pk_Columns_Input = {
+  id: Scalars["uuid"]["input"];
+};
+
+/** select columns of table "message_typing" */
+export enum Message_Typing_Select_Column {
+  /** column name */
+  CreatedAt = "created_at",
+  /** column name */
+  Id = "id",
+  /** column name */
+  IsTyping = "is_typing",
+  /** column name */
+  RecipientId = "recipient_id",
+  /** column name */
+  SenderId = "sender_id",
+  /** column name */
+  UpdatedAt = "updated_at",
+}
+
+/** input type for updating data in table "message_typing" */
+export type Message_Typing_Set_Input = {
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  is_typing?: InputMaybe<Scalars["Boolean"]["input"]>;
+  recipient_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  sender_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+};
+
+/** Streaming cursor of the table "message_typing" */
+export type Message_Typing_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Message_Typing_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Message_Typing_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  is_typing?: InputMaybe<Scalars["Boolean"]["input"]>;
+  recipient_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  sender_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+};
+
+/** update columns of table "message_typing" */
+export enum Message_Typing_Update_Column {
+  /** column name */
+  CreatedAt = "created_at",
+  /** column name */
+  Id = "id",
+  /** column name */
+  IsTyping = "is_typing",
+  /** column name */
+  RecipientId = "recipient_id",
+  /** column name */
+  SenderId = "sender_id",
+  /** column name */
+  UpdatedAt = "updated_at",
+}
+
+export type Message_Typing_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Message_Typing_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Message_Typing_Bool_Exp;
+};
+
 /** columns and relationships of "messages" */
 export type Messages = {
   __typename?: "messages";
@@ -6205,6 +6386,10 @@ export type Mutation_Root = {
   delete_contributions?: Maybe<Contributions_Mutation_Response>;
   /** delete single row from the table: "contributions" */
   delete_contributions_by_pk?: Maybe<Contributions>;
+  /** delete data from the table: "message_typing" */
+  delete_message_typing?: Maybe<Message_Typing_Mutation_Response>;
+  /** delete single row from the table: "message_typing" */
+  delete_message_typing_by_pk?: Maybe<Message_Typing>;
   /** delete data from the table: "messages" */
   delete_messages?: Maybe<Messages_Mutation_Response>;
   /** delete single row from the table: "messages" */
@@ -6337,6 +6522,10 @@ export type Mutation_Root = {
   insert_contributions?: Maybe<Contributions_Mutation_Response>;
   /** insert a single row into the table: "contributions" */
   insert_contributions_one?: Maybe<Contributions>;
+  /** insert data into the table: "message_typing" */
+  insert_message_typing?: Maybe<Message_Typing_Mutation_Response>;
+  /** insert a single row into the table: "message_typing" */
+  insert_message_typing_one?: Maybe<Message_Typing>;
   /** insert data into the table: "messages" */
   insert_messages?: Maybe<Messages_Mutation_Response>;
   /** insert a single row into the table: "messages" */
@@ -6515,6 +6704,12 @@ export type Mutation_Root = {
   update_contributions_many?: Maybe<Array<Maybe<Contributions_Mutation_Response>>>;
   /** update multiples rows of table: "storage.files" */
   update_files_many?: Maybe<Array<Maybe<Files_Mutation_Response>>>;
+  /** update data of the table: "message_typing" */
+  update_message_typing?: Maybe<Message_Typing_Mutation_Response>;
+  /** update single row of the table: "message_typing" */
+  update_message_typing_by_pk?: Maybe<Message_Typing>;
+  /** update multiples rows of table: "message_typing" */
+  update_message_typing_many?: Maybe<Array<Maybe<Message_Typing_Mutation_Response>>>;
   /** update data of the table: "messages" */
   update_messages?: Maybe<Messages_Mutation_Response>;
   /** update single row of the table: "messages" */
@@ -6814,6 +7009,16 @@ export type Mutation_RootDelete_ContributionsArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Contributions_By_PkArgs = {
+  id: Scalars["uuid"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Message_TypingArgs = {
+  where: Message_Typing_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Message_Typing_By_PkArgs = {
   id: Scalars["uuid"]["input"];
 };
 
@@ -7194,6 +7399,18 @@ export type Mutation_RootInsert_ContributionsArgs = {
 export type Mutation_RootInsert_Contributions_OneArgs = {
   object: Contributions_Insert_Input;
   on_conflict?: InputMaybe<Contributions_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Message_TypingArgs = {
+  objects: Array<Message_Typing_Insert_Input>;
+  on_conflict?: InputMaybe<Message_Typing_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Message_Typing_OneArgs = {
+  object: Message_Typing_Insert_Input;
+  on_conflict?: InputMaybe<Message_Typing_On_Conflict>;
 };
 
 /** mutation root */
@@ -7757,6 +7974,23 @@ export type Mutation_RootUpdate_Contributions_ManyArgs = {
 /** mutation root */
 export type Mutation_RootUpdate_Files_ManyArgs = {
   updates: Array<Files_Updates>;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Message_TypingArgs = {
+  _set?: InputMaybe<Message_Typing_Set_Input>;
+  where: Message_Typing_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Message_Typing_By_PkArgs = {
+  _set?: InputMaybe<Message_Typing_Set_Input>;
+  pk_columns: Message_Typing_Pk_Columns_Input;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Message_Typing_ManyArgs = {
+  updates: Array<Message_Typing_Updates>;
 };
 
 /** mutation root */
@@ -9302,6 +9536,12 @@ export type Query_Root = {
   files: Array<Files>;
   /** fetch aggregated fields from the table: "storage.files" */
   filesAggregate: Files_Aggregate;
+  /** fetch data from the table: "message_typing" */
+  message_typing: Array<Message_Typing>;
+  /** fetch aggregated fields from the table: "message_typing" */
+  message_typing_aggregate: Message_Typing_Aggregate;
+  /** fetch data from the table: "message_typing" using primary key columns */
+  message_typing_by_pk?: Maybe<Message_Typing>;
   /** fetch data from the table: "messages" */
   messages: Array<Messages>;
   /** fetch aggregated fields from the table: "messages" */
@@ -9800,6 +10040,26 @@ export type Query_RootFilesAggregateArgs = {
   offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Files_Order_By>>;
   where?: InputMaybe<Files_Bool_Exp>;
+};
+
+export type Query_RootMessage_TypingArgs = {
+  distinct_on?: InputMaybe<Array<Message_Typing_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Message_Typing_Order_By>>;
+  where?: InputMaybe<Message_Typing_Bool_Exp>;
+};
+
+export type Query_RootMessage_Typing_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Message_Typing_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Message_Typing_Order_By>>;
+  where?: InputMaybe<Message_Typing_Bool_Exp>;
+};
+
+export type Query_RootMessage_Typing_By_PkArgs = {
+  id: Scalars["uuid"]["input"];
 };
 
 export type Query_RootMessagesArgs = {
@@ -10353,6 +10613,14 @@ export type Subscription_Root = {
   filesAggregate: Files_Aggregate;
   /** fetch data from the table in a streaming manner: "storage.files" */
   files_stream: Array<Files>;
+  /** fetch data from the table: "message_typing" */
+  message_typing: Array<Message_Typing>;
+  /** fetch aggregated fields from the table: "message_typing" */
+  message_typing_aggregate: Message_Typing_Aggregate;
+  /** fetch data from the table: "message_typing" using primary key columns */
+  message_typing_by_pk?: Maybe<Message_Typing>;
+  /** fetch data from the table in a streaming manner: "message_typing" */
+  message_typing_stream: Array<Message_Typing>;
   /** fetch data from the table: "messages" */
   messages: Array<Messages>;
   /** fetch aggregated fields from the table: "messages" */
@@ -11001,6 +11269,32 @@ export type Subscription_RootFiles_StreamArgs = {
   batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<Files_Stream_Cursor_Input>>;
   where?: InputMaybe<Files_Bool_Exp>;
+};
+
+export type Subscription_RootMessage_TypingArgs = {
+  distinct_on?: InputMaybe<Array<Message_Typing_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Message_Typing_Order_By>>;
+  where?: InputMaybe<Message_Typing_Bool_Exp>;
+};
+
+export type Subscription_RootMessage_Typing_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Message_Typing_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Message_Typing_Order_By>>;
+  where?: InputMaybe<Message_Typing_Bool_Exp>;
+};
+
+export type Subscription_RootMessage_Typing_By_PkArgs = {
+  id: Scalars["uuid"]["input"];
+};
+
+export type Subscription_RootMessage_Typing_StreamArgs = {
+  batch_size: Scalars["Int"]["input"];
+  cursor: Array<InputMaybe<Message_Typing_Stream_Cursor_Input>>;
+  where?: InputMaybe<Message_Typing_Bool_Exp>;
 };
 
 export type Subscription_RootMessagesArgs = {
@@ -13718,6 +14012,64 @@ export type UnlikeContributionMutation = {
   } | null;
 };
 
+export type OnTypingSubscriptionVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+  otherId: Scalars["uuid"]["input"];
+}>;
+
+export type OnTypingSubscription = {
+  __typename?: "subscription_root";
+  message_typing: Array<{
+    __typename?: "message_typing";
+    sender_id: string;
+    recipient_id: string;
+    is_typing: boolean;
+    updated_at: string;
+  }>;
+};
+
+export type UpsertTypingMutationVariables = Exact<{
+  recipient_id: Scalars["uuid"]["input"];
+  is_typing: Scalars["Boolean"]["input"];
+}>;
+
+export type UpsertTypingMutation = {
+  __typename?: "mutation_root";
+  insert_message_typing_one?: {
+    __typename?: "message_typing";
+    id: string;
+    sender_id: string;
+    recipient_id: string;
+    is_typing: boolean;
+    updated_at: string;
+  } | null;
+};
+
+export type GetUserPresenceQueryVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+}>;
+
+export type GetUserPresenceQuery = {
+  __typename?: "query_root";
+  users: Array<{
+    __typename?: "users";
+    id: string;
+    displayName: string;
+    avatarUrl: string;
+    lastSeen?: string | null;
+  }>;
+};
+
+export type UpdateLastSeenMutationVariables = Exact<{
+  userId: Scalars["uuid"]["input"];
+  lastSeen: Scalars["timestamptz"]["input"];
+}>;
+
+export type UpdateLastSeenMutation = {
+  __typename?: "mutation_root";
+  updateUser?: { __typename?: "users"; id: string; lastSeen?: string | null } | null;
+};
+
 export type GetUserProfileQueryVariables = Exact<{
   userId: Scalars["uuid"]["input"];
 }>;
@@ -14621,6 +14973,109 @@ export const useUnlikeContributionMutation = <TError = unknown, TContext = unkno
       UnlikeContributionMutation,
       UnlikeContributionMutationVariables
     >(UnlikeContributionDocument),
+    ...options,
+  });
+};
+
+export const OnTypingDocument = `
+    subscription OnTyping($userId: uuid!, $otherId: uuid!) {
+  message_typing(
+    where: {sender_id: {_eq: $otherId}, recipient_id: {_eq: $userId}, is_typing: {_eq: true}}
+    order_by: {updated_at: desc}
+    limit: 1
+  ) {
+    sender_id
+    recipient_id
+    is_typing
+    updated_at
+  }
+}
+    `;
+export const UpsertTypingDocument = `
+    mutation UpsertTyping($recipient_id: uuid!, $is_typing: Boolean!) {
+  insert_message_typing_one(
+    object: {recipient_id: $recipient_id, is_typing: $is_typing}
+    on_conflict: {constraint: message_typing_sender_id_recipient_id_key, update_columns: [is_typing]}
+  ) {
+    id
+    sender_id
+    recipient_id
+    is_typing
+    updated_at
+  }
+}
+    `;
+
+export const useUpsertTypingMutation = <TError = unknown, TContext = unknown>(
+  options?: UseMutationOptions<
+    UpsertTypingMutation,
+    TError,
+    UpsertTypingMutationVariables,
+    TContext
+  >,
+) => {
+  return useMutation<UpsertTypingMutation, TError, UpsertTypingMutationVariables, TContext>({
+    mutationKey: ["UpsertTyping"],
+    mutationFn: useAuthenticatedFetcher<UpsertTypingMutation, UpsertTypingMutationVariables>(
+      UpsertTypingDocument,
+    ),
+    ...options,
+  });
+};
+
+export const GetUserPresenceDocument = `
+    query GetUserPresence($userId: uuid!) {
+  users(where: {id: {_eq: $userId}}) {
+    id
+    displayName
+    avatarUrl
+    lastSeen
+  }
+}
+    `;
+
+export const useGetUserPresenceQuery = <TData = GetUserPresenceQuery, TError = unknown>(
+  variables: GetUserPresenceQueryVariables,
+  options?: Omit<UseQueryOptions<GetUserPresenceQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<GetUserPresenceQuery, TError, TData>["queryKey"];
+  },
+) => {
+  return useQuery<GetUserPresenceQuery, TError, TData>({
+    queryKey: ["GetUserPresence", variables],
+    queryFn: useAuthenticatedFetcher<GetUserPresenceQuery, GetUserPresenceQueryVariables>(
+      GetUserPresenceDocument,
+    ).bind(null, variables),
+    ...options,
+  });
+};
+
+useGetUserPresenceQuery.getKey = (variables: GetUserPresenceQueryVariables) => [
+  "GetUserPresence",
+  variables,
+];
+
+export const UpdateLastSeenDocument = `
+    mutation UpdateLastSeen($userId: uuid!, $lastSeen: timestamptz!) {
+  updateUser(pk_columns: {id: $userId}, _set: {lastSeen: $lastSeen}) {
+    id
+    lastSeen
+  }
+}
+    `;
+
+export const useUpdateLastSeenMutation = <TError = unknown, TContext = unknown>(
+  options?: UseMutationOptions<
+    UpdateLastSeenMutation,
+    TError,
+    UpdateLastSeenMutationVariables,
+    TContext
+  >,
+) => {
+  return useMutation<UpdateLastSeenMutation, TError, UpdateLastSeenMutationVariables, TContext>({
+    mutationKey: ["UpdateLastSeen"],
+    mutationFn: useAuthenticatedFetcher<UpdateLastSeenMutation, UpdateLastSeenMutationVariables>(
+      UpdateLastSeenDocument,
+    ),
     ...options,
   });
 };

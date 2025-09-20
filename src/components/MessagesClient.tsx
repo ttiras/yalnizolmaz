@@ -3,16 +3,17 @@
 import Link from "next/link";
 import { useAuth } from "@/app/lib/nhost/AuthProvider";
 import { useAuthenticatedFetcher } from "@/lib/graphql/queryHooks";
-import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   GetRecentMessagesDocument,
   type GetRecentMessagesQuery,
   type GetRecentMessagesQueryVariables,
 } from "@/lib/graphql/__generated__/graphql";
+import { RecentMessagesSubscription, subscribeGraphql } from "@/lib/graphql/subscriptions";
 
 export default function MessagesClient() {
-  const { user } = useAuth();
+  const { user, session } = useAuth();
   const userId = user?.id ?? "";
 
   const fetchRecentMessages = useAuthenticatedFetcher<
@@ -26,6 +27,31 @@ export default function MessagesClient() {
     enabled: Boolean(userId),
     staleTime: 10_000,
   });
+
+  const qc = useQueryClient();
+
+  useEffect(() => {
+    if (!userId) return;
+    const token = session?.accessToken ?? null;
+    const unsubscribe = subscribeGraphql<GetRecentMessagesQuery>(
+      {
+        query: RecentMessagesSubscription,
+        variables: { userId, limit: 50, offset: 0 },
+        token,
+      },
+      {
+        next: (payload) => {
+          const incoming = payload.data?.messages as GetRecentMessagesQuery["messages"] | undefined;
+          if (!incoming) return;
+          qc.setQueryData<GetRecentMessagesQuery>(
+            ["GetRecentMessages", { userId }],
+            () => ({ messages: incoming }) as GetRecentMessagesQuery,
+          );
+        },
+      },
+    );
+    return () => unsubscribe();
+  }, [userId, session?.accessToken, qc]);
 
   const grouped = useMemo(() => {
     const map = new Map<

@@ -25,6 +25,7 @@
     "@nhost/nhost-js": "5.0.0-beta.9",
     "@tanstack/react-query": "^5.89.0",
     "graphql": "^16.9.0",
+    "graphql-ws": "^6.0.6",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.542.0",
     "next": "15.5.0",

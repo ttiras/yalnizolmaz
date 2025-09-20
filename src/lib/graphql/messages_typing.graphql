@@ -1,0 +1,45 @@
+# Typing indicator and presence
+
+subscription OnTyping($userId: uuid!, $otherId: uuid!) {
+  message_typing(
+    where: {
+      sender_id: { _eq: $otherId }
+      recipient_id: { _eq: $userId }
+      is_typing: { _eq: true }
+    }
+    order_by: { updated_at: desc }
+    limit: 1
+  ) {
+    sender_id
+    recipient_id
+    is_typing
+    updated_at
+  }
+}
+
+mutation UpsertTyping($recipient_id: uuid!, $is_typing: Boolean!) {
+  insert_message_typing_one(
+    object: { recipient_id: $recipient_id, is_typing: $is_typing }
+    on_conflict: {
+      constraint: message_typing_sender_id_recipient_id_key
+      update_columns: [is_typing]
+    }
+  ) {
+    id
+    sender_id
+    recipient_id
+    is_typing
+    updated_at
+  }
+}
+
+query GetUserPresence($userId: uuid!) {
+  users(where: { id: { _eq: $userId } }) {
+    id
+    displayName
+    avatarUrl
+    lastSeen
+  }
+}
+
+

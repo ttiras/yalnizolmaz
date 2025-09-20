@@ -1,0 +1,7 @@
+# Presence heartbeat: update user's lastSeen
+mutation UpdateLastSeen($userId: uuid!, $lastSeen: timestamptz!) {
+  updateUser(pk_columns: { id: $userId }, _set: { lastSeen: $lastSeen }) {
+    id
+    lastSeen
+  }
+}
